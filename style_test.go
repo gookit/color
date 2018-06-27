@@ -28,14 +28,25 @@ func TestMatchTag(t *testing.T) {
 	s3 := `abc <err>err-text</> 
 def <info>info text
 </>`
-	reg3, err := regexp.Compile(TagExpr)
+	g3, err := regexp.Compile(TagExpr)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	r3 := reg3.FindAllStringSubmatch(s3, -1)
+	r3 := g3.FindAllStringSubmatch(s3, -1)
 	fmt.Printf("ret %v\n", r3)
+
+	// some tag and content
+	s4 := "abc <err>err-text</> def <err>err-text</> "
+	g4, err := regexp.Compile(TagExpr)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	r4 := g4.FindAllStringSubmatch(s4, -1)
+	fmt.Printf("ret %v\n", r4)
 
 }
 
