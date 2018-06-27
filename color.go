@@ -32,6 +32,27 @@ func (c Color) F(s string, args ...interface{}) string {
 	return fmt.Sprintf(SingleColorTpl, uint8(c), s)
 }
 
+// Print
+func (c Color) Print(args ...interface{}) (int, error) {
+	str := fmt.Sprint(args...)
+
+	return fmt.Printf(SingleColorTpl, uint8(c), str)
+}
+
+// Println
+func (c Color) Println(args ...interface{}) (int, error) {
+	str := fmt.Sprintln(args...)
+
+	return fmt.Printf(SingleColorTpl, uint8(c), str)
+}
+
+// Printf
+func (c Color) Printf(format string, args ...interface{}) (int, error) {
+	str := fmt.Sprintf(format, args...)
+
+	return fmt.Printf(SingleColorTpl, uint8(c), str)
+}
+
 // IsValid 检测是否为一个有效的 Color 值
 func (c Color) IsValid() bool {
 	return c < 107
