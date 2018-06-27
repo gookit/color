@@ -79,40 +79,8 @@ func (stl Style) Println(args ...interface{}) (int, error) {
 	return fmt.Println(stl.Render(str))
 }
 
-type tagName string
-
-// Tag more please Styles
-func Tag(name string) *tagName {
-	if !IsStyle(name) {
-		panic("unknown style name: " + name)
-	}
-
-	tg := tagName(name)
-	return &tg
-}
-
-// Print
-func (tg tagName) Print(args ...interface{})  {
-	str := buildColoredText(
-		GetStyleCode(string(tg)),
-		fmt.Sprint(args...),
-	)
-
-	fmt.Print(str)
-}
-
-// Println
-func (tg tagName) Println(args ...interface{})  {
-	str := buildColoredText(
-		GetStyleCode(string(tg)),
-		fmt.Sprint(args...),
-	)
-
-	fmt.Println(str)
-}
-
-// UseStyle
-func UseStyle(name string, str string) string {
+// AddStyle
+func AddStyle(name string, str string) string {
 	return Render(WrapTag(str, name))
 }
 
