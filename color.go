@@ -84,10 +84,10 @@ func buildColorCode(colors ...Color) string {
 }
 
 // buildColoredText
-func buildColoredText(code string, str string) string {
+func buildColoredText(code string, str ...string) string {
 	if len(code) == 0 {
-		return str
+		return strings.Join(str, "")
 	}
 
-	return fmt.Sprintf(FullColorTpl, code, str)
+	return fmt.Sprintf(FullColorTpl, code, strings.Join(str, ""))
 }
