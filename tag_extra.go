@@ -34,7 +34,7 @@ func (t Tips) Print(args ...interface{}) {
 	tag := string(t)
 	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ": ")
 
-	fmt.Print(str, fmt.Sprint(args...))
+	fmt.Print(str, fmt.Sprint(args...), "\n")
 }
 
 // Printf
@@ -42,7 +42,7 @@ func (t Tips) Printf(format string, args ...interface{}) {
 	tag := string(t)
 	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ": ")
 
-	fmt.Print(str, fmt.Sprintf(format, args...))
+	fmt.Print(str, fmt.Sprintf(format, args...), "\n")
 }
 
 // value is a defined style name
@@ -56,7 +56,7 @@ func (t BlockTips) Print(args ...interface{}) {
 		strings.ToUpper(tag), ": ", fmt.Sprint(args...),
 	)
 
-	fmt.Print(str)
+	fmt.Print(str, "\n")
 }
 
 // Printf
@@ -67,7 +67,7 @@ func (t BlockTips) Printf(format string, args ...interface{}) {
 		strings.ToUpper(tag), ": ", fmt.Sprintf(format, args...),
 	)
 
-	fmt.Print(str)
+	fmt.Print(str, "\n")
 }
 
 // Logger console logger
