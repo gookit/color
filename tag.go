@@ -126,8 +126,8 @@ var TagColors = map[string]string{
 }
 
 // ApplyTag
-func ApplyTag(tag string, str string) string {
-	return buildColoredText(GetStyleCode(tag), str)
+func ApplyTag(tag string, args ...interface{}) string {
+	return buildColoredText(GetStyleCode(tag), args...)
 }
 
 // Render return rendered string
@@ -135,7 +135,7 @@ func Render(args ...interface{}) string {
 	return ReplaceTag(fmt.Sprint(args...))
 }
 
-// ReplaceTag replace tag and return rendered string
+// ReplaceTag parse string, replace tag and return rendered string
 func ReplaceTag(str string) string {
 	if !strings.Contains(str, "<") {
 		return str
