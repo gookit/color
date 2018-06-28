@@ -5,6 +5,12 @@ import (
 	c "github.com/smartystreets/goconvey/convey"
 )
 
+func TestWrapTag(t *testing.T) {
+	c.Convey("test wrap a tag", t, func() {
+		c.So(WrapTag("text", "info"), c.ShouldEqual, "<info>text</>")
+	})
+}
+
 func TestReplaceTag(t *testing.T) {
 	c.Convey("test parse color tags", t, func() {
 		c.Convey("sample 1", func() {

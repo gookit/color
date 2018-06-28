@@ -73,6 +73,7 @@ const (
 // CLI color template
 // "\033" is equals to "\x1b"
 const ResetCode = "\x1b[0m"
+
 const SettingTpl = "\x1b[%sm"
 const FullColorTpl = "\x1b[%sm%s\x1b[0m"
 const SingleColorTpl = "\x1b[%dm%s\x1b[0m"

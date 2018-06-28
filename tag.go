@@ -58,7 +58,7 @@ const (
 	TagReverse    = "reverse"
 )
 
-// Some internal defined style tags
+// Some internal defined color tags
 // format is: "fg;bg;opt"
 // usage: <tag>content text</>
 var TagColors = map[string]string{
