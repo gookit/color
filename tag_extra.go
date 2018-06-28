@@ -6,35 +6,17 @@ import (
 )
 
 // value is a defined style name
-type tagName string
-
-// Tag more please TagColors
-func Tag(name string) *tagName {
-	if !IsDefinedTag(name) {
-		panic("unknown style name: " + name)
-	}
-
-	tg := tagName(name)
-	return &tg
-}
+type Tag string
 
 // Print
-func (tg tagName) Print(args ...interface{}) {
-	str := buildColoredText(
-		GetStyleCode(string(tg)),
-		fmt.Sprint(args...),
-	)
-
+func (tg Tag) Print(args ...interface{}) {
+	str := buildColoredText(GetStyleCode(string(tg)), args...)
 	fmt.Print(str)
 }
 
 // Println
-func (tg tagName) Println(args ...interface{}) {
-	str := buildColoredText(
-		GetStyleCode(string(tg)),
-		fmt.Sprint(args...),
-	)
-
+func (tg Tag) Println(args ...interface{}) {
+	str := buildColoredText(GetStyleCode(string(tg)), args...)
 	fmt.Println(str)
 }
 
@@ -44,10 +26,7 @@ type Tips string
 // Print
 func (t Tips) Print(args ...interface{}) {
 	tag := string(t)
-	str := buildColoredText(
-		GetStyleCode(tag),
-		strings.ToUpper(tag)+": ",
-	)
+	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ": ")
 
 	fmt.Print(str, fmt.Sprint(args...))
 }
@@ -55,10 +34,7 @@ func (t Tips) Print(args ...interface{}) {
 // Printf
 func (t Tips) Printf(format string, args ...interface{}) {
 	tag := string(t)
-	str := buildColoredText(
-		GetStyleCode(tag),
-		strings.ToUpper(tag)+": ",
-	)
+	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ": ")
 
 	fmt.Print(str, fmt.Sprintf(format, args...))
 }
@@ -71,7 +47,7 @@ func (t BlockTips) Print(args ...interface{}) {
 	tag := string(t)
 	str := buildColoredText(
 		GetStyleCode(tag),
-		strings.ToUpper(tag)+": "+fmt.Sprint(args...),
+		strings.ToUpper(tag), ": ", fmt.Sprint(args...),
 	)
 
 	fmt.Print(str)
@@ -82,7 +58,7 @@ func (t BlockTips) Printf(format string, args ...interface{}) {
 	tag := string(t)
 	str := buildColoredText(
 		GetStyleCode(tag),
-		strings.ToUpper(tag)+": "+fmt.Sprintf(format, args...),
+		strings.ToUpper(tag), ": ", fmt.Sprintf(format, args...),
 	)
 
 	fmt.Print(str)

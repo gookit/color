@@ -120,7 +120,7 @@ func (c Color) Println(args ...interface{}) (int, error) {
 // Printf
 // usage: color.FgCyan.Printf("string %s", "arg0")
 func (c Color) Printf(format string, args ...interface{}) (int, error) {
-	return fmt.Println(c.Renderf(format, args...))
+	return fmt.Print(c.Renderf(format, args...))
 }
 
 // IsValid 检测是否为一个有效的 Color 值
@@ -154,12 +154,14 @@ func buildColorCode(colors ...Color) string {
 }
 
 // buildColoredText
-func buildColoredText(code string, str ...string) string {
+func buildColoredText(code string, args ...interface{}) string {
+	str := fmt.Sprint(args...)
+
 	if len(code) == 0 {
-		return strings.Join(str, "")
+		return str
 	}
 
-	return fmt.Sprintf(FullColorTpl, code, strings.Join(str, ""))
+	return fmt.Sprintf(FullColorTpl, code, str)
 }
 
 // Foreground colors map

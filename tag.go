@@ -20,86 +20,6 @@ const (
 	StripExpr = `<[\/]?[a-zA-Z=;]*>`
 )
 
-// UseTagColor
-func UseTagColor(name string, str string) string {
-	return buildColoredText(GetStyleCode(name), str)
-}
-
-// Render return rendered string
-func Render(str string) string {
-	return ReplaceTag(str)
-}
-
-// ReplaceTag return rendered string
-func ReplaceTag(str string) string {
-	if !strings.Contains(str, "<") {
-		return str
-	}
-
-	//reg := regexp.MustCompile(TagExpr)
-	reg, err := regexp.Compile(TagExpr)
-
-	if err != nil {
-		return str
-	}
-
-	matches := reg.FindAllStringSubmatch(str, -1)
-	// fmt.Printf("matches %v\n", matches)
-
-	for _, item := range matches {
-		// e.g "<tag>content</>"
-		_, tag, content := item[0], item[1], item[2]
-		code := GetStyleCode(tag)
-
-		if len(code) > 0 {
-			now := buildColoredText(code, content)
-			old := WrapTag(content, tag)
-			str = strings.Replace(str, old, now, 1)
-		}
-		// fmt.Printf("tag: %s, tag content:%s\n", tag, content)
-	}
-
-	return str
-}
-
-// IsDefinedTag is defined tag name
-func IsDefinedTag(name string) bool {
-	if _, ok := TagColors[name]; ok {
-		return true
-	}
-
-	return false
-}
-
-// GetStyleCode get color code by tag name
-func GetStyleCode(name string) string {
-	if code, ok := TagColors[name]; ok {
-		return code
-	}
-
-	return ""
-}
-
-// WrapTag wrap a tag for a string "<tag>content</>"
-func WrapTag(str string, tag string) string {
-	// return fmt.Sprintf("<%s>%s</%s>", tag, str, tag)
-	return fmt.Sprintf("<%s>%s</>", tag, str)
-}
-
-// ClearTag clear all tag for a string
-func ClearTag(str string) string {
-	if !strings.Contains(str, "<") {
-		return str
-	}
-
-	rgp, err := regexp.Compile(StripExpr)
-	if err != nil {
-		return str
-	}
-
-	return rgp.ReplaceAllString(str, "")
-}
-
 // Some defined style tags, in the TagColors.
 const (
 	// basic
@@ -114,7 +34,7 @@ const (
 	TagYellow  = "yellow"
 	TagMagenta = "magenta"
 
-	// alert
+	// alert tag, like bootstrap's alert
 	Suc     = "suc" // same "green" and "bold"
 	Success = "success"
 	Info    = "info"    // same "green"
@@ -123,6 +43,7 @@ const (
 	Notice  = "notice"
 	Warn    = "warn"
 	Warning = "warning"
+	Primary = "primary"
 	Danger  = "danger" // same "red"
 	Err     = "err"
 	Error   = "error"
@@ -137,7 +58,7 @@ const (
 // format is: "fg;bg;opt"
 // usage: <tag>content text</>
 var TagColors = map[string]string{
-	// basic
+	// basic tags
 	"red":     "0;31",
 	"blue":    "0;34",
 	"cyan":    "0;36",
@@ -150,7 +71,7 @@ var TagColors = map[string]string{
 	"yellow":  "1;33",
 	"magenta": "1;35",
 
-	// alert
+	// alert tags, like bootstrap's alert
 	"suc":     "1;32", // same "green" and "bold"
 	"success": "1;32",
 	"info":    "0;32", // same "green",
@@ -159,11 +80,12 @@ var TagColors = map[string]string{
 	"notice":  "36;4",
 	"warn":    "0;30;43",
 	"warning": "0;30;43",
+	"primary": "0;34",
 	"danger":  "0;31", // same "red"
 	"err":     "30;41",
 	"error":   "30;41",
 
-	// more
+	// more tags
 	"lightRed":      "1;31",
 	"light_red":     "1;31",
 	"lightGreen":    "1;32",
@@ -197,4 +119,84 @@ var TagColors = map[string]string{
 	"bold":       "1",
 	"underscore": "4",
 	"reverse":    "7",
+}
+
+// ApplyTag
+func ApplyTag(tag string, str string) string {
+	return buildColoredText(GetStyleCode(tag), str)
+}
+
+// Render return rendered string
+func Render(args ...interface{}) string {
+	return ReplaceTag(fmt.Sprint(args...))
+}
+
+// ReplaceTag replace tag and return rendered string
+func ReplaceTag(str string) string {
+	if !strings.Contains(str, "<") {
+		return str
+	}
+
+	//reg := regexp.MustCompile(TagExpr)
+	reg, err := regexp.Compile(TagExpr)
+
+	if err != nil {
+		return str
+	}
+
+	matches := reg.FindAllStringSubmatch(str, -1)
+	// fmt.Printf("matches %v\n", matches)
+
+	for _, item := range matches {
+		// e.g "<tag>content</>"
+		_, tag, content := item[0], item[1], item[2]
+		code := GetStyleCode(tag)
+
+		if len(code) > 0 {
+			now := buildColoredText(code, content)
+			old := WrapTag(content, tag)
+			str = strings.Replace(str, old, now, 1)
+		}
+		// fmt.Printf("tag: %s, tag content:%s\n", tag, content)
+	}
+
+	return str
+}
+
+// GetStyleCode get color code by tag name
+func GetStyleCode(name string) string {
+	if code, ok := TagColors[name]; ok {
+		return code
+	}
+
+	return ""
+}
+
+// WrapTag wrap a tag for a string "<tag>content</>"
+func WrapTag(str string, tag string) string {
+	// return fmt.Sprintf("<%s>%s</%s>", tag, str, tag)
+	return fmt.Sprintf("<%s>%s</>", tag, str)
+}
+
+// ClearTag clear all tag for a string
+func ClearTag(str string) string {
+	if !strings.Contains(str, "<") {
+		return str
+	}
+
+	rgp, err := regexp.Compile(StripExpr)
+	if err != nil {
+		return str
+	}
+
+	return rgp.ReplaceAllString(str, "")
+}
+
+// IsDefinedTag is defined tag name
+func IsDefinedTag(name string) bool {
+	if _, ok := TagColors[name]; ok {
+		return true
+	}
+
+	return false
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-//Style a colored style
+// Style a colored style
 type Style struct {
 	colors []Color // fg color, bg color, color options
 }
