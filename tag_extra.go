@@ -14,6 +14,12 @@ func (tg Tag) Print(args ...interface{}) {
 	fmt.Print(str)
 }
 
+// Printf
+func (tg Tag) Printf(format string, args ...interface{}) {
+	str := buildColoredText(GetStyleCode(string(tg)), fmt.Sprintf(format, args...))
+	fmt.Print(str)
+}
+
 // Println
 func (tg Tag) Println(args ...interface{}) {
 	str := buildColoredText(GetStyleCode(string(tg)), args...)
