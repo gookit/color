@@ -12,7 +12,7 @@ const (
 	// TagExpr = `<([a-z=;]+)>(.*?)<\/\1>`
 	// 所以调整一下 统一使用 `</>` 来结束标签，例如 "<info>some text</>"
 	// 支持自定义颜色属性的tag "<fg=white;bg=blue;op=bold>content</>"
-	// (?s:...) s - 匹配换行
+	// (?s:...) s - 让 "." 匹配换行
 	TagExpr = `<([a-zA-Z_=,;]+)>(?s:(.*?))<\/>`
 
 	// Regex to match color attributes
@@ -21,7 +21,7 @@ const (
 	// Regex used for removing color tags
 	// StripExpr = `<[\/]?[a-zA-Z=;]+>`
 	// 随着上面的做一些调整
-	StripExpr = `<[\/]?[a-zA-Z=;]*>`
+	StripExpr = `<[\/]?[a-zA-Z_=,;]*>`
 )
 
 // Some defined style tags, in the TagColors.
@@ -85,7 +85,7 @@ var TagColors = map[string]string{
 	"warn":    "0;30;43",
 	"warning": "0;30;43",
 	"primary": "0;34",
-	"danger":  "0;31", // same "red"
+	"danger":  "31;1", // same "red" but add bold
 	"err":     "30;41",
 	"error":   "30;41",
 
@@ -135,8 +135,17 @@ func Render(args ...interface{}) string {
 	return ReplaceTag(fmt.Sprint(args...))
 }
 
+// RenderStr alias of the ReplaceTag
+func RenderStr(str string) string {
+	return ReplaceTag(str)
+}
+
 // ReplaceTag parse string, replace tag and return rendered string
 func ReplaceTag(str string) string {
+	if !Enable {
+		return ClearTag(str)
+	}
+
 	if !strings.Contains(str, "<") {
 		return str
 	}
@@ -221,8 +230,7 @@ func ParseCodeFromAttr(attr string) (code string) {
 				colors = append(colors, c)
 			}
 		}
-
-		fmt.Printf("pos: %s, val: %s\n", pos, val)
+		//fmt.Printf("pos: %s, val: %s\n", pos, val)
 	}
 
 	return buildColorCode(colors...)

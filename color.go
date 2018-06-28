@@ -3,6 +3,7 @@ package color
 import (
 	"fmt"
 	"strings"
+	"regexp"
 )
 
 // Color represents a text color.
@@ -76,6 +77,9 @@ const SettingTpl = "\x1b[%sm"
 const FullColorTpl = "\x1b[%sm%s\x1b[0m"
 const SingleColorTpl = "\x1b[%dm%s\x1b[0m"
 
+// Regex to clear color codes eg "\033[36;1mText\033[0m"
+const ClearCodeExpr = `[\033|\x1b]\[(?:\d;?)+m`
+
 // switch color display
 var Enable = true
 
@@ -139,6 +143,15 @@ func RenderCodes(code string, str string) string {
 	return buildColoredText(code, str)
 }
 
+// ClearCode clear color codes
+// eg "\033[36;1mText\033[0m" -> "Text"
+func ClearCode(str string) string {
+	reg := regexp.MustCompile(`\033\[[\d;?]+m`)
+	// r1 := reg.FindAllString("\033[36;1mText\033[0m", -1)
+
+	return reg.ReplaceAllString(str, "")
+}
+
 // buildColorCode return like "32;45;3"
 func buildColorCode(colors ...Color) string {
 	if len(colors) == 0 {
@@ -157,6 +170,10 @@ func buildColorCode(colors ...Color) string {
 // buildColoredText
 func buildColoredText(code string, args ...interface{}) string {
 	str := fmt.Sprint(args...)
+
+	if !Enable {
+		return ClearCode(str)
+	}
 
 	if len(code) == 0 {
 		return str
