@@ -10,9 +10,13 @@ const (
 	// Regex to match color tags
 	// golang 不支持反向引用.  即不支持使用 \1 引用第一个匹配 ([a-z=;]+)
 	// TagExpr = `<([a-z=;]+)>(.*?)<\/\1>`
-	// 所以调整一下 统一使用 </> 来结束标签 e.g <info>some text</>
+	// 所以调整一下 统一使用 `</>` 来结束标签，例如 "<info>some text</>"
+	// 支持自定义颜色属性的tag "<fg=white;bg=blue;op=bold>content</>"
 	// (?s:...) s - 匹配换行
-	TagExpr = `<([a-z=;]+)>(?s:(.*?))<\/>`
+	TagExpr = `<([a-zA-Z_=,;]+)>(?s:(.*?))<\/>`
+
+	// Regex to match color attributes
+	AttrExpr = `(fg|bg|op)=([a-z,]+);?`
 
 	// Regex used for removing color tags
 	// StripExpr = `<[\/]?[a-zA-Z=;]+>`
@@ -144,23 +148,84 @@ func ReplaceTag(str string) string {
 		return str
 	}
 
-	matches := reg.FindAllStringSubmatch(str, -1)
-	// fmt.Printf("matches %v\n", matches)
+	matched := reg.FindAllStringSubmatch(str, -1)
+	// fmt.Printf("matched %v\n", matched)
 
-	for _, item := range matches {
-		// e.g "<tag>content</>"
-		_, tag, content := item[0], item[1], item[2]
-		code := GetStyleCode(tag)
+	// item: 0 full text 1 tag name 2 tag content
+	for _, item := range matched {
+		full, tag, content := item[0], item[1], item[2]
+		//fmt.Printf("full: %s tag: %s, tag content:%s old: %s \n", full, tag, content)
 
-		if len(code) > 0 {
+		// custom color in tag: "<fg=white;bg=blue;op=bold>content</>"
+		if code := ParseCodeFromAttr(tag); len(code) > 0 {
 			now := buildColoredText(code, content)
-			old := WrapTag(content, tag)
-			str = strings.Replace(str, old, now, 1)
+			str = strings.Replace(str, full, now, 1)
+			continue
 		}
-		// fmt.Printf("tag: %s, tag content:%s\n", tag, content)
+
+		// use defined tag: "<tag>content</>"
+		if code := GetStyleCode(tag); len(code) > 0 {
+			now := buildColoredText(code, content)
+			//old := WrapTag(content, tag) is equals to var 'full'
+			str = strings.Replace(str, full, now, 1)
+		}
 	}
 
 	return str
+}
+
+// ParseCodeFromAttr parse color attributes
+// attr like: "fg=VALUE;bg=VALUE;op=VALUE", VALUE please see var: FgColors, BgColors, Options
+// eg:
+// "fg=yellow"
+// "bg=red"
+// "op=bold,underscore" option is allow multi value
+// "fg=white;bg=blue;op=bold"
+// "fg=white;op=bold,underscore"
+func ParseCodeFromAttr(attr string) (code string) {
+	if !strings.Contains(attr, "=") {
+		return
+	}
+
+	attr = strings.Trim(attr, ";=,")
+
+	if len(attr) == 0 {
+		return
+	}
+
+	var colors []Color
+	reg := regexp.MustCompile(`(fg|bg|op)=([a-z,]+);?`)
+	matched := reg.FindAllStringSubmatch(attr, -1)
+	// fmt.Printf("matched %+v\n", matched)
+
+	for _, item := range matched {
+		pos, val := item[1], item[2]
+		switch pos {
+		case "fg":
+			if c, ok := FgColors[val]; ok {
+				colors = append(colors, c)
+			}
+		case "bg":
+			if c, ok := BgColors[val]; ok {
+				colors = append(colors, c)
+			}
+		case "op": // options allow multi value
+			if !strings.Contains(val, ",") {
+				ns := strings.Split(val, ",")
+				for _, n := range ns {
+					if c, ok := Options[n]; ok {
+						colors = append(colors, c)
+					}
+				}
+			} else if c, ok := Options[val]; ok {
+				colors = append(colors, c)
+			}
+		}
+
+		fmt.Printf("pos: %s, val: %s\n", pos, val)
+	}
+
+	return buildColorCode(colors...)
 }
 
 // GetStyleCode get color code by tag name

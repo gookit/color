@@ -59,6 +59,7 @@ const (
 
 // color options
 const (
+	OpReset      = 0 // 重置所有设置
 	OpBold       = 1 // 加粗
 	OpFuzzy      = 2 // 模糊(不是所有的终端仿真器都支持)
 	OpItalic     = 3 // 斜体(不是所有的终端仿真器都支持)
@@ -192,6 +193,7 @@ var BgColors = map[string]Color{
 
 // color options map
 var Options = map[string]Color{
+	"reset":      OpReset,
 	"bold":       OpBold,
 	"fuzzy":      OpFuzzy,
 	"italic":     OpItalic,
