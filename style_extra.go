@@ -8,9 +8,9 @@ import (
 // value is a defined style name
 type tagName string
 
-// Tag more please Styles
+// Tag more please TagColors
 func Tag(name string) *tagName {
-	if !IsStyle(name) {
+	if !IsDefinedTag(name) {
 		panic("unknown style name: " + name)
 	}
 
@@ -19,7 +19,7 @@ func Tag(name string) *tagName {
 }
 
 // Print
-func (tg tagName) Print(args ...interface{})  {
+func (tg tagName) Print(args ...interface{}) {
 	str := buildColoredText(
 		GetStyleCode(string(tg)),
 		fmt.Sprint(args...),
@@ -29,7 +29,7 @@ func (tg tagName) Print(args ...interface{})  {
 }
 
 // Println
-func (tg tagName) Println(args ...interface{})  {
+func (tg tagName) Println(args ...interface{}) {
 	str := buildColoredText(
 		GetStyleCode(string(tg)),
 		fmt.Sprint(args...),
@@ -42,22 +42,22 @@ func (tg tagName) Println(args ...interface{})  {
 type Tips string
 
 // Print
-func (t Tips) Print(args ...interface{})  {
+func (t Tips) Print(args ...interface{}) {
 	tag := string(t)
 	str := buildColoredText(
 		GetStyleCode(tag),
-		strings.ToUpper(tag) + ": ",
+		strings.ToUpper(tag)+": ",
 	)
 
 	fmt.Print(str, fmt.Sprint(args...))
 }
 
 // Printf
-func (t Tips) Printf(format string, args ...interface{})  {
+func (t Tips) Printf(format string, args ...interface{}) {
 	tag := string(t)
 	str := buildColoredText(
 		GetStyleCode(tag),
-		strings.ToUpper(tag) + ": ",
+		strings.ToUpper(tag)+": ",
 	)
 
 	fmt.Print(str, fmt.Sprintf(format, args...))
@@ -67,22 +67,22 @@ func (t Tips) Printf(format string, args ...interface{})  {
 type BlockTips string
 
 // Print
-func (t BlockTips) Print(args ...interface{})  {
+func (t BlockTips) Print(args ...interface{}) {
 	tag := string(t)
 	str := buildColoredText(
 		GetStyleCode(tag),
-		strings.ToUpper(tag) + ": " + fmt.Sprint(args...),
+		strings.ToUpper(tag)+": "+fmt.Sprint(args...),
 	)
 
 	fmt.Print(str)
 }
 
 // Printf
-func (t BlockTips) Printf(format string, args ...interface{})  {
+func (t BlockTips) Printf(format string, args ...interface{}) {
 	tag := string(t)
 	str := buildColoredText(
 		GetStyleCode(tag),
-		strings.ToUpper(tag) + ": " + fmt.Sprintf(format, args...),
+		strings.ToUpper(tag)+": "+fmt.Sprintf(format, args...),
 	)
 
 	fmt.Print(str)
@@ -90,7 +90,7 @@ func (t BlockTips) Printf(format string, args ...interface{})  {
 
 // Logger console logger
 type Logger struct {
-	style string
+	style  string
 	fields map[string]string
 }
 
