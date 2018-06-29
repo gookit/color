@@ -11,7 +11,7 @@ type Style struct {
 
 // Apply
 // usage:
-// 	`(string, fg-color,bg-color, options...)`
+// 	// (string, fg-color,bg-color, options...)
 //  color.Apply("text", color.FgGreen)
 //  color.Apply("text", color.FgGreen, color.BgBlack, color.OpBold)
 func Apply(str string, colors ...Color) string {

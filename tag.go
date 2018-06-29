@@ -64,17 +64,17 @@ const (
 // @notice 加 0 在前面是为了防止之前的影响到现在的设置
 var TagColors = map[string]string{
 	// basic tags,
-	"red":     "0;31",
-	"blue":    "0;34",
-	"cyan":    "0;36",
-	"black":   "0;30",
-	"green":   "0;32",
-	"white":   "1;37",
-	"default": "39", // no color
-	"normal":  "39", // no color
-	"brown":   "0;33",
-	"yellow":  "33;1",
-	"magenta": "0;35",
+	"red":      "0;31",
+	"blue":     "0;34",
+	"cyan":     "0;36",
+	"black":    "0;30",
+	"green":    "0;32",
+	"white":    "1;37",
+	"default":  "39", // no color
+	"normal":   "39", // no color
+	"brown":    "0;33",
+	"yellow":   "33;1",
+	"magenta":  "0;35",
 	"magentaB": "35;1", // add bold
 
 	// alert tags, like bootstrap's alert
@@ -153,7 +153,7 @@ func ReplaceTag(str string) string {
 		return str
 	}
 
-	//reg := regexp.MustCompile(TagExpr)
+	// reg := regexp.MustCompile(TagExpr)
 	reg, err := regexp.Compile(TagExpr)
 
 	if err != nil {
@@ -166,7 +166,7 @@ func ReplaceTag(str string) string {
 	// item: 0 full text 1 tag name 2 tag content
 	for _, item := range matched {
 		full, tag, content := item[0], item[1], item[2]
-		//fmt.Printf("full: %s tag: %s, tag content:%s old: %s \n", full, tag, content)
+		// fmt.Printf("full: %s tag: %s, tag content:%s old: %s \n", full, tag, content)
 
 		// custom color in tag: "<fg=white;bg=blue;op=bold>content</>"
 		if code := ParseCodeFromAttr(tag); len(code) > 0 {
@@ -178,7 +178,7 @@ func ReplaceTag(str string) string {
 		// use defined tag: "<tag>content</>"
 		if code := GetStyleCode(tag); len(code) > 0 {
 			now := buildColoredText(code, content)
-			//old := WrapTag(content, tag) is equals to var 'full'
+			// old := WrapTag(content, tag) is equals to var 'full'
 			str = strings.Replace(str, full, now, 1)
 		}
 	}
@@ -233,7 +233,7 @@ func ParseCodeFromAttr(attr string) (code string) {
 				colors = append(colors, c)
 			}
 		}
-		//fmt.Printf("pos: %s, val: %s\n", pos, val)
+		// fmt.Printf("pos: %s, val: %s\n", pos, val)
 	}
 
 	return buildColorCode(colors...)

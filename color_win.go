@@ -90,7 +90,7 @@ func init() {
 }
 
 // win 设置终端字体颜色
-//使用方法，直接调用即可输出带颜色的文本
+// 使用方法，直接调用即可输出带颜色的文本
 // WPrint("[OK];", 2|8) //亮绿色
 func WPrint(s string, i int) {
 	kernel32 := syscall.NewLazyDLL("kernel32.dll")

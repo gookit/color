@@ -129,7 +129,8 @@ func (c Color) Println(args ...interface{}) (int, error) {
 }
 
 // Printf
-// usage: color.FgCyan.Printf("string %s", "arg0")
+// usage:
+// 	color.FgCyan.Printf("string %s", "arg0")
 func (c Color) Printf(format string, args ...interface{}) (int, error) {
 	return fmt.Print(c.Renderf(format, args...))
 }
