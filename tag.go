@@ -61,19 +61,21 @@ const (
 // Some internal defined color tags
 // format is: "fg;bg;opt"
 // usage: <tag>content text</>
+// @notice 加 0 在前面是为了防止之前的影响到现在的设置
 var TagColors = map[string]string{
-	// basic tags
+	// basic tags,
 	"red":     "0;31",
 	"blue":    "0;34",
 	"cyan":    "0;36",
 	"black":   "0;30",
 	"green":   "0;32",
-	"brown":   "0;33",
 	"white":   "1;37",
 	"default": "39", // no color
 	"normal":  "39", // no color
-	"yellow":  "1;33",
-	"magenta": "1;35",
+	"brown":   "0;33",
+	"yellow":  "33;1",
+	"magenta": "0;35",
+	"magentaB": "35;1", // add bold
 
 	// alert tags, like bootstrap's alert
 	"suc":     "1;32", // same "green" and "bold"
@@ -87,7 +89,7 @@ var TagColors = map[string]string{
 	"primary": "0;34",
 	"danger":  "31;1", // same "red" but add bold
 	"err":     "97;41",
-	"error":   "97;41",
+	"error":   "97;41", // fg white; bg red
 
 	// more tags
 	"lightRed":      "1;31",
@@ -98,27 +100,27 @@ var TagColors = map[string]string{
 	"light_blue":    "1;34",
 	"lightCyan":     "1;36",
 	"light_cyan":    "1;36",
-	"lightDray":     "37",
-	"light_gray":    "37",
-	"gray":          "90",
-	"darkGray":      "90",
-	"dark_gray":     "90",
-	"lightYellow":   "93",
-	"light_yellow":  "93",
-	"lightMagenta":  "95",
-	"light_magenta": "95",
+	"lightDray":     "0;37",
+	"light_gray":    "0;37",
+	"gray":          "0;90",
+	"darkGray":      "0;90",
+	"dark_gray":     "0;90",
+	"lightYellow":   "0;93",
+	"light_yellow":  "0;93",
+	"lightMagenta":  "0;95",
+	"light_magenta": "0;95",
 
 	// extra
-	"lightRedEx":     "91",
-	"light_red_ex":   "91",
-	"lightGreenEx":   "92",
-	"light_green_ex": "92",
-	"lightBlueEx":    "94",
-	"light_blue_ex":  "94",
-	"lightCyanEx":    "96",
-	"light_cyan_ex":  "96",
-	"whiteEx":        "97",
-	"white_ex":       "97",
+	"lightRedEx":     "0;91",
+	"light_red_ex":   "0;91",
+	"lightGreenEx":   "0;92",
+	"light_green_ex": "0;92",
+	"lightBlueEx":    "0;94",
+	"light_blue_ex":  "0;94",
+	"lightCyanEx":    "0;96",
+	"light_cyan_ex":  "0;96",
+	"whiteEx":        "0;97",
+	"white_ex":       "0;97",
 
 	// option
 	"bold":       "1",
