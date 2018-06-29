@@ -18,7 +18,7 @@ import (
 // and the second is the foreground color
 const (
 	// 0 - 9 and A - F
-	winBlack      = iota
+	winBlack  = iota
 	winBlue
 	winGreen
 	winLightGreen  // 浅绿
@@ -61,10 +61,10 @@ const (
 	winFgDefault = winFgWhite
 
 	// 增强背景色
-	winBgYellow  = bRed + bGreen
-	winBgCyan    = bGreen + bBlue
-	winBgMagenta = bBlue + bRed
-	winBgWhite   = bRed + bBlue + bGreen
+	winBgYellow  = winBgRed + winBgGreen
+	winBgCyan    = winBgGreen + winBgBlue
+	winBgMagenta = winBgBlue + winBgRed
+	winBgWhite   = winBgRed + winBgBlue + winBgGreen
 	winBgDefault = 0 // 默认背景为黑
 
 	defColor = winFgDefault + winBgDefault
