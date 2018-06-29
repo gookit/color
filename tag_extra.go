@@ -26,48 +26,60 @@ func (tg Tag) Println(args ...interface{}) {
 	fmt.Println(str)
 }
 
+// Tips will add color for all text
 // value is a defined style name
 type Tips string
 
 // Print
 func (t Tips) Print(args ...interface{}) {
 	tag := string(t)
-	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ": ")
+	str := buildColoredText(
+		GetStyleCode(tag),
+		" ", strings.ToUpper(tag), ": ", fmt.Sprint(args...), " ",
+	)
 
-	fmt.Print(str, fmt.Sprint(args...), "\n")
+	fmt.Println(str)
+}
+
+// Println
+func (t Tips) Println(args ...interface{}) {
+	t.Print(args...)
 }
 
 // Printf
 func (t Tips) Printf(format string, args ...interface{}) {
 	tag := string(t)
-	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ": ")
-
-	fmt.Print(str, fmt.Sprintf(format, args...), "\n")
-}
-
-// value is a defined style name
-type BlockTips string
-
-// Print
-func (t BlockTips) Print(args ...interface{}) {
-	tag := string(t)
 	str := buildColoredText(
 		GetStyleCode(tag),
-		strings.ToUpper(tag), ": ", fmt.Sprint(args...),
+		" ", strings.ToUpper(tag), ": ", fmt.Sprintf(format, args...), " ",
 	)
 
-	fmt.Print(str, "\n")
+	fmt.Println(str)
+}
+
+// LiteTips will only add color for tag name
+// value is a defined style name
+type LiteTips string
+
+// Print
+func (t LiteTips) Print(args ...interface{}) {
+	tag := string(t)
+	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ": ")
+
+	fmt.Println(str, fmt.Sprint(args...))
+}
+
+// Println
+func (t LiteTips) Println(args ...interface{}) {
+	t.Print(args...)
 }
 
 // Printf
-func (t BlockTips) Printf(format string, args ...interface{}) {
+func (t LiteTips) Printf(format string, args ...interface{}) {
 	tag := string(t)
-	str := buildColoredText(
-		GetStyleCode(tag),
-		strings.ToUpper(tag), ": ", fmt.Sprintf(format, args...),
-	)
+	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ": ")
 
-	fmt.Print(str, "\n")
+	fmt.Println(str, fmt.Sprintf(format, args...))
 }
 
 // Logger console logger

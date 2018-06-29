@@ -86,8 +86,8 @@ var TagColors = map[string]string{
 	"warning": "0;30;43",
 	"primary": "0;34",
 	"danger":  "31;1", // same "red" but add bold
-	"err":     "30;41",
-	"error":   "30;41",
+	"err":     "97;41",
+	"error":   "97;41",
 
 	// more tags
 	"lightRed":      "1;31",
