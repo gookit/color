@@ -99,6 +99,11 @@ func Reset() (int, error) {
 	return fmt.Print(ResetCode)
 }
 
+// Disable disable color output
+func Disable() {
+	Enable = false
+}
+
 // Render
 func (c Color) Render(args ...interface{}) string {
 	str := fmt.Sprint(args...)
