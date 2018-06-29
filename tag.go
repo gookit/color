@@ -84,7 +84,7 @@ var TagColors = map[string]string{
 	"comment": "0;33", // same "brown"
 	"note":    "36;1",
 	"notice":  "36;4",
-	"warn":    "0;30;43",
+	"warn":    "0;33;1",
 	"warning": "0;30;43",
 	"primary": "0;34",
 	"danger":  "31;1", // same "red" but add bold

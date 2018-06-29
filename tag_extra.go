@@ -35,7 +35,7 @@ func (t Tips) Print(args ...interface{}) {
 	tag := string(t)
 	str := buildColoredText(
 		GetStyleCode(tag),
-		" ", strings.ToUpper(tag), ": ", fmt.Sprint(args...), " ",
+		strings.ToUpper(tag), ": ", fmt.Sprint(args...),
 	)
 
 	fmt.Println(str)
@@ -51,7 +51,7 @@ func (t Tips) Printf(format string, args ...interface{}) {
 	tag := string(t)
 	str := buildColoredText(
 		GetStyleCode(tag),
-		" ", strings.ToUpper(tag), ": ", fmt.Sprintf(format, args...), " ",
+		strings.ToUpper(tag), ": ", fmt.Sprintf(format, args...),
 	)
 
 	fmt.Println(str)
@@ -64,7 +64,7 @@ type LiteTips string
 // Print
 func (t LiteTips) Print(args ...interface{}) {
 	tag := string(t)
-	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ": ")
+	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ":")
 
 	fmt.Println(str, fmt.Sprint(args...))
 }
@@ -77,7 +77,7 @@ func (t LiteTips) Println(args ...interface{}) {
 // Printf
 func (t LiteTips) Printf(format string, args ...interface{}) {
 	tag := string(t)
-	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ": ")
+	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ":")
 
 	fmt.Println(str, fmt.Sprintf(format, args...))
 }
