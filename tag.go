@@ -59,7 +59,7 @@ const (
 )
 
 // Some internal defined color tags
-// format is: "fg;bg;opt"
+// format is: "opts;fg;bg"
 // usage: <tag>content text</>
 // @notice 加 0 在前面是为了防止之前的影响到现在的设置
 var TagColors = map[string]string{
@@ -73,9 +73,9 @@ var TagColors = map[string]string{
 	"default":  "39", // no color
 	"normal":   "39", // no color
 	"brown":    "0;33",
-	"yellow":   "33;1",
+	"yellow":   "1;33",
 	"magenta":  "0;35",
-	"magentaB": "35;1", // add bold
+	"magentaB": "1;35", // add bold
 
 	// alert tags, like bootstrap's alert
 	"suc":     "1;32", // same "green" and "bold"
@@ -84,10 +84,10 @@ var TagColors = map[string]string{
 	"comment": "0;33", // same "brown"
 	"note":    "36;1",
 	"notice":  "36;4",
-	"warn":    "0;33;1",
+	"warn":    "0;1;33",
 	"warning": "0;30;43",
 	"primary": "0;34",
-	"danger":  "31;1", // same "red" but add bold
+	"danger":  "1;31", // same "red" but add bold
 	"err":     "97;41",
 	"error":   "97;41", // fg white; bg red
 
@@ -145,12 +145,18 @@ func RenderStr(str string) string {
 
 // ReplaceTag parse string, replace tag and return rendered string
 func ReplaceTag(str string) string {
+	if !strings.Contains(str, "<") {
+		return str
+	}
+
+	// disable color
 	if !Enable {
 		return ClearTag(str)
 	}
 
-	if !strings.Contains(str, "<") {
-		return str
+	// if not support color output
+	if !isSupportColor {
+		return ClearTag(str)
 	}
 
 	// reg := regexp.MustCompile(TagExpr)

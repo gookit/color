@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"regexp"
+	"github.com/gookit/cliapp/utils"
 )
 
 // Color represents a text color.
@@ -21,10 +22,11 @@ const (
 	FgCyan
 	FgWhite
 
+	// revert default FG
 	FgDefault Color = 39
 
-	// extra Foreground color 90 - 97
-	FgDarkGray     Color = iota + 90
+	// extra Foreground color 90 - 97(非标准)
+	FgDarkGray     Color = iota + 90 // 亮黑（灰）
 	FgLightRed
 	FgLightGreen
 	FgLightYellow
@@ -45,9 +47,11 @@ const (
 	BgMagenta
 	BgCyan
 	BgWhite
+
+	// revert default BG
 	BgDefault Color = 49
 
-	// extra Background color 100 - 107
+	// extra Background color 100 - 107(非标准)
 	BgDarkGray     Color = iota + 100
 	BgLightRed
 	BgLightGreen
@@ -70,19 +74,26 @@ const (
 	OpConcealed  = 8 // 隐匿的
 )
 
-// CLI color template
-// "\033" is equals to "\x1b"
+// ESC 操作的表示 "\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
 const ResetCode = "\x1b[0m"
 
+// CLI color template
 const SettingTpl = "\x1b[%sm"
 const FullColorTpl = "\x1b[%sm%s\x1b[0m"
 const SingleColorTpl = "\x1b[%dm%s\x1b[0m"
 
-// Regex to clear color codes eg "\033[36;1mText\x1b[0m"
+// Regex to clear color codes eg "\033[1;36mText\x1b[0m"
 const CodeExpr = `\033\[[\d;?]+m`
 
 // switch color display
 var Enable = true
+var isSupportColor = utils.IsSupportColor()
+
+// init
+func init() {
+	// Byte8Color("test 8 byte color", 0x98)
+	// os.Exit(0)
+}
 
 // Set
 func Set(colors ...Color) (int, error) {
@@ -145,7 +156,19 @@ func (c Color) String() string {
 	return fmt.Sprintf("%d", uint8(c))
 }
 
-// RenderCodes "32;45;3"
+// Apply apply custom colors
+// usage:
+// 	// (string, fg-color,bg-color, options...)
+//  color.Apply("text", color.FgGreen)
+//  color.Apply("text", color.FgGreen, color.BgBlack, color.OpBold)
+func Apply(str string, colors ...Color) string {
+	return buildColoredText(
+		buildColorCode(colors...),
+		str,
+	)
+}
+
+// RenderCodes "3;32;45"
 func RenderCodes(code string, str string) string {
 	return buildColoredText(code, str)
 }
@@ -178,12 +201,17 @@ func buildColorCode(colors ...Color) string {
 func buildColoredText(code string, args ...interface{}) string {
 	str := fmt.Sprint(args...)
 
+	if len(code) == 0 {
+		return str
+	}
+
 	if !Enable {
 		return ClearCode(str)
 	}
 
-	if len(code) == 0 {
-		return str
+	// if not support color output
+	if !isSupportColor {
+		return ClearCode(str)
 	}
 
 	return fmt.Sprintf(FullColorTpl, code, str)

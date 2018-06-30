@@ -5,30 +5,14 @@ import (
 )
 
 // Style a colored style
-type Style struct {
-	colors []Color // fg color, bg color, color options
-}
-
-// Apply
-// usage:
-// 	// (string, fg-color,bg-color, options...)
-//  color.Apply("text", color.FgGreen)
-//  color.Apply("text", color.FgGreen, color.BgBlack, color.OpBold)
-func Apply(str string, colors ...Color) string {
-	return buildColoredText(
-		buildColorCode(colors...),
-		str,
-	)
-}
+// can add: fg color, bg color, color options
+// quick use:
+// 	color.Style(color.FgGreen).
+type Style []Color
 
 // New create a custom style
-func New(colors ...Color) *Style {
-	return &Style{colors}
-}
-
-// Colors
-func (s Style) Colors() (colors []Color) {
-	return s.colors
+func New(colors ...Color) Style {
+	return Style(colors)
 }
 
 // Render render text
@@ -36,10 +20,7 @@ func (s Style) Colors() (colors []Color) {
 //  color.New(color.FgGreen).Render("text")
 //  color.New(color.FgGreen, color.BgBlack, color.OpBold).Render("text")
 func (s Style) Render(args ...interface{}) string {
-	return buildColoredText(
-		buildColorCode(s.Colors()...),
-		fmt.Sprint(args...),
-	)
+	return buildColoredText(buildColorCode(s...), args...)
 }
 
 // Apply is alias of the 'Render'
