@@ -24,40 +24,6 @@ const (
 	StripExpr = `<[\/]?[a-zA-Z_=,;]*>`
 )
 
-// Some defined style tags, in the TagColors.
-const (
-	// basic
-	TagRed     = "red"
-	TagBlue    = "blue"
-	TagCyan    = "cyan"
-	TagBlack   = "black"
-	TagGreen   = "green"
-	TagBrown   = "brown"
-	TagWhite   = "white"
-	TagNormal  = "normal" // no color
-	TagYellow  = "yellow"
-	TagMagenta = "magenta"
-
-	// alert tag, like bootstrap's alert
-	Suc     = "suc" // same "green" and "bold"
-	Success = "success"
-	Info    = "info"    // same "green"
-	Comment = "comment" // same "brown"
-	Note    = "note"
-	Notice  = "notice"
-	Warn    = "warn"
-	Warning = "warning"
-	Primary = "primary"
-	Danger  = "danger" // same "red"
-	Err     = "err"
-	Error   = "error"
-
-	// option
-	TagBold       = "bold"
-	TagUnderscore = "underscore"
-	TagReverse    = "reverse"
-)
-
 // Some internal defined color tags
 // format is: "opts;fg;bg"
 // usage: <tag>content text</>
@@ -93,34 +59,34 @@ var TagColors = map[string]string{
 
 	// more tags
 	"lightRed":      "1;31",
-	"light_red":     "1;31",
+	// "light_red":     "1;31",
 	"lightGreen":    "1;32",
-	"light_green":   "1;32",
+	// "light_green":   "1;32",
 	"lightBlue":     "1;34",
-	"light_blue":    "1;34",
+	// "light_blue":    "1;34",
 	"lightCyan":     "1;36",
-	"light_cyan":    "1;36",
+	// "light_cyan":    "1;36",
 	"lightDray":     "0;37",
-	"light_gray":    "0;37",
+	// "light_gray":    "0;37",
 	"gray":          "0;90",
 	"darkGray":      "0;90",
-	"dark_gray":     "0;90",
+	// "dark_gray":     "0;90",
 	"lightYellow":   "0;93",
-	"light_yellow":  "0;93",
+	// "light_yellow":  "0;93",
 	"lightMagenta":  "0;95",
-	"light_magenta": "0;95",
+	// "light_magenta": "0;95",
 
 	// extra
 	"lightRedEx":     "0;91",
-	"light_red_ex":   "0;91",
+	// "light_red_ex":   "0;91",
 	"lightGreenEx":   "0;92",
-	"light_green_ex": "0;92",
+	// "light_green_ex": "0;92",
 	"lightBlueEx":    "0;94",
-	"light_blue_ex":  "0;94",
+	// "light_blue_ex":  "0;94",
 	"lightCyanEx":    "0;96",
-	"light_cyan_ex":  "0;96",
+	// "light_cyan_ex":  "0;96",
 	"whiteEx":        "0;97",
-	"white_ex":       "0;97",
+	// "white_ex":       "0;97",
 
 	// option
 	"bold":       "1",

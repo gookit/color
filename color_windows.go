@@ -12,7 +12,11 @@ import (
 	"syscall"
 	"fmt"
 	"unsafe"
+	"os"
 )
+
+type WColor uint16
+type WStyle []WColor
 
 // color on windows
 // you can see on windows by command: COLOR /?
@@ -26,15 +30,15 @@ import (
 // more see: https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cmd
 const (
 	// Foreground colors.
-	WinFgBlack  = 0x00 // 0 黑色
-	WinFgBlue   = 0x01 // 1 蓝色
-	WinFgGreen  = 0x02 // 2 绿色
-	WinFgAqua   = 0x03 // 3 浅绿 skyblue
-	WinFgRed    = 0x04 // 4 红色
-	WinFgPurple = 0x05 // 5 紫色
-	WinFgYellow = 0x06 // 6 黄色
-	WinFgWhite  = 0x07 // 7 白色
-	WinFgGray   = 0x08 // 8 灰色
+	WinFgBlack  WColor = 0x00 // 0 黑色
+	WinFgBlue   WColor = 0x01 // 1 蓝色
+	WinFgGreen  WColor = 0x02 // 2 绿色
+	WinFgAqua   WColor = 0x03 // 3 浅绿 skyblue
+	WinFgRed    WColor = 0x04 // 4 红色
+	WinFgPurple WColor = 0x05 // 5 紫色
+	WinFgYellow WColor = 0x06 // 6 黄色
+	WinFgWhite  WColor = 0x07 // 7 白色
+	WinFgGray   WColor = 0x08 // 8 灰色
 
 	WinFgLightBlue   = 0x09 // 9 淡蓝色
 	WinFgLightGreen  = 0x0a // 10 淡绿色
@@ -45,27 +49,39 @@ const (
 	WinFgLightWhite  = 0x0f // 15 亮白色
 
 	// Background colors.
-	WinBgBlack  = 0x00 // 0 黑色
-	WinBgBlue   = 0x10 // 1 蓝色
-	WinBgGreen  = 0x20 // 2 绿色
-	WinBgAqua   = 0x30 // 3 浅绿 skyblue
-	WinBgRed    = 0x40 // 4 红色
-	WinBgPink   = 0x50 // 5 紫色
-	WinBgYellow = 0x60 // 6 黄色
-	WinBgWhite  = 0x70 // 7 白色
-	WinBgGray   = 0x80 // 8 灰色
+	WinBgBlack  = 0x00 // 黑色
+	WinBgBlue   = 0x10 // 蓝色
+	WinBgGreen  = 0x20 // 绿色
+	WinBgAqua   = 0x30 // 浅绿 skyblue
+	WinBgRed    = 0x40 // 红色
+	WinBgPink   = 0x50 // 紫色
+	WinBgYellow = 0x60 // 黄色
+	WinBgWhite  = 0x70 // 白色
+	WinBgGray   = 0x80 // 128 灰色
 
-	WinBgLightBlue   = 0x90 // 9 淡蓝色
-	WinBgLightGreen  = 0xa0 // 10 淡绿色
-	WinBgLightAqua   = 0xb0 // 11 淡浅绿色
-	WinBgLightRed    = 0xc0 // 12 淡红色
-	WinBgLightPink   = 0xd0 // 13 淡紫色
-	WinBgLightYellow = 0xe0 // 14 淡黄色
-	WinBgLightWhite  = 0xf0 // 15 亮白色
+	WinBgLightBlue   = 0x90 // 淡蓝色
+	WinBgLightGreen  = 0xa0 // 淡绿色
+	WinBgLightAqua   = 0xb0 // 淡浅绿色
+	WinBgLightRed    = 0xc0 // 淡红色
+	WinBgLightPink   = 0xd0 // 淡紫色
+	WinBgLightYellow = 0xe0 // 淡黄色
+	WinBgLightWhite  = 0xf0 // 240 亮白色
 
 	// bg black, fg white
 	defSetting = WinBgBlack | WinFgWhite
+
+	// see https://docs.microsoft.com/en-us/windows/console/char-info-str
+	WinFgIntensity uint16 = 0x0008 // 8 前景强度
+	WinBgIntensity uint16 = 0x0080 // 128 背景强度
+
+	WinOpLeading    WColor = 0x0100 // 前导字节
+	WinOpTrailing   WColor = 0x0200 // 尾随字节
+	WinOpHorizontal WColor = 0x0400 // 顶部水平
+	WinOpReverse    WColor = 0x4000 // 反转前景和背景
+	WinOpUnderscore WColor = 0x8000 // 32768 下划线
 )
+
+var colorsMap = map[Color]WColor{}
 
 var (
 	// for cmd.exe
@@ -73,15 +89,23 @@ var (
 	// isMSys bool
 	kernel32 *syscall.LazyDLL
 
-	procGetConsoleMode *syscall.LazyProc
-	procSetConsoleMode *syscall.LazyProc
+	// procGetConsoleMode *syscall.LazyProc
+	// procSetConsoleMode *syscall.LazyProc
 
 	procSetTextAttribute           *syscall.LazyProc
 	procGetConsoleScreenBufferInfo *syscall.LazyProc
+
+	// console screen buffer info
+	// eg {size:{x:215 y:3000} cursorPosition:{x:0 y:893} attributes:7 window:{left:0 top:882 right:214 bottom:893} maximumWindowSize:{x:215 y:170}}
+	defScreenInfo consoleScreenBufferInfo
 )
 
 func init() {
-	// if at ConEmu,Cmder
+	// Byte8Color("test 8 byte color", 208)
+	// Byte24Color("test 24 byte color")
+	// os.Exit(0)
+
+	// if at linux, mac, or windows's ConEmu, Cmder, putty
 	if isSupportColor {
 		return
 	}
@@ -90,25 +114,30 @@ func init() {
 	kernel32 = syscall.NewLazyDLL("kernel32.dll")
 
 	// https://docs.microsoft.com/en-us/windows/console/setconsolemode
-	procGetConsoleMode = kernel32.NewProc("GetConsoleMode")
-	procSetConsoleMode = kernel32.NewProc("SetConsoleMode")
+	// procGetConsoleMode = kernel32.NewProc("GetConsoleMode")
+	// procSetConsoleMode = kernel32.NewProc("SetConsoleMode")
 
 	procSetTextAttribute = kernel32.NewProc("SetConsoleTextAttribute")
 	// https://docs.microsoft.com/en-us/windows/console/getconsolescreenbufferinfo
 	procGetConsoleScreenBufferInfo = kernel32.NewProc("GetConsoleScreenBufferInfo")
 
+	// fetch console screen buffer info
+	getConsoleScreenBufferInfo(uintptr(syscall.Stdout), &defScreenInfo)
+
+	fmt.Printf("%+v\n", WinOpUnderscore)
+
 	// 2|8 = 2+8 = 10, 'A' = 65
 	// 8|4|2 = 14
 	// fmt.Println(9|8|2, '\x10', 0x0a, 0xa)
-	// WPrint("test [OK];\n", WinFgLightRed)
+	WinPrint("test [OK];\n", WinFgRed)
 	// revertDefault()
-	// os.Exit(0)
+	os.Exit(0)
 }
 
 // win 设置终端字体颜色
 // 使用方法，直接调用即可输出带颜色的文本
 // WPrint("[OK];", 2|8) //亮绿色
-func WPrint(s string, val uint16) {
+func WinPrint(s string, val WColor) {
 	// kernel32 := syscall.NewLazyDLL("kernel32.dll")
 	// proc := kernel32.NewProc("SetConsoleTextAttribute")
 	fmt.Print("val: ", val, " ")
@@ -125,7 +154,7 @@ func WPrint(s string, val uint16) {
 
 // revertDefault
 func revertDefault() bool {
-	return setConsoleTextAttr(uintptr(syscall.Stdout), defSetting)
+	return setConsoleTextAttr(uintptr(syscall.Stdout), uint16(defSetting))
 }
 
 // setConsoleTextAttr
@@ -136,11 +165,20 @@ func setConsoleTextAttr(consoleOutput uintptr, winAttr uint16) bool {
 }
 
 // IsTty returns true if the given file descriptor is a terminal.
-func IsTty(fd uintptr) bool {
-	var st uint32
-	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, fd, uintptr(unsafe.Pointer(&st)), 0)
-	return r != 0 && e == 0
-}
+// func IsTty(fd uintptr) bool {
+// 	var st uint32
+// 	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, fd, uintptr(unsafe.Pointer(&st)), 0)
+// 	return r != 0 && e == 0
+// }
+
+// IsTerminal returns true if the given file descriptor is a terminal.
+// fd := os.Stdout.Fd()
+// fd := uintptr(syscall.Stdout) for windows
+// func IsTerminal(fd int) bool {
+// 	var st uint32
+// 	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, uintptr(fd), uintptr(unsafe.Pointer(&st)), 0)
+// 	return r != 0 && e == 0
+// }
 
 // from package: golang.org/x/sys/windows
 type (
@@ -167,11 +205,36 @@ type (
 	consoleScreenBufferInfo struct {
 		size              coord
 		cursorPosition    coord
-		attributes        word
+		attributes        word // is windows color setting
 		window            smallRect
 		maximumWindowSize coord
 	}
 )
+
+// GetSize returns the dimensions of the given terminal.
+func getSize(fd int) (width, height int, err error) {
+	var info consoleScreenBufferInfo
+
+	if err := getConsoleScreenBufferInfo(uintptr(fd), &info); err != nil {
+		return 0, 0, err
+	}
+
+	return int(info.size.x), int(info.size.y), nil
+}
+
+// from package: golang.org/x/sys/windows
+func getConsoleScreenBufferInfo(consoleOutput uintptr, info *consoleScreenBufferInfo) (err error) {
+	r1, _, e1 := syscall.Syscall(procGetConsoleScreenBufferInfo.Addr(), 2, consoleOutput, uintptr(unsafe.Pointer(info)), 0)
+	if r1 == 0 {
+		if e1 != 0 {
+			err = e1
+		} else {
+			err = syscall.EINVAL
+		}
+	}
+
+	return
+}
 
 /**
 	The follow codes from package: golang.org/x/crypto/ssh/terminal
@@ -217,13 +280,3 @@ var (
 	pasteStart = []byte{keyEscape, '[', '2', '0', '0', '~'}
 	pasteEnd   = []byte{keyEscape, '[', '2', '0', '1', '~'}
 )
-
-// IsTerminal returns true if the given file descriptor is a terminal.
-// fd := os.Stdout.Fd()
-// fd := uintptr(syscall.Stdout) for windows
-func IsTerminal(fd int) bool {
-	var st uint32
-	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, uintptr(fd), uintptr(unsafe.Pointer(&st)), 0)
-	return r != 0 && e == 0
-}
-

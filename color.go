@@ -8,7 +8,7 @@ import (
 )
 
 // Color represents a text color.
-type Color uint8
+type Color uint16
 
 // Foreground colors.
 const (
@@ -33,7 +33,7 @@ const (
 	FgLightBlue
 	FgLightMagenta
 	FgLightCyan
-	FgWhiteEx
+	FgLightWhite
 )
 
 // Background colors.
@@ -59,19 +59,21 @@ const (
 	BgLightBlue
 	BgLightMagenta
 	BgLightCyan
-	BgWhiteEx
+	BgLightWhite
 )
 
 // color options
 const (
-	OpReset      = 0 // 重置所有设置
-	OpBold       = 1 // 加粗
-	OpFuzzy      = 2 // 模糊(不是所有的终端仿真器都支持)
-	OpItalic     = 3 // 斜体(不是所有的终端仿真器都支持)
-	OpUnderscore = 4 // 下划线
-	OpBlink      = 5 // 闪烁
-	OpReverse    = 7 // 颠倒的 交换背景色与前景色
-	OpConcealed  = 8 // 隐匿的
+	OpReset         Color = iota // 0 重置所有设置
+	OpBold                       // 1 加粗
+	OpFuzzy                      // 2 模糊(不是所有的终端仿真器都支持)
+	OpItalic                     // 3 斜体(不是所有的终端仿真器都支持)
+	OpUnderscore                 // 4 下划线
+	OpBlink                      // 5 闪烁
+	OpFastBlink                  // 5 快速闪烁(未广泛支持)
+	OpReverse                    // 7 颠倒的 交换背景色与前景色
+	OpConcealed                  // 8 隐匿的
+	OpStrikethrough              // 9 删除的，删除线(未广泛支持)
 )
 
 // ESC 操作的表示 "\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
@@ -119,14 +121,22 @@ func Disable() {
 func (c Color) Render(args ...interface{}) string {
 	str := fmt.Sprint(args...)
 
-	return fmt.Sprintf(SingleColorTpl, uint8(c), str)
+	if !isSupportColor {
+		return str
+	}
+
+	return fmt.Sprintf(SingleColorTpl, c, str)
 }
 
 // Renderf
 func (c Color) Renderf(format string, args ...interface{}) string {
 	str := fmt.Sprintf(format, args...)
 
-	return fmt.Sprintf(SingleColorTpl, uint8(c), str)
+	if !isSupportColor {
+		return str
+	}
+
+	return fmt.Sprintf(SingleColorTpl, c, str)
 }
 
 // Print
@@ -153,7 +163,7 @@ func (c Color) IsValid() bool {
 
 // String to string
 func (c Color) String() string {
-	return fmt.Sprintf("%d", uint8(c))
+	return fmt.Sprintf("%d", c)
 }
 
 // Apply apply custom colors
@@ -280,4 +290,33 @@ func IsOption(name string) bool {
 	}
 
 	return false
+}
+
+type ColoredString string
+
+func (s ColoredString) String() string {
+	return string(s)
+}
+
+func (s ColoredString) Print() {
+	fmt.Print(s.String())
+}
+
+func (s ColoredString) Println() {
+	fmt.Println(s.String())
+}
+
+// Bold use bold
+func Bold(args ...interface{}) ColoredString {
+	return ColoredString(OpBold.Render(args...))
+}
+
+// Black use black
+func Black(args ...interface{}) ColoredString {
+	return ColoredString(FgBlack.Render(args...))
+}
+
+// White use white
+func White(args ...interface{}) ColoredString {
+	return ColoredString(FgWhite.Render(args...))
 }
