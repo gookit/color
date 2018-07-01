@@ -12,7 +12,7 @@ import (
 	"syscall"
 	"fmt"
 	"unsafe"
-	"github.com/gookit/cliapp/utils"
+	"github.com/gookit/color/utils"
 )
 
 // color on windows cmd
