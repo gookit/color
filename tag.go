@@ -27,10 +27,9 @@ const (
 )
 
 // Some internal defined color tags
-// format is: "opts;fg;bg"
 // usage: <tag>content text</>
 // @notice 加 0 在前面是为了防止之前的影响到现在的设置
-var TagColors = map[string]string{
+var colorTags = map[string]string{
 	// basic tags,
 	"red":      "0;31",
 	"blue":     "0;34",
@@ -61,39 +60,77 @@ var TagColors = map[string]string{
 
 	// more tags
 	"lightRed":      "1;31",
-	// "light_red":     "1;31",
+	"light_red":     "1;31",
 	"lightGreen":    "1;32",
-	// "light_green":   "1;32",
+	"light_green":   "1;32",
 	"lightBlue":     "1;34",
-	// "light_blue":    "1;34",
+	"light_blue":    "1;34",
 	"lightCyan":     "1;36",
-	// "light_cyan":    "1;36",
+	"light_cyan":    "1;36",
 	"lightDray":     "0;37",
-	// "light_gray":    "0;37",
+	"light_gray":    "0;37",
 	"gray":          "0;90",
 	"darkGray":      "0;90",
-	// "dark_gray":     "0;90",
+	"dark_gray":     "0;90",
 	"lightYellow":   "0;93",
-	// "light_yellow":  "0;93",
+	"light_yellow":  "0;93",
 	"lightMagenta":  "0;95",
-	// "light_magenta": "0;95",
+	"light_magenta": "0;95",
 
 	// extra
 	"lightRedEx":     "0;91",
-	// "light_red_ex":   "0;91",
+	"light_red_ex":   "0;91",
 	"lightGreenEx":   "0;92",
-	// "light_green_ex": "0;92",
+	"light_green_ex": "0;92",
 	"lightBlueEx":    "0;94",
-	// "light_blue_ex":  "0;94",
+	"light_blue_ex":  "0;94",
 	"lightCyanEx":    "0;96",
-	// "light_cyan_ex":  "0;96",
+	"light_cyan_ex":  "0;96",
 	"whiteEx":        "0;97",
-	// "white_ex":       "0;97",
+	"white_ex":       "0;97",
 
 	// option
 	"bold":       "1",
 	"underscore": "4",
 	"reverse":    "7",
+}
+
+// Foreground colors map
+var FgColors = map[string]Color{
+	"black":   FgBlack,
+	"red":     FgRed,
+	"green":   FgGreen,
+	"yellow":  FgYellow,
+	"blue":    FgBlue,
+	"magenta": FgMagenta,
+	"cyan":    FgCyan,
+	"white":   FgWhite,
+	"default": FgDefault,
+}
+
+// Background colors map
+var BgColors = map[string]Color{
+	"black":   BgBlack,
+	"red":     BgRed,
+	"green":   BgGreen,
+	"yellow":  BgYellow,
+	"blue":    BgBlue,
+	"magenta": BgMagenta,
+	"cyan":    BgCyan,
+	"white":   BgWhite,
+	"default": BgDefault,
+}
+
+// color options map
+var Options = map[string]Color{
+	"reset":      OpReset,
+	"bold":       OpBold,
+	"fuzzy":      OpFuzzy,
+	"italic":     OpItalic,
+	"underscore": OpUnderscore,
+	"blink":      OpBlink,
+	"reverse":    OpReverse,
+	"concealed":  OpConcealed,
 }
 
 // ApplyTag
@@ -245,7 +282,7 @@ func ParseCodeFromAttr(attr string) (code string) {
 
 // GetStyleCode get color code by tag name
 func GetStyleCode(name string) string {
-	if code, ok := TagColors[name]; ok {
+	if code, ok := colorTags[name]; ok {
 		return code
 	}
 
@@ -272,9 +309,41 @@ func ClearTag(str string) string {
 	return rgp.ReplaceAllString(str, "")
 }
 
+// GetColorTags
+func GetColorTags() map[string]string {
+	return colorTags
+}
+
 // IsDefinedTag is defined tag name
 func IsDefinedTag(name string) bool {
-	if _, ok := TagColors[name]; ok {
+	if _, ok := colorTags[name]; ok {
+		return true
+	}
+
+	return false
+}
+
+// IsFgColor
+func IsFgColor(name string) bool {
+	if _, ok := FgColors[name]; ok {
+		return true
+	}
+
+	return false
+}
+
+// IsBgColor
+func IsBgColor(name string) bool {
+	if _, ok := BgColors[name]; ok {
+		return true
+	}
+
+	return false
+}
+
+// IsOption
+func IsOption(name string) bool {
+	if _, ok := Options[name]; ok {
 		return true
 	}
 

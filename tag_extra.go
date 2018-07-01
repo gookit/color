@@ -55,7 +55,7 @@ func (t Tips) Printf(format string, args ...interface{}) (int, error) {
 	upName := strings.ToUpper(name)
 
 	if isLikeInCmd {
-		return GetStyle(name).Printf(upName, ": ", fmt.Sprintf(format, args...))
+		return GetStyle(name).Println(upName, ": ", fmt.Sprintf(format, args...))
 	}
 
 	str := buildColoredText(
@@ -121,7 +121,7 @@ var LogLevel2tag = map[string]string{
 }
 
 func NewLog(fields map[string]string) *Logger {
-	return &Logger{Info, fields}
+	return &Logger{"info", fields}
 }
 
 func (l *Logger) Info(args ...interface{}) {

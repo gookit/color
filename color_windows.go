@@ -208,6 +208,17 @@ func winPrintln(str string, colors ...Color) (int, error) {
 // winInternalPrint
 // winInternalPrint("hello [OK];", 2|8, true) //亮绿色
 func winInternalPrint(str string, attribute uint16, newline bool) (int, error) {
+	// not enable
+	if !Enable {
+		if newline {
+			fmt.Println(str)
+		} else {
+			fmt.Print(str)
+		}
+
+		return 0, nil
+	}
+
 	// fmt.Print("attribute val: ", attribute, "\n")
 	setConsoleTextAttr(uintptr(syscall.Stdout), attribute)
 
@@ -224,19 +235,29 @@ func winInternalPrint(str string, attribute uint16, newline bool) (int, error) {
 	return winReset()
 }
 
-func winRender(str string, colors ...Color) string {
-	setConsoleTextAttr(uintptr(syscall.Stdout), convertColorsToWinAttr(colors))
-
-	return str
-}
+// func winRender(str string, colors ...Color) string {
+// 	setConsoleTextAttr(uintptr(syscall.Stdout), convertColorsToWinAttr(colors))
+//
+// 	return str
+// }
 
 // winSet set console color attributes
 func winSet(colors ...Color) (int, error) {
+	// not enable
+	if !Enable {
+		return 0, nil
+	}
+
 	return setConsoleTextAttr(uintptr(syscall.Stdout), convertColorsToWinAttr(colors))
 }
 
 // winReset reset color settings to default
 func winReset() (int, error) {
+	// not enable
+	if !Enable {
+		return 0, nil
+	}
+
 	return setConsoleTextAttr(uintptr(syscall.Stdout), winDefSetting)
 }
 
@@ -254,6 +275,7 @@ func convertColorsToWinAttr(colors []Color) uint16 {
 	return setting
 }
 
+// getWinColor
 func getWinColor(color Color) uint16 {
 	if wc, ok := winColorsMap[color]; ok {
 		return wc
@@ -341,48 +363,3 @@ func getConsoleScreenBufferInfo(consoleOutput uintptr, info *consoleScreenBuffer
 
 	return
 }
-
-/**
-	The follow codes from package: golang.org/x/crypto/ssh/terminal
- */
-const (
-	enableLineInput       = 2
-	enableEchoInput       = 4
-	enableProcessedInput  = 1
-	enableWindowInput     = 8
-	enableMouseInput      = 16
-	enableInsertMode      = 32
-	enableQuickEditMode   = 64
-	enableExtendedFlags   = 128
-	enableAutoPosition    = 256
-	enableProcessedOutput = 1
-	enableWrapAtEolOutput = 2
-)
-
-const (
-	keyCtrlD       = 4
-	keyCtrlU       = 21
-	keyEnter       = '\r'
-	keyEscape      = 27
-	keyBackspace   = 127
-	keyUnknown     = 0xd800 /* UTF-16 surrogate area */ + iota
-	keyUp
-	keyDown
-	keyLeft
-	keyRight
-	keyAltLeft
-	keyAltRight
-	keyHome
-	keyEnd
-	keyDeleteWord
-	keyDeleteLine
-	keyClearScreen
-	keyPasteStart
-	keyPasteEnd
-)
-
-var (
-	crlf       = []byte{'\r', '\n'}
-	pasteStart = []byte{keyEscape, '[', '2', '0', '0', '~'}
-	pasteEnd   = []byte{keyEscape, '[', '2', '0', '1', '~'}
-)

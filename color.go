@@ -91,6 +91,11 @@ var Enable = true
 
 // Set set console color attributes
 func Set(colors ...Color) (int, error) {
+	// not enable
+	if !Enable {
+		return 0, nil
+	}
+
 	// on cmd.exe
 	if isLikeInCmd {
 		return winSet(colors...)
@@ -101,6 +106,11 @@ func Set(colors ...Color) (int, error) {
 
 // Reset reset console color attributes
 func Reset() (int, error) {
+	// not enable
+	if !Enable {
+		return 0, nil
+	}
+
 	// on cmd.exe
 	if isLikeInCmd {
 		return winReset()
@@ -112,6 +122,11 @@ func Reset() (int, error) {
 // Disable disable color output
 func Disable() {
 	Enable = false
+}
+
+// IsDisabled
+func IsDisabled() bool {
+	return Enable == false
 }
 
 // Render
@@ -234,98 +249,4 @@ func buildColoredText(code string, args ...interface{}) string {
 	}
 
 	return fmt.Sprintf(FullColorTpl, code, str)
-}
-
-// Foreground colors map
-var FgColors = map[string]Color{
-	"black":   FgBlack,
-	"red":     FgRed,
-	"green":   FgGreen,
-	"yellow":  FgYellow,
-	"blue":    FgBlue,
-	"magenta": FgMagenta,
-	"cyan":    FgCyan,
-	"white":   FgWhite,
-	"default": FgDefault,
-}
-
-// Background colors map
-var BgColors = map[string]Color{
-	"black":   BgBlack,
-	"red":     BgRed,
-	"green":   BgGreen,
-	"yellow":  BgYellow,
-	"blue":    BgBlue,
-	"magenta": BgMagenta,
-	"cyan":    BgCyan,
-	"white":   BgWhite,
-	"default": BgDefault,
-}
-
-// color options map
-var Options = map[string]Color{
-	"reset":      OpReset,
-	"bold":       OpBold,
-	"fuzzy":      OpFuzzy,
-	"italic":     OpItalic,
-	"underscore": OpUnderscore,
-	"blink":      OpBlink,
-	"reverse":    OpReverse,
-	"concealed":  OpConcealed,
-}
-
-// IsFgColor
-func IsFgColor(name string) bool {
-	if _, ok := FgColors[name]; ok {
-		return true
-	}
-
-	return false
-}
-
-// IsBgColor
-func IsBgColor(name string) bool {
-	if _, ok := BgColors[name]; ok {
-		return true
-	}
-
-	return false
-}
-
-// IsOption
-func IsOption(name string) bool {
-	if _, ok := Options[name]; ok {
-		return true
-	}
-
-	return false
-}
-
-type ColoredString string
-
-func (s ColoredString) String() string {
-	return string(s)
-}
-
-func (s ColoredString) Print() {
-	fmt.Print(s.String())
-}
-
-func (s ColoredString) Println() {
-	fmt.Println(s.String())
-}
-
-// Bold use bold
-func Bold(args ...interface{}) ColoredString {
-	return ColoredString(OpBold.Render(args...))
-}
-
-// Black use black
-func Black(args ...interface{}) ColoredString {
-	return ColoredString(FgBlack.Render(args...))
-}
-
-// White use white
-func White(args ...interface{}) ColoredString {
-	return ColoredString(FgWhite.Render(args...))
 }
