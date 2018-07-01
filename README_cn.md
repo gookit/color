@@ -56,8 +56,8 @@ import "github.com/gookit/color"
 package main
 
 import (
-    "github.com/gookit/color/color"
- )
+    "github.com/gookit/color"
+)
 
 func main() {
 	// simple usage
