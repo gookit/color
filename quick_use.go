@@ -71,6 +71,60 @@ func Cyan(args ...interface{}) {
 	FgCyan.Print(args...)
 }
 
+/**
+	print and add new line
+ */
+
+// Boldln add bold for message
+func Boldln(args ...interface{}) {
+	OpBold.Println(args...)
+}
+
+// Blackln add black for message
+func Blackln(args ...interface{}) {
+	FgBlack.Println(args...)
+}
+
+// Whiteln add white for message
+func Whiteln(args ...interface{})  {
+	FgWhite.Println(args...)
+}
+
+// Grayln add gray for message
+func Grayln(args ...interface{}) {
+	FgDarkGray.Println(args...)
+}
+
+// Redln add red for message
+func Redln(args ...interface{}) {
+	FgRed.Println(args...)
+}
+
+// Greenln add green for message
+func Greenln(args ...interface{}) {
+	FgGreen.Println(args...)
+}
+
+// Yellowln add yellow for message
+func Yellowln(args ...interface{}) {
+	FgYellow.Println(args...)
+}
+
+// Blueln add blue for message
+func Blueln(args ...interface{}) {
+	FgBlue.Println(args...)
+}
+
+// Magentaln add magenta for message
+func Magentaln(args ...interface{}) {
+	FgMagenta.Println(args...)
+}
+
+// Cyanln add cyan for message
+func Cyanln(args ...interface{}) {
+	FgCyan.Println(args...)
+}
+
 // Some defined styles, like bootstrap styles
 var BuiltinStyles = map[string]Style{
 	"info":      {OpReset, FgGreen},
@@ -195,4 +249,83 @@ func Error(args ...interface{}) {
 // Question add question style for message
 func Question(args ...interface{}) {
 	GetStyle("question").Print(args...)
+}
+
+/**
+	print and add new line
+ */
+
+// Suc add suc style for message
+func Sucln(args ...interface{}) {
+	GetStyle("success").Println(args...)
+}
+
+// Success add success style for message
+func Successln(args ...interface{}) {
+	GetStyle("success").Println(args...)
+}
+
+// Info add info style for message
+func Infoln(args ...interface{}) {
+	GetStyle("info").Println(args...)
+}
+
+// Secondary add secondary style for message
+func Secondaryln(args ...interface{}) {
+	GetStyle("secondary").Println(args...)
+}
+
+// Comment add comment style for message
+func Commentln(args ...interface{}) {
+	GetStyle("comment").Println(args...)
+}
+
+// Note add note style for message
+func Noteln(args ...interface{}) {
+	GetStyle("note").Println(args...)
+}
+
+// Notice add notice style for message
+func Noticeln(args ...interface{}) {
+	GetStyle("notice").Println(args...)
+}
+
+// Light add light style for message
+func Lightln(args ...interface{}) {
+	GetStyle("light").Println(args...)
+}
+
+// Warn add warn style for message
+func Warnln(args ...interface{}) {
+	GetStyle("warning").Println(args...)
+}
+
+// Warning add warning style for message
+func Warningln(args ...interface{}) {
+	GetStyle("warning").Println(args...)
+}
+
+// Primary add primary style for message
+func Primaryln(args ...interface{}) {
+	GetStyle("primary").Println(args...)
+}
+
+// Danger add danger style for message
+func Dangerln(args ...interface{}) {
+	GetStyle("danger").Println(args...)
+}
+
+// Err add err style for message
+func Errln(args ...interface{}) {
+	GetStyle("error").Println(args...)
+}
+
+// Error add error style for message
+func Errorln(args ...interface{}) {
+	GetStyle("error").Println(args...)
+}
+
+// Question add question style for message
+func Questionln(args ...interface{}) {
+	GetStyle("question").Println(args...)
 }
