@@ -12,15 +12,12 @@ import (
 	"syscall"
 	"fmt"
 	"unsafe"
-	"os"
+	"github.com/gookit/cliapp/utils"
 )
 
-type WColor uint16
-type WStyle []WColor
-
-// color on windows
+// color on windows cmd
 // you can see on windows by command: COLOR /?
-// windows color build by: Bg + Fg
+// windows color build by: "Bg + Fg" OR only "Fg"
 // Consists of any two of the following:
 // the first is the background color, and the second is the foreground color
 // 颜色属性由两个十六进制数字指定
@@ -30,61 +27,68 @@ type WStyle []WColor
 // more see: https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cmd
 const (
 	// Foreground colors.
-	WinFgBlack  WColor = 0x00 // 0 黑色
-	WinFgBlue   WColor = 0x01 // 1 蓝色
-	WinFgGreen  WColor = 0x02 // 2 绿色
-	WinFgAqua   WColor = 0x03 // 3 浅绿 skyblue
-	WinFgRed    WColor = 0x04 // 4 红色
-	WinFgPurple WColor = 0x05 // 5 紫色
-	WinFgYellow WColor = 0x06 // 6 黄色
-	WinFgWhite  WColor = 0x07 // 7 白色
-	WinFgGray   WColor = 0x08 // 8 灰色
+	winFgBlack  uint16 = 0x00 // 0 黑色
+	winFgBlue   uint16 = 0x01 // 1 蓝色
+	winFgGreen  uint16 = 0x02 // 2 绿色
+	winFgAqua   uint16 = 0x03 // 3 浅绿 skyblue
+	winFgRed    uint16 = 0x04 // 4 红色
+	winFgPink   uint16 = 0x05 // 5 紫色/品红
+	winFgYellow uint16 = 0x06 // 6 黄色
+	winFgWhite  uint16 = 0x07 // 7 白色
+	winFgGray   uint16 = 0x08 // 8 灰色
 
-	WinFgLightBlue   = 0x09 // 9 淡蓝色
-	WinFgLightGreen  = 0x0a // 10 淡绿色
-	WinFgLightAqua   = 0x0b // 11 淡浅绿色
-	WinFgLightRed    = 0x0c // 12 淡红色
-	WinFgLightPurple = 0x0d // 13 淡紫色
-	WinFgLightYellow = 0x0e // 14 淡黄色
-	WinFgLightWhite  = 0x0f // 15 亮白色
+	winFgLightBlue   uint16 = 0x09 // 9 淡蓝色
+	winFgLightGreen  uint16 = 0x0a // 10 淡绿色
+	winFgLightAqua   uint16 = 0x0b // 11 淡浅绿色
+	winFgLightRed    uint16 = 0x0c // 12 淡红色
+	winFgLightPink   uint16 = 0x0d // 13 Purple 淡紫色, Pink 粉红
+	winFgLightYellow uint16 = 0x0e // 14 淡黄色
+	winFgLightWhite  uint16 = 0x0f // 15 亮白色
 
 	// Background colors.
-	WinBgBlack  = 0x00 // 黑色
-	WinBgBlue   = 0x10 // 蓝色
-	WinBgGreen  = 0x20 // 绿色
-	WinBgAqua   = 0x30 // 浅绿 skyblue
-	WinBgRed    = 0x40 // 红色
-	WinBgPink   = 0x50 // 紫色
-	WinBgYellow = 0x60 // 黄色
-	WinBgWhite  = 0x70 // 白色
-	WinBgGray   = 0x80 // 128 灰色
+	winBgBlack  uint16 = 0x00 // 黑色
+	winBgBlue   uint16 = 0x10 // 蓝色
+	winBgGreen  uint16 = 0x20 // 绿色
+	winBgAqua   uint16 = 0x30 // 浅绿 skyblue
+	winBgRed    uint16 = 0x40 // 红色
+	winBgPink   uint16 = 0x50 // 紫色
+	winBgYellow uint16 = 0x60 // 黄色
+	winBgWhite  uint16 = 0x70 // 白色
+	winBgGray   uint16 = 0x80 // 128 灰色
 
-	WinBgLightBlue   = 0x90 // 淡蓝色
-	WinBgLightGreen  = 0xa0 // 淡绿色
-	WinBgLightAqua   = 0xb0 // 淡浅绿色
-	WinBgLightRed    = 0xc0 // 淡红色
-	WinBgLightPink   = 0xd0 // 淡紫色
-	WinBgLightYellow = 0xe0 // 淡黄色
-	WinBgLightWhite  = 0xf0 // 240 亮白色
+	winBgLightBlue   uint16 = 0x90 // 淡蓝色
+	winBgLightGreen  uint16 = 0xa0 // 淡绿色
+	winBgLightAqua   uint16 = 0xb0 // 淡浅绿色
+	winBgLightRed    uint16 = 0xc0 // 淡红色
+	winBgLightPink   uint16 = 0xd0 // 淡紫色
+	winBgLightYellow uint16 = 0xe0 // 淡黄色
+	winBgLightWhite  uint16 = 0xf0 // 240 亮白色
 
 	// bg black, fg white
-	defSetting = WinBgBlack | WinFgWhite
+	winDefSetting = winBgBlack | winFgWhite
 
+	// Option settings
 	// see https://docs.microsoft.com/en-us/windows/console/char-info-str
-	WinFgIntensity uint16 = 0x0008 // 8 前景强度
-	WinBgIntensity uint16 = 0x0080 // 128 背景强度
+	winFgIntensity uint16 = 0x0008 // 8 前景强度
+	winBgIntensity uint16 = 0x0080 // 128 背景强度
 
-	WinOpLeading    WColor = 0x0100 // 前导字节
-	WinOpTrailing   WColor = 0x0200 // 尾随字节
-	WinOpHorizontal WColor = 0x0400 // 顶部水平
-	WinOpReverse    WColor = 0x4000 // 反转前景和背景
-	WinOpUnderscore WColor = 0x8000 // 32768 下划线
+	WinOpLeading    uint16 = 0x0100 // 前导字节
+	WinOpTrailing   uint16 = 0x0200 // 尾随字节
+	WinOpHorizontal uint16 = 0x0400 // 顶部水平
+	WinOpReverse    uint16 = 0x4000 // 反转前景和背景
+	WinOpUnderscore uint16 = 0x8000 // 32768 下划线
 )
 
-var colorsMap = map[Color]WColor{}
+// color on windows
+var winColorsMap map[Color]uint16
+// It's like in cmd.exe
+var isLikeInCmd bool
+// check current env
+var isSupportColor = utils.IsSupportColor()
 
 var (
 	// for cmd.exe
+	// echo %ESC%[1;33;40m Yellow on black %ESC%[0m
 	escChar = ""
 	// isMSys bool
 	kernel32 *syscall.LazyDLL
@@ -110,6 +114,10 @@ func init() {
 		return
 	}
 
+	// init some info
+	isLikeInCmd = true
+	initWinColorsMap()
+
 	// isMSys = utils.IsMSys()
 	kernel32 = syscall.NewLazyDLL("kernel32.dll")
 
@@ -123,45 +131,143 @@ func init() {
 
 	// fetch console screen buffer info
 	getConsoleScreenBufferInfo(uintptr(syscall.Stdout), &defScreenInfo)
-
-	fmt.Printf("%+v\n", WinOpUnderscore)
-
-	// 2|8 = 2+8 = 10, 'A' = 65
-	// 8|4|2 = 14
-	// fmt.Println(9|8|2, '\x10', 0x0a, 0xa)
-	WinPrint("test [OK];\n", WinFgRed)
-	// revertDefault()
-	os.Exit(0)
 }
 
-// win 设置终端字体颜色
-// 使用方法，直接调用即可输出带颜色的文本
-// WPrint("[OK];", 2|8) //亮绿色
-func WinPrint(s string, val WColor) {
-	// kernel32 := syscall.NewLazyDLL("kernel32.dll")
-	// proc := kernel32.NewProc("SetConsoleTextAttribute")
-	fmt.Print("val: ", val, " ")
+// initWinColorsMap init colors to win-colors mapping
+func initWinColorsMap() {
+	// init map
+	winColorsMap = map[Color]uint16{
+		// Foreground
+		FgBlack:   winFgBlack,
+		FgRed:     winFgRed,
+		FgGreen:   winFgGreen,
+		FgYellow:  winFgYellow,
+		FgBlue:    winFgBlue,
+		FgMagenta: winFgPink, // diff
+		FgCyan:    winFgAqua, // diff
+		FgWhite:   winFgWhite,
 
-	handle, _, _ := procSetTextAttribute.Call(uintptr(syscall.Stdout), uintptr(val))
+		FgDefault: winFgWhite,
 
-	fmt.Print(s)
+		// Extra Foreground
+		FgDarkGray:     winFgGray,
+		FgLightRed:     winFgLightBlue,
+		FgLightGreen:   winFgLightGreen,
+		FgLightYellow:  winFgLightYellow,
+		FgLightBlue:    winFgLightRed,
+		FgLightMagenta: winFgLightPink,
+		FgLightCyan:    winFgLightAqua,
+		FgLightWhite:   winFgLightWhite,
 
-	// handle, _, _ = procSetTextAttribute.Call(uintptr(syscall.Stdout), uintptr(7))
+		// Background
+		BgBlack:   winBgBlack,
+		BgRed:     winBgRed,
+		BgGreen:   winBgGreen,
+		BgYellow:  winBgYellow,
+		BgBlue:    winBgBlue,
+		BgMagenta: winBgPink, // diff
+		BgCyan:    winBgAqua, // diff
+		BgWhite:   winBgWhite,
 
-	CloseHandle := kernel32.NewProc("CloseHandle")
-	CloseHandle.Call(handle)
+		BgDefault: winBgBlack,
+
+		// Extra Background
+		BgDarkGray:     winBgGray,
+		BgLightRed:     winBgLightBlue,
+		BgLightGreen:   winBgLightGreen,
+		BgLightYellow:  winBgLightYellow,
+		BgLightBlue:    winBgLightRed,
+		BgLightMagenta: winBgLightPink,
+		BgLightCyan:    winBgLightAqua,
+		BgLightWhite:   winBgLightWhite,
+
+		// Option settings(注释掉的，将在win cmd中忽略掉)
+		// OpReset: winDefSetting,  // 重置所有设置
+		OpBold:  winFgIntensity, // 加粗 ->
+		// OpFuzzy:                    // 模糊(不是所有的终端仿真器都支持)
+		// OpItalic                    // 斜体(不是所有的终端仿真器都支持)
+		OpUnderscore: WinOpUnderscore, // 下划线
+		// OpBlink                      // 闪烁
+		// OpFastBlink                  // 快速闪烁(未广泛支持)
+		// OpReverse: WinOpReverse      // 颠倒的 交换背景色与前景色
+		// OpConcealed                  // 隐匿的
+		// OpStrikethrough              // 删除的，删除线(未广泛支持)
+	}
 }
 
-// revertDefault
-func revertDefault() bool {
-	return setConsoleTextAttr(uintptr(syscall.Stdout), uint16(defSetting))
+// winPrint
+func winPrint(str string, colors ...Color) (int, error) {
+	return winInternalPrint(str, convertColorsToWinAttr(colors), false)
+}
+
+// winPrintln
+func winPrintln(str string, colors ...Color) (int, error) {
+	return winInternalPrint(str, convertColorsToWinAttr(colors), true)
+}
+
+// winInternalPrint
+// winInternalPrint("hello [OK];", 2|8, true) //亮绿色
+func winInternalPrint(str string, attribute uint16, newline bool) (int, error) {
+	// fmt.Print("attribute val: ", attribute, "\n")
+	setConsoleTextAttr(uintptr(syscall.Stdout), attribute)
+
+	if newline {
+		fmt.Println(str)
+	} else {
+		fmt.Print(str)
+	}
+
+	// handle, _, _ = procSetTextAttribute.Call(uintptr(syscall.Stdout), winDefSetting)
+	// closeHandle := kernel32.NewProc("CloseHandle")
+	// closeHandle.Call(handle)
+
+	return winReset()
+}
+
+func winRender(str string, colors ...Color) string {
+	setConsoleTextAttr(uintptr(syscall.Stdout), convertColorsToWinAttr(colors))
+
+	return str
+}
+
+// winSet set console color attributes
+func winSet(colors ...Color) (int, error) {
+	return setConsoleTextAttr(uintptr(syscall.Stdout), convertColorsToWinAttr(colors))
+}
+
+// winReset reset color settings to default
+func winReset() (int, error) {
+	return setConsoleTextAttr(uintptr(syscall.Stdout), winDefSetting)
+}
+
+// convertColorsToWinAttr convert generic colors to win-colors attribute
+func convertColorsToWinAttr(colors []Color) uint16 {
+	var setting uint16
+
+	for _, c := range colors {
+		// check exists
+		if wc, ok := winColorsMap[c]; ok {
+			setting |= wc
+		}
+	}
+
+	return setting
+}
+
+func getWinColor(color Color) uint16 {
+	if wc, ok := winColorsMap[color]; ok {
+		return wc
+	}
+
+	return 0
 }
 
 // setConsoleTextAttr
-func setConsoleTextAttr(consoleOutput uintptr, winAttr uint16) bool {
-	ret, _, _ := procSetTextAttribute.Call(consoleOutput, uintptr(winAttr))
+// ret != 0 is OK.
+func setConsoleTextAttr(consoleOutput uintptr, winAttr uint16) (n int, err error) {
+	ret, _, err := procSetTextAttribute.Call(consoleOutput, uintptr(winAttr))
 
-	return ret != 0
+	return int(ret), err
 }
 
 // IsTty returns true if the given file descriptor is a terminal.

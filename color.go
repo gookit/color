@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"strings"
 	"regexp"
-	"github.com/gookit/cliapp/utils"
 )
 
 // Color represents a text color.
-type Color uint16
+type Color uint8
 
 // Foreground colors.
 const (
@@ -18,8 +17,8 @@ const (
 	FgGreen
 	FgYellow
 	FgBlue
-	FgMagenta
-	FgCyan
+	FgMagenta  // 品红
+	FgCyan     // 青色
 	FgWhite
 
 	// revert default FG
@@ -62,7 +61,7 @@ const (
 	BgLightWhite
 )
 
-// color options
+// Option settings
 const (
 	OpReset         Color = iota // 0 重置所有设置
 	OpBold                       // 1 加粗
@@ -89,26 +88,24 @@ const CodeExpr = `\033\[[\d;?]+m`
 
 // switch color display
 var Enable = true
-var isSupportColor = utils.IsSupportColor()
 
-// init
-func init() {
-	// Byte8Color("test 8 byte color", 0x98)
-	// os.Exit(0)
-}
-
-// Set
+// Set set console color attributes
 func Set(colors ...Color) (int, error) {
+	// on cmd.exe
+	if isLikeInCmd {
+		return winSet(colors...)
+	}
+
 	return fmt.Printf(SettingTpl, buildColorCode(colors...))
 }
 
-// SetByCode
-func SetByCode(code string) (int, error) {
-	return fmt.Printf(SettingTpl, code)
-}
-
-// Reset
+// Reset reset console color attributes
 func Reset() (int, error) {
+	// on cmd.exe
+	if isLikeInCmd {
+		return winReset()
+	}
+
 	return fmt.Print(ResetCode)
 }
 
@@ -121,7 +118,7 @@ func Disable() {
 func (c Color) Render(args ...interface{}) string {
 	str := fmt.Sprint(args...)
 
-	if !isSupportColor {
+	if isLikeInCmd {
 		return str
 	}
 
@@ -132,7 +129,7 @@ func (c Color) Render(args ...interface{}) string {
 func (c Color) Renderf(format string, args ...interface{}) string {
 	str := fmt.Sprintf(format, args...)
 
-	if !isSupportColor {
+	if isLikeInCmd {
 		return str
 	}
 
@@ -141,11 +138,19 @@ func (c Color) Renderf(format string, args ...interface{}) string {
 
 // Print
 func (c Color) Print(args ...interface{}) (int, error) {
+	if isLikeInCmd {
+		return winPrint(fmt.Sprint(args...), c)
+	}
+
 	return fmt.Print(c.Render(args...))
 }
 
 // Println
 func (c Color) Println(args ...interface{}) (int, error) {
+	if isLikeInCmd {
+		return winPrintln(fmt.Sprint(args...), c)
+	}
+
 	return fmt.Println(c.Render(args...))
 }
 
@@ -153,6 +158,10 @@ func (c Color) Println(args ...interface{}) (int, error) {
 // usage:
 // 	color.FgCyan.Printf("string %s", "arg0")
 func (c Color) Printf(format string, args ...interface{}) (int, error) {
+	if isLikeInCmd {
+		return winPrint(fmt.Sprintf(format, args...), c)
+	}
+
 	return fmt.Print(c.Renderf(format, args...))
 }
 

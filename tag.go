@@ -4,8 +4,10 @@ import (
 	"strings"
 	"regexp"
 	"fmt"
+	"io"
 )
 
+// output colored text like use html tag. (not support windows cmd)
 const (
 	// Regex to match color tags
 	// golang 不支持反向引用.  即不支持使用 \1 引用第一个匹配 ([a-z=;]+)
@@ -99,6 +101,36 @@ func ApplyTag(tag string, args ...interface{}) string {
 	return buildColoredText(GetStyleCode(tag), args...)
 }
 
+// Print
+func Print(args ...interface{}) (int, error) {
+	return fmt.Print(Render(args...))
+}
+
+// Printf
+func Printf(format string, args ...interface{}) (int, error) {
+	return fmt.Print(Render(fmt.Sprintf(format, args...)))
+}
+
+// Println
+func Println(args ...interface{}) (int, error) {
+	return fmt.Println(Render(args...))
+}
+
+// Fprint
+func Fprint(w io.Writer, args ...interface{}) (int, error) {
+	return fmt.Fprint(w, Render(args...))
+}
+
+// Fprintf
+func Fprintf(w io.Writer, format string, args ...interface{}) (int, error) {
+	return fmt.Fprint(w, Render(fmt.Sprintf(format, args...)))
+}
+
+// Fprintln
+func Fprintln(w io.Writer, args ...interface{}) (int, error) {
+	return fmt.Fprintln(w, Render(args...))
+}
+
 // Render return rendered string
 func Render(args ...interface{}) string {
 	return ReplaceTag(fmt.Sprint(args...))
@@ -110,7 +142,7 @@ func RenderStr(str string) string {
 }
 
 // ReplaceTag parse string, replace tag and return rendered string
-func ReplaceTag(str string) string {
+func ReplaceTag(str string, dumpIt ...bool) string {
 	if !strings.Contains(str, "<") {
 		return str
 	}
@@ -121,7 +153,7 @@ func ReplaceTag(str string) string {
 	}
 
 	// if not support color output
-	if !isSupportColor {
+	if isLikeInCmd {
 		return ClearTag(str)
 	}
 

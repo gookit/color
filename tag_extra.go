@@ -31,30 +31,39 @@ func (tg Tag) Println(args ...interface{}) {
 type Tips string
 
 // Print
-func (t Tips) Print(args ...interface{}) {
-	tag := string(t)
-	str := buildColoredText(
-		GetStyleCode(tag),
-		strings.ToUpper(tag), ": ", fmt.Sprint(args...),
-	)
+func (t Tips) Print(args ...interface{}) (int, error) {
+	name := string(t)
+	upName := strings.ToUpper(name)
 
-	fmt.Println(str)
+	if isLikeInCmd {
+		return GetStyle(name).Println(upName, ": ", fmt.Sprint(args...))
+	}
+
+	str := buildColoredText(GetStyleCode(name), upName, ": ", fmt.Sprint(args...))
+
+	return fmt.Println(str)
 }
 
 // Println
-func (t Tips) Println(args ...interface{}) {
-	t.Print(args...)
+func (t Tips) Println(args ...interface{}) (int, error) {
+	return t.Print(args...)
 }
 
 // Printf
-func (t Tips) Printf(format string, args ...interface{}) {
-	tag := string(t)
+func (t Tips) Printf(format string, args ...interface{}) (int, error) {
+	name := string(t)
+	upName := strings.ToUpper(name)
+
+	if isLikeInCmd {
+		return GetStyle(name).Printf(upName, ": ", fmt.Sprintf(format, args...))
+	}
+
 	str := buildColoredText(
-		GetStyleCode(tag),
-		strings.ToUpper(tag), ": ", fmt.Sprintf(format, args...),
+		GetStyleCode(name),
+		upName, ": ", fmt.Sprintf(format, args...),
 	)
 
-	fmt.Println(str)
+	return fmt.Println(str)
 }
 
 // LiteTips will only add color for tag name
@@ -62,24 +71,37 @@ func (t Tips) Printf(format string, args ...interface{}) {
 type LiteTips string
 
 // Print
-func (t LiteTips) Print(args ...interface{}) {
+func (t LiteTips) Print(args ...interface{}) (int, error) {
 	tag := string(t)
+
+	if isLikeInCmd {
+		GetStyle(tag).Print(strings.ToUpper(tag), ": ")
+		return fmt.Println(args...)
+	}
+
 	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ":")
 
-	fmt.Println(str, fmt.Sprint(args...))
+	return fmt.Println(str, fmt.Sprint(args...))
 }
 
 // Println
-func (t LiteTips) Println(args ...interface{}) {
-	t.Print(args...)
+func (t LiteTips) Println(args ...interface{}) (int, error) {
+	return t.Print(args...)
 }
 
 // Printf
-func (t LiteTips) Printf(format string, args ...interface{}) {
+func (t LiteTips) Printf(format string, args ...interface{}) (int, error) {
 	tag := string(t)
+
+	if isLikeInCmd {
+		GetStyle(tag).Println(strings.ToUpper(tag), ": ")
+
+		return fmt.Printf(format + "\n", args...)
+	}
+
 	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ":")
 
-	fmt.Println(str, fmt.Sprintf(format, args...))
+	return fmt.Println(str, fmt.Sprintf(format, args...))
 }
 
 // Logger console logger
