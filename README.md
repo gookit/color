@@ -109,18 +109,18 @@ color.Yellow("yellow message")
 
 > support on windows `cmd.exe`
 
-- `color.Info()`
-- `color.Note()`
-- `color.Light()`
-- `color.Error()`
-- `color.Danger()`
-- `color.Notice()`
-- `color.Success()`
-- `color.Comment()`
-- `color.Primary()`
-- `color.Warning()`
-- `color.Question()`
-- `color.Secondary()`
+- `color.Info(args ...interface{})`
+- `color.Note(args ...interface{})`
+- `color.Light(args ...interface{})`
+- `color.Error(args ...interface{})`
+- `color.Danger(args ...interface{})`
+- `color.Notice(args ...interface{})`
+- `color.Success(args ...interface{})`
+- `color.Comment(args ...interface{})`
+- `color.Primary(args ...interface{})`
+- `color.Warning(args ...interface{})`
+- `color.Question(args ...interface{})`
+- `color.Secondary(args ...interface{})`
 
 ```go
 color.Info("Info message")

@@ -41,6 +41,11 @@ func Gray(args ...interface{}) {
 	FgDarkGray.Print(args...)
 }
 
+// Normal add gray for message
+func Normal(args ...interface{}) {
+	FgDefault.Print(args...)
+}
+
 // Red add red for message
 func Red(args ...interface{}) {
 	FgRed.Print(args...)

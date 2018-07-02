@@ -94,7 +94,7 @@ func (t LiteTips) Printf(format string, args ...interface{}) (int, error) {
 	tag := string(t)
 
 	if isLikeInCmd {
-		GetStyle(tag).Println(strings.ToUpper(tag), ": ")
+		GetStyle(tag).Print(strings.ToUpper(tag), ": ")
 
 		return fmt.Printf(format + "\n", args...)
 	}
