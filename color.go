@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"regexp"
+	"github.com/gookit/color/utils"
 )
 
 // Color represents a text color.
@@ -88,6 +89,10 @@ const CodeExpr = `\033\[[\d;?]+m`
 
 // switch color display
 var Enable = true
+// It's like in cmd.exe
+var isLikeInCmd bool
+// check current env
+var isSupportColor = utils.IsSupportColor()
 
 // Set set console color attributes
 func Set(colors ...Color) (int, error) {

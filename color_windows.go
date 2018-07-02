@@ -4,15 +4,12 @@
 // 	golang.org/x/crypto/ssh/terminal
 // 	https://docs.microsoft.com/en-us/windows/console
 
-// +build windows
-
 package color
 
 import (
 	"syscall"
 	"fmt"
 	"unsafe"
-	"github.com/gookit/color/utils"
 )
 
 // color on windows cmd
@@ -81,10 +78,6 @@ const (
 
 // color on windows
 var winColorsMap map[Color]uint16
-// It's like in cmd.exe
-var isLikeInCmd bool
-// check current env
-var isSupportColor = utils.IsSupportColor()
 
 var (
 	// for cmd.exe
