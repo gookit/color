@@ -63,6 +63,11 @@ func main() {
 	// simple usage
 	color.FgCyan.Printf("Simple to use %s\n", "color")
 
+    // use like func
+    red := color.FgRed.Render
+    green := color.FgGreen.Render
+    fmt.Printf("%s line %s library\n", red("Command"), green("color"))
+
 	// custom color
 	color.New(color.FgWhite, color.BgBlack).Println("custom color style")
 
@@ -82,6 +87,8 @@ func main() {
 	color.LiteTips("info").Print("blocked tips style text")
 }
 ```
+
+运行 demo: `go run ./demo/app.go`
 
 ### 颜色输出展示
 

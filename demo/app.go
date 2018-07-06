@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// go run ./demo/app.go
 func main() {
 	colorUsage()
 }
@@ -13,8 +14,10 @@ func colorUsage() {
 	// simple usage
 	color.FgCyan.Printf("Simple to use %s\n", "color")
 
-	green := color.FgGreen.Render
-	fmt.Println(green("message"))
+    // use like func
+    red := color.FgRed.Render
+    green := color.FgGreen.Render
+    fmt.Printf("%s line %s library\n", red("Command"), green("color"))
 
 	// custom color
 	color.New(color.FgMagenta, color.BgBlack).Println("custom color style")
