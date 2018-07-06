@@ -137,6 +137,9 @@ func IsDisabled() bool {
 }
 
 // Render
+// usage:
+// 	green := color.FgGreen.Render
+// 	fmt.Println(green("message"))
 func (c Color) Render(args ...interface{}) string {
 	str := fmt.Sprint(args...)
 
@@ -158,7 +161,22 @@ func (c Color) Renderf(format string, args ...interface{}) string {
 	return fmt.Sprintf(SingleColorTpl, c, str)
 }
 
+// RenderFn
+// usage:
+// 	green := color.FgGreen.RenderFn()
+//  text := green("message")
+func (c Color) RenderFn() func(args ...interface{}) string {
+	return func(args ...interface{}) string {
+		return c.Render(args...)
+	}
+}
+
 // Print
+// usage:
+// 	color.FgGreen.Print("message")
+// or:
+// 	green := color.FgGreen.Print
+// 	green("message")
 func (c Color) Print(args ...interface{}) (int, error) {
 	if isLikeInCmd {
 		return winPrint(fmt.Sprint(args...), c)

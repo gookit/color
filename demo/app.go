@@ -13,6 +13,9 @@ func colorUsage() {
 	// simple usage
 	color.FgCyan.Printf("Simple to use %s\n", "color")
 
+	green := color.FgGreen.Render
+	fmt.Println(green("message"))
+
 	// custom color
 	color.New(color.FgMagenta, color.BgBlack).Println("custom color style")
 	// can also:
