@@ -26,6 +26,7 @@ const (
 	FgDefault Color = 39
 
 	// extra Foreground color 90 - 97(非标准)
+	FgGray         Color = 90        // 亮黑（灰）
 	FgDarkGray     Color = iota + 90 // 亮黑（灰）
 	FgLightRed
 	FgLightGreen
@@ -52,6 +53,7 @@ const (
 	BgDefault Color = 49
 
 	// extra Background color 100 - 107(非标准)
+	BgGray         Color = 100
 	BgDarkGray     Color = iota + 100
 	BgLightRed
 	BgLightGreen
