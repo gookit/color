@@ -2,9 +2,9 @@ package color
 
 import (
 	"fmt"
-	"strings"
-	"regexp"
 	"github.com/gookit/color/utils"
+	"regexp"
+	"strings"
 )
 
 // Color represents a text color.
@@ -13,21 +13,21 @@ type Color uint8
 // Foreground colors.
 const (
 	// basic Foreground colors 30 - 37
-	FgBlack   Color = iota + 30
+	FgBlack Color = iota + 30
 	FgRed
 	FgGreen
 	FgYellow
 	FgBlue
-	FgMagenta  // 品红
-	FgCyan     // 青色
+	FgMagenta // 品红
+	FgCyan    // 青色
 	FgWhite
 
 	// revert default FG
 	FgDefault Color = 39
 
 	// extra Foreground color 90 - 97(非标准)
-	FgGray         Color = 90        // 亮黑（灰）
-	FgDarkGray     Color = iota + 90 // 亮黑（灰）
+	FgGray     Color = 90        // 亮黑（灰）
+	FgDarkGray Color = iota + 90 // 亮黑（灰）
 	FgLightRed
 	FgLightGreen
 	FgLightYellow
@@ -40,10 +40,10 @@ const (
 // Background colors.
 const (
 	// basic Background colors 40 - 47
-	BgBlack   Color = iota + 40
+	BgBlack Color = iota + 40
 	BgRed
 	BgGreen
-	BgYellow   // BgBrown like yellow
+	BgYellow // BgBrown like yellow
 	BgBlue
 	BgMagenta
 	BgCyan
@@ -53,8 +53,8 @@ const (
 	BgDefault Color = 49
 
 	// extra Background color 100 - 107(非标准)
-	BgGray         Color = 100
-	BgDarkGray     Color = iota + 100
+	BgGray     Color = 100
+	BgDarkGray Color = iota + 100
 	BgLightRed
 	BgLightGreen
 	BgLightYellow
@@ -91,8 +91,10 @@ const CodeExpr = `\033\[[\d;?]+m`
 
 // switch color display
 var Enable = true
+
 // It's like in cmd.exe
 var isLikeInCmd bool
+
 // check current env
 var isSupportColor = utils.IsSupportColor()
 

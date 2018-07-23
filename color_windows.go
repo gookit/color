@@ -7,8 +7,8 @@
 package color
 
 import (
-	"syscall"
 	"fmt"
+	"syscall"
 	"unsafe"
 )
 
@@ -176,7 +176,7 @@ func initWinColorsMap() {
 
 		// Option settings(注释掉的，将在win cmd中忽略掉)
 		// OpReset: winDefSetting,  // 重置所有设置
-		OpBold:  winFgIntensity, // 加粗 ->
+		OpBold: winFgIntensity, // 加粗 ->
 		// OpFuzzy:                    // 模糊(不是所有的终端仿真器都支持)
 		// OpItalic                    // 斜体(不是所有的终端仿真器都支持)
 		OpUnderscore: WinOpUnderscore, // 下划线
@@ -304,7 +304,7 @@ func setConsoleTextAttr(consoleOutput uintptr, winAttr uint16) (n int, err error
 // from package: golang.org/x/sys/windows
 type (
 	short int16
-	word uint16
+	word  uint16
 
 	// coord cursor position coordinates
 	coord struct {

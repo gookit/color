@@ -32,7 +32,7 @@ func Black(args ...interface{}) {
 }
 
 // White add white for message
-func White(args ...interface{})  {
+func White(args ...interface{}) {
 	FgWhite.Print(args...)
 }
 
@@ -77,8 +77,8 @@ func Cyan(args ...interface{}) {
 }
 
 /**
-	print and add new line
- */
+print and add new line
+*/
 
 // Boldln add bold for message
 func Boldln(args ...interface{}) {
@@ -91,7 +91,7 @@ func Blackln(args ...interface{}) {
 }
 
 // Whiteln add white for message
-func Whiteln(args ...interface{})  {
+func Whiteln(args ...interface{}) {
 	FgWhite.Println(args...)
 }
 
@@ -257,8 +257,8 @@ func Question(args ...interface{}) {
 }
 
 /**
-	print and add new line
- */
+print and add new line
+*/
 
 // Suc add suc style for message
 func Sucln(args ...interface{}) {

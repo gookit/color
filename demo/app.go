@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/gookit/color"
 	"fmt"
+	"github.com/gookit/color"
 )
 
 // go run ./demo/app.go
@@ -14,10 +14,10 @@ func colorUsage() {
 	// simple usage
 	color.FgCyan.Printf("Simple to use %s\n", "color")
 
-    // use like func
-    red := color.FgRed.Render
-    green := color.FgGreen.Render
-    fmt.Printf("%s line %s library\n", red("Command"), green("color"))
+	// use like func
+	red := color.FgRed.Render
+	green := color.FgGreen.Render
+	fmt.Printf("%s line %s library\n", red("Command"), green("color"))
 
 	// custom color
 	color.New(color.FgMagenta, color.BgBlack).Println("custom color style")

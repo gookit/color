@@ -1,8 +1,8 @@
 package color
 
 import (
-	"testing"
 	c "github.com/smartystreets/goconvey/convey"
+	"testing"
 )
 
 func TestWrapTag(t *testing.T) {

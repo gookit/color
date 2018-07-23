@@ -1,10 +1,10 @@
 package color
 
 import (
-	"strings"
-	"regexp"
 	"fmt"
 	"io"
+	"regexp"
+	"strings"
 )
 
 // output colored text like use html tag. (not support windows cmd)

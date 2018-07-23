@@ -74,6 +74,6 @@ func Byte24Color(str string) {
 }
 
 // Byte24Color use RGB color
-func TrueColor(str string, rgb RgbColor)  {
+func TrueColor(str string, rgb RgbColor) {
 	// RgbStyle{RgbColor{'dd', 'cc', 'dd'}, RgbColor{'dd', 'cc', 'dd'}}
 }

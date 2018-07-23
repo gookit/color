@@ -96,7 +96,7 @@ func (t LiteTips) Printf(format string, args ...interface{}) (int, error) {
 	if isLikeInCmd {
 		GetStyle(tag).Print(strings.ToUpper(tag), ": ")
 
-		return fmt.Printf(format + "\n", args...)
+		return fmt.Printf(format+"\n", args...)
 	}
 
 	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ":")
