@@ -5,7 +5,7 @@ import (
 	"github.com/gookit/color"
 )
 
-// go run ./demo/app.go
+// go run ./_examples/app.go
 func main() {
 	colorUsage()
 }
