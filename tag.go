@@ -138,32 +138,32 @@ func ApplyTag(tag string, args ...interface{}) string {
 	return buildColoredText(GetStyleCode(tag), args...)
 }
 
-// Print
+// Print messages
 func Print(args ...interface{}) (int, error) {
 	return fmt.Print(Render(args...))
 }
 
-// Printf
+// Printf format and print messages
 func Printf(format string, args ...interface{}) (int, error) {
 	return fmt.Print(Render(fmt.Sprintf(format, args...)))
 }
 
-// Println
+// Println messages line
 func Println(args ...interface{}) (int, error) {
 	return fmt.Println(Render(args...))
 }
 
-// Fprint
+// Fprint print rendered messages to writer
 func Fprint(w io.Writer, args ...interface{}) (int, error) {
 	return fmt.Fprint(w, Render(args...))
 }
 
-// Fprintf
+// Fprintf print format and rendered messages to writer
 func Fprintf(w io.Writer, format string, args ...interface{}) (int, error) {
 	return fmt.Fprint(w, Render(fmt.Sprintf(format, args...)))
 }
 
-// Fprintln
+// Fprintln print rendered messages line to writer
 func Fprintln(w io.Writer, args ...interface{}) (int, error) {
 	return fmt.Fprintln(w, Render(args...))
 }
@@ -196,7 +196,6 @@ func ReplaceTag(str string, dumpIt ...bool) string {
 
 	// reg := regexp.MustCompile(TagExpr)
 	reg, err := regexp.Compile(TagExpr)
-
 	if err != nil {
 		return str
 	}

@@ -257,7 +257,6 @@ func winReset() (int, error) {
 // convertColorsToWinAttr convert generic colors to win-colors attribute
 func convertColorsToWinAttr(colors []Color) uint16 {
 	var setting uint16
-
 	for _, c := range colors {
 		// check exists
 		if wc, ok := winColorsMap[c]; ok {

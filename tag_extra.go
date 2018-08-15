@@ -8,29 +8,34 @@ import (
 // Tag value is a defined style name
 type Tag string
 
-// Print
+// Print messages
 func (tg Tag) Print(args ...interface{}) {
 	str := buildColoredText(GetStyleCode(string(tg)), args...)
 	fmt.Print(str)
 }
 
-// Printf
+// Printf format and print messages
 func (tg Tag) Printf(format string, args ...interface{}) {
 	str := buildColoredText(GetStyleCode(string(tg)), fmt.Sprintf(format, args...))
 	fmt.Print(str)
 }
 
-// Println
+// Println messages line
 func (tg Tag) Println(args ...interface{}) {
 	str := buildColoredText(GetStyleCode(string(tg)), args...)
 	fmt.Println(str)
+}
+
+// Sprint render messages
+func (tg Tag) Sprint(args ...interface{}) string {
+	return buildColoredText(GetStyleCode(string(tg)), args...)
 }
 
 // Tips will add color for all text
 // value is a defined style name
 type Tips string
 
-// Print
+// Print messages
 func (t Tips) Print(args ...interface{}) (int, error) {
 	name := string(t)
 	upName := strings.ToUpper(name)
@@ -43,12 +48,12 @@ func (t Tips) Print(args ...interface{}) (int, error) {
 	return fmt.Println(str)
 }
 
-// Println
+// Println messages line
 func (t Tips) Println(args ...interface{}) (int, error) {
 	return t.Print(args...)
 }
 
-// Printf
+// Printf format and print messages
 func (t Tips) Printf(format string, args ...interface{}) (int, error) {
 	name := string(t)
 	upName := strings.ToUpper(name)
@@ -65,7 +70,7 @@ func (t Tips) Printf(format string, args ...interface{}) (int, error) {
 // value is a defined style name
 type LiteTips string
 
-// Print
+// Print messages
 func (t LiteTips) Print(args ...interface{}) (int, error) {
 	tag := string(t)
 
@@ -79,15 +84,14 @@ func (t LiteTips) Print(args ...interface{}) (int, error) {
 	return fmt.Println(str, fmt.Sprint(args...))
 }
 
-// Println
+// Println messages line
 func (t LiteTips) Println(args ...interface{}) (int, error) {
 	return t.Print(args...)
 }
 
-// Printf
+// Printf format and print messages
 func (t LiteTips) Printf(format string, args ...interface{}) (int, error) {
 	tag := string(t)
-
 	if isLikeInCmd {
 		GetStyle(tag).Print(strings.ToUpper(tag), ": ")
 

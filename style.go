@@ -57,7 +57,7 @@ func (s Style) Printf(format string, args ...interface{}) (int, error) {
 	return fmt.Print(s.Render(str))
 }
 
-// Println render and Print text
+// Println render and print text line
 func (s Style) Println(args ...interface{}) (int, error) {
 	if isLikeInCmd {
 		return winPrintln(fmt.Sprint(args...), s...)
