@@ -138,13 +138,12 @@ func IsDisabled() bool {
 	return Enable == false
 }
 
-// Render
+// Render messages by color setting
 // usage:
-// 	green := color.FgGreen.Render
-// 	fmt.Println(green("message"))
+// 		green := color.FgGreen.Render
+// 		fmt.Println(green("message"))
 func (c Color) Render(args ...interface{}) string {
 	str := fmt.Sprint(args...)
-
 	if isLikeInCmd {
 		return str
 	}
@@ -152,33 +151,25 @@ func (c Color) Render(args ...interface{}) string {
 	return fmt.Sprintf(SingleColorTpl, c, str)
 }
 
-// Renderf
-func (c Color) Renderf(format string, args ...interface{}) string {
-	str := fmt.Sprintf(format, args...)
-
-	if isLikeInCmd {
-		return str
-	}
-
-	return fmt.Sprintf(SingleColorTpl, c, str)
-}
-
-// RenderFn
+// Renderf format and render message
 // usage:
 // 	green := color.FgGreen.RenderFn()
-//  text := green("message")
-func (c Color) RenderFn() func(args ...interface{}) string {
-	return func(args ...interface{}) string {
-		return c.Render(args...)
+//  colored := green("message")
+func (c Color) Renderf(format string, args ...interface{}) string {
+	str := fmt.Sprintf(format, args...)
+	if isLikeInCmd {
+		return str
 	}
+
+	return fmt.Sprintf(SingleColorTpl, c, str)
 }
 
-// Print
+// Print messages
 // usage:
-// 	color.FgGreen.Print("message")
+// 		color.FgGreen.Print("message")
 // or:
-// 	green := color.FgGreen.Print
-// 	green("message")
+// 		green := color.FgGreen.Print
+// 		green("message")
 func (c Color) Print(args ...interface{}) (int, error) {
 	if isLikeInCmd {
 		return winPrint(fmt.Sprint(args...), c)
@@ -187,7 +178,7 @@ func (c Color) Print(args ...interface{}) (int, error) {
 	return fmt.Print(c.Render(args...))
 }
 
-// Println
+// Println messages line
 func (c Color) Println(args ...interface{}) (int, error) {
 	if isLikeInCmd {
 		return winPrintln(fmt.Sprint(args...), c)
@@ -196,9 +187,9 @@ func (c Color) Println(args ...interface{}) (int, error) {
 	return fmt.Println(c.Render(args...))
 }
 
-// Printf
+// Printf format and print messages
 // usage:
-// 	color.FgCyan.Printf("string %s", "arg0")
+// 		color.FgCyan.Printf("string %s", "arg0")
 func (c Color) Printf(format string, args ...interface{}) (int, error) {
 	if isLikeInCmd {
 		return winPrint(fmt.Sprintf(format, args...), c)
@@ -217,25 +208,23 @@ func (c Color) String() string {
 	return fmt.Sprintf("%d", c)
 }
 
-// Apply apply custom colors
+// Apply custom colors.
 // usage:
-// 	// (string, fg-color,bg-color, options...)
-//  color.Apply("text", color.FgGreen)
-//  color.Apply("text", color.FgGreen, color.BgBlack, color.OpBold)
+// 		// (string, fg-color,bg-color, options...)
+//  	color.Apply("text", color.FgGreen)
+//  	color.Apply("text", color.FgGreen, color.BgBlack, color.OpBold)
 func Apply(str string, colors ...Color) string {
-	return buildColoredText(
-		buildColorCode(colors...),
-		str,
-	)
+	return buildColoredText(buildColorCode(colors...), str)
 }
 
-// RenderCodes "3;32;45"
+// RenderCodes render by color code "3;32;45"
 func RenderCodes(code string, str string) string {
 	return buildColoredText(code, str)
 }
 
 // ClearCode clear color codes
-// eg "\033[36;1mText\x1b[0m" -> "Text"
+// eg:
+// 		"\033[36;1mText\x1b[0m" -> "Text"
 func ClearCode(str string) string {
 	reg := regexp.MustCompile(CodeExpr)
 	// r1 := reg.FindAllString("\033[36;1mText\x1b[0m", -1)
@@ -250,7 +239,6 @@ func buildColorCode(colors ...Color) string {
 	}
 
 	var codes []string
-
 	for _, color := range colors {
 		codes = append(codes, color.String())
 	}
@@ -261,7 +249,6 @@ func buildColorCode(colors ...Color) string {
 // buildColoredText
 func buildColoredText(code string, args ...interface{}) string {
 	str := fmt.Sprint(args...)
-
 	if len(code) == 0 {
 		return str
 	}

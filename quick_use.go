@@ -76,9 +76,9 @@ func Cyan(args ...interface{}) {
 	FgCyan.Print(args...)
 }
 
-/**
-print and add new line
-*/
+/*************************************************************
+ * print and add new line
+ *************************************************************/
 
 // Boldln add bold for message
 func Boldln(args ...interface{}) {
@@ -130,18 +130,24 @@ func Cyanln(args ...interface{}) {
 	FgCyan.Println(args...)
 }
 
+/*************************************************************
+ * Some defined styles, like bootstrap styles
+ *************************************************************/
+
 // Some defined styles, like bootstrap styles
 var BuiltinStyles = map[string]Style{
-	"info":      {OpReset, FgGreen},
-	"note":      {OpBold, FgLightCyan},
-	"light":     {FgLightWhite},
-	"error":     {FgLightWhite, BgRed},
-	"danger":    {OpBold, FgRed},
-	"notice":    {OpBold, FgCyan},
-	"success":   {OpBold, FgGreen},
-	"comment":   {OpReset, FgYellow},
-	"primary":   {OpReset, FgBlue},
-	"warning":   {OpBold, FgYellow},
+	"info":  {OpReset, FgGreen},
+	"note":  {OpBold, FgLightCyan},
+	"light": {FgLightWhite},
+	"error": {FgLightWhite, BgRed},
+
+	"danger":  {OpBold, FgRed},
+	"notice":  {OpBold, FgCyan},
+	"success": {OpBold, FgGreen},
+	"comment": {OpReset, FgYellow},
+	"primary": {OpReset, FgBlue},
+	"warning": {OpBold, FgYellow},
+
 	"question":  {OpReset, FgMagenta},
 	"secondary": {FgDarkGray},
 }

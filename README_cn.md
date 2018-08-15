@@ -56,6 +56,7 @@ import "github.com/gookit/color"
 package main
 
 import (
+	"fmt"
     "github.com/gookit/color"
 )
 

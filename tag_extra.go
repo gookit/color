@@ -40,7 +40,6 @@ func (t Tips) Print(args ...interface{}) (int, error) {
 	}
 
 	str := buildColoredText(GetStyleCode(name), upName, ": ", fmt.Sprint(args...))
-
 	return fmt.Println(str)
 }
 
@@ -58,11 +57,7 @@ func (t Tips) Printf(format string, args ...interface{}) (int, error) {
 		return GetStyle(name).Println(upName, ": ", fmt.Sprintf(format, args...))
 	}
 
-	str := buildColoredText(
-		GetStyleCode(name),
-		upName, ": ", fmt.Sprintf(format, args...),
-	)
-
+	str := buildColoredText(GetStyleCode(name), upName, ": ", fmt.Sprintf(format, args...))
 	return fmt.Println(str)
 }
 

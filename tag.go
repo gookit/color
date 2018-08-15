@@ -227,21 +227,21 @@ func ReplaceTag(str string, dumpIt ...bool) string {
 	return str
 }
 
-// ParseCodeFromAttr parse color attributes
-// attr like: "fg=VALUE;bg=VALUE;op=VALUE", VALUE please see var: FgColors, BgColors, Options
+// ParseCodeFromAttr parse color attributes.
+// attr like:
+// 		"fg=VALUE;bg=VALUE;op=VALUE", VALUE please see var: FgColors, BgColors, Options
 // eg:
-// "fg=yellow"
-// "bg=red"
-// "op=bold,underscore" option is allow multi value
-// "fg=white;bg=blue;op=bold"
-// "fg=white;op=bold,underscore"
+// 		"fg=yellow"
+// 		"bg=red"
+// 		"op=bold,underscore" option is allow multi value
+// 		"fg=white;bg=blue;op=bold"
+// 		"fg=white;op=bold,underscore"
 func ParseCodeFromAttr(attr string) (code string) {
 	if !strings.Contains(attr, "=") {
 		return
 	}
 
 	attr = strings.Trim(attr, ";=,")
-
 	if len(attr) == 0 {
 		return
 	}
@@ -316,36 +316,24 @@ func GetColorTags() map[string]string {
 
 // IsDefinedTag is defined tag name
 func IsDefinedTag(name string) bool {
-	if _, ok := colorTags[name]; ok {
-		return true
-	}
-
-	return false
+	_, ok := colorTags[name]
+	return ok
 }
 
 // IsFgColor
 func IsFgColor(name string) bool {
-	if _, ok := FgColors[name]; ok {
-		return true
-	}
-
-	return false
+	_, ok := FgColors[name]
+	return ok
 }
 
 // IsBgColor
 func IsBgColor(name string) bool {
-	if _, ok := BgColors[name]; ok {
-		return true
-	}
-
-	return false
+	_, ok := BgColors[name]
+	return ok
 }
 
 // IsOption
 func IsOption(name string) bool {
-	if _, ok := Options[name]; ok {
-		return true
-	}
-
-	return false
+	_, ok := Options[name]
+	return ok
 }
