@@ -85,11 +85,11 @@ func main() {
 }
 ```
 
-run demo: `go run ./demo/app.go`
+run demo: `go run ./_examples/app.go`
 
 ### Color output display
 
-![colored-out](demo/images/colored-out.jpg)
+![colored-out](_examples/images/colored-out.jpg)
 
 ### More usage
 

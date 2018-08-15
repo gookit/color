@@ -89,11 +89,11 @@ func main() {
 }
 ```
 
-运行 demo: `go run ./demo/app.go`
+运行 demo: `go run ./_examples/app.go`
 
 ### 颜色输出展示
 
-![colored-out](demo/images/colored-out.jpg)
+![colored-out](_examples/images/colored-out.jpg)
 
 ### 构建风格
 
