@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// value is a defined style name
+// Tag value is a defined style name
 type Tag string
 
 // Print
