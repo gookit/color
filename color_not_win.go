@@ -16,11 +16,11 @@ func winReset() (n int, err error) {
 }
 
 // winPrint
-func winPrint(str string, colors ...Color) (n int, err error) {
+func winPrint(_ string, _ ...Color) (n int, err error) {
 	return
 }
 
 // winPrintln
-func winPrintln(str string, colors ...Color) (n int, err error) {
+func winPrintln(_ string, _ ...Color) (n int, err error) {
 	return
 }

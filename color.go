@@ -133,10 +133,14 @@ func Disable() {
 	Enable = false
 }
 
-// IsDisabled
+// IsDisabled color
 func IsDisabled() bool {
 	return Enable == false
 }
+
+/*************************************************************
+ * basic render methods
+ *************************************************************/
 
 // Render messages by color setting
 // usage:
@@ -207,6 +211,39 @@ func (c Color) IsValid() bool {
 func (c Color) String() string {
 	return fmt.Sprintf("%d", c)
 }
+
+/*************************************************************
+ * FG color aliases
+ *************************************************************/
+
+const (
+	// Bold use bold for message
+	Bold = OpBold
+	// Red color for message
+	Red = FgRed
+	// Cyan color for message
+	Cyan = FgCyan
+	// Gray color for message
+	Gray = FgDarkGray
+	// Blue color for message
+	Blue = FgBlue
+	// Black color for message
+	Black = FgBlack
+	// Green color for message
+	Green = FgGreen
+	// White color for message
+	White = FgWhite
+	// Normal color for message
+	Normal = FgDefault
+	// Yellow color for message
+	Yellow = FgYellow
+	// Magenta color for message
+	Magenta = FgMagenta
+)
+
+/*************************************************************
+ * helper methods
+ *************************************************************/
 
 // Apply custom colors.
 // usage:
