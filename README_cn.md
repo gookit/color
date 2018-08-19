@@ -57,12 +57,12 @@ package main
 
 import (
 	"fmt"
-    "github.com/gookit/color"
+	"github.com/gookit/color"
 )
 
 func main() {
 	// simple usage
-	color.FgCyan.Printf("Simple to use %s\n", "color")
+	color.Cyan.Printf("Simple to use %s\n", "color")
 
 	// use like func
 	red := color.FgRed.Render
@@ -74,6 +74,11 @@ func main() {
 
 	// can also:
 	color.Style{color.FgCyan, color.OpBold}.Println("custom color style")
+	
+	// internal style:
+	color.Info.Println("message")
+	color.Warn.Println("message")
+	color.Error.Println("message")
 	
 	// use style tag
 	color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
@@ -128,42 +133,42 @@ color.Reset()
 
 > 支持在windows `cmd.exe` 使用
 
-- `color.Bold(args ...interface{})`
-- `color.Black(args ...interface{})`
-- `color.White(args ...interface{})`
-- `color.Gray(args ...interface{})`
-- `color.Red(args ...interface{})`
-- `color.Green(args ...interface{})`
-- `color.Yellow(args ...interface{})`
-- `color.Blue(args ...interface{})`
-- `color.Magenta(args ...interface{})`
-- `color.Cyan(args ...interface{})`
+- `color.Bold`
+- `color.Black`
+- `color.White`
+- `color.Gray`
+- `color.Red`
+- `color.Green`
+- `color.Yellow`
+- `color.Blue`
+- `color.Magenta`
+- `color.Cyan`
 
 ```go
-color.Bold("bold message")
-color.Yellow("yellow message")
+color.Bold.Println("bold message")
+color.Yellow.Println("yellow message")
 ```
 
 #### 扩展风格方法 
 
 > 支持在windows `cmd.exe` 使用
 
-- `color.Info(args ...interface{})`
-- `color.Note(args ...interface{})`
-- `color.Light(args ...interface{})`
-- `color.Error(args ...interface{})`
-- `color.Danger(args ...interface{})`
-- `color.Notice(args ...interface{})`
-- `color.Success(args ...interface{})`
-- `color.Comment(args ...interface{})`
-- `color.Primary(args ...interface{})`
-- `color.Warning(args ...interface{})`
-- `color.Question(args ...interface{})`
-- `color.Secondary(args ...interface{})`
+- `color.Info`
+- `color.Note`
+- `color.Light`
+- `color.Error`
+- `color.Danger`
+- `color.Notice`
+- `color.Success`
+- `color.Comment`
+- `color.Primary`
+- `color.Warning`
+- `color.Question`
+- `color.Secondary`
 
 ```go
-color.Info("Info message")
-color.Success("Success message")
+color.Info.Println("Info message")
+color.Success.Println("Success message")
 ```
 
 #### 使用颜色html标签

@@ -53,7 +53,7 @@ package main
 
 import (
 	"fmt"
-    "github.com/gookit/color"
+	"github.com/gookit/color"
 )
 
 func main() {
