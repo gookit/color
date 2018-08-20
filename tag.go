@@ -61,7 +61,7 @@ var colorTags = map[string]string{
 	"primary": "0;34",
 	"danger":  "1;31", // same "red" but add bold
 	"err":     "97;41",
-	"error":   "97;41", // fg white; bg red
+	"error":   "97;41", // fg light white; bg red
 
 	// more tags
 	"lightRed":      "1;31",

@@ -13,21 +13,22 @@ type Color uint8
 // Foreground colors.
 const (
 	// basic Foreground colors 30 - 37
-	FgBlack Color = iota + 30
+	FgBlack   Color = iota + 30
 	FgRed
 	FgGreen
 	FgYellow
 	FgBlue
-	FgMagenta // 品红
-	FgCyan    // 青色
+	FgMagenta  // 品红
+	FgCyan     // 青色
 	FgWhite
 
 	// revert default FG
 	FgDefault Color = 39
+)
 
-	// extra Foreground color 90 - 97(非标准)
-	FgGray     Color = 90        // 亮黑（灰）
-	FgDarkGray Color = iota + 90 // 亮黑（灰）
+// Extra foreground color 90 - 97(非标准)
+const (
+	FgDarkGray     Color = iota + 90 // 亮黑（灰）
 	FgLightRed
 	FgLightGreen
 	FgLightYellow
@@ -35,26 +36,28 @@ const (
 	FgLightMagenta
 	FgLightCyan
 	FgLightWhite
+	// FgGray is alias of FgDarkGray
+	FgGray Color = 90 // 亮黑（灰）
 )
 
 // Background colors.
 const (
 	// basic Background colors 40 - 47
-	BgBlack Color = iota + 40
+	BgBlack   Color = iota + 40
 	BgRed
 	BgGreen
-	BgYellow // BgBrown like yellow
+	BgYellow   // BgBrown like yellow
 	BgBlue
 	BgMagenta
 	BgCyan
 	BgWhite
-
 	// revert default BG
 	BgDefault Color = 49
+)
 
-	// extra Background color 100 - 107(非标准)
-	BgGray     Color = 100
-	BgDarkGray Color = iota + 100
+// Extra background color 100 - 107(非标准)
+const (
+	BgDarkGray     Color = iota + 99
 	BgLightRed
 	BgLightGreen
 	BgLightYellow
@@ -62,6 +65,8 @@ const (
 	BgLightMagenta
 	BgLightCyan
 	BgLightWhite
+	// BgGray is alias of BgDarkGray
+	BgGray Color = 100
 )
 
 // Option settings
