@@ -21,7 +21,8 @@ func Example() {
 	// can also:
 	Style{FgCyan, OpBold}.Println("custom color style")
 
-	// internal style:
+	// internal theme/style:
+	Info.Prompt("message")
 	Info.Println("message")
 	Warn.Println("message")
 	Error.Println("message")

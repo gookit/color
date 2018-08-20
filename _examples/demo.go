@@ -5,14 +5,14 @@ import (
 	"github.com/gookit/color"
 )
 
-// go run ./_examples/app.go
+// go run ./_examples/demo.go
 func main() {
 	colorUsage()
 }
 
 func colorUsage() {
 	// simple usage
-	color.FgCyan.Printf("Simple to use %s\n", "color")
+	color.Cyan.Printf("Simple to use %s\n", "color")
 
 	// use like func
 	red := color.FgRed.Render
@@ -24,11 +24,18 @@ func colorUsage() {
 	// can also:
 	color.Style{color.FgCyan, color.OpBold}.Println("custom color style")
 
+	// internal theme/style:
+	color.Info.Tips("message")
+	color.Info.Prompt("message")
+	color.Info.Println("message")
+	color.Warn.Println("message")
+	color.Error.Println("message")
+
 	// use defined color tag
-	color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
+	color.Print("use color tag: <suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
 
 	// use custom color tag
-	color.Print("<fg=yellow;bg=black;op=underscore;>hello, welcome</>\n")
+	color.Print("custom color tag: <fg=yellow;bg=black;op=underscore;>hello, welcome</>\n")
 
 	// set a color tag
 	color.Tag("info").Println("info style message")

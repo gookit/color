@@ -71,7 +71,9 @@ func main() {
 	// can also:
 	color.Style{color.FgCyan, color.OpBold}.Println("custom color style")
 	
-	// internal style:
+	// internal theme/style:
+	color.Info.Tips("message")
+	color.Info.Prompt("message")
 	color.Info.Println("message")
 	color.Warn.Println("message")
 	color.Error.Println("message")

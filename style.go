@@ -2,6 +2,7 @@ package color
 
 import (
 	"fmt"
+	"strings"
 )
 
 // Style a colored style
@@ -46,7 +47,7 @@ func (s Style) Print(args ...interface{}) (int, error) {
 	return fmt.Print(s.Render(args...))
 }
 
-// Printf render and Print text
+// Printf render and print text
 func (s Style) Printf(format string, args ...interface{}) (int, error) {
 	str := fmt.Sprintf(format, args...)
 	if isLikeInCmd {
@@ -71,45 +72,84 @@ func (s Style) IsEmpty() bool {
 }
 
 /*************************************************************
- * internal styles(like bootstrap style)
+ * Theme
  *************************************************************/
 
-// internal styles(like bootstrap style)
+// Theme definition. extends from Style
+type Theme struct {
+	// Name theme name
+	Name string
+	// Style for the theme
+	Style
+}
+
+func NewTheme(name string, style Style) *Theme {
+	return &Theme{name, style}
+}
+
+// Tips use name as title, only apply style for name
+func (t *Theme) Tips(format string, args ...interface{}) {
+	title := strings.ToUpper(t.Name) + ": "
+	t.Print(title) // only apply style for name
+	Printf(format+"\n", args...)
+}
+
+// Prompt use name as title, and apply style for message
+func (t *Theme) Prompt(format string, args ...interface{}) {
+	title := strings.ToUpper(t.Name) + ": "
+	t.Printf(title+format+"\n", args...)
+}
+
+// Block like Prompt, but will wrap a empty line
+func (t *Theme) Block(format string, args ...interface{}) {
+	title := strings.ToUpper(t.Name) + ":\n  "
+	message := Sprintf(format, args...)
+
+	t.Println(title, message)
+}
+
+/*************************************************************
+ * internal themes
+ *************************************************************/
+
+// internal themes(like bootstrap style)
 // usage:
-//	color.Info.Print("message")
-//	color.Info.Println("new line")
-//	color.Info.Printf("a %s message", "test")
-//	color.Warn.Println("message")
-//	color.Error.Println("message")
+// 	color.Info.Print("message")
+// 	color.Info.Println("new line")
+// 	color.Info.Printf("a %s message", "test")
+// 	color.Warn.Println("message")
+// 	color.Error.Println("message")
 var (
 	// Info color style
-	Info = Style{OpReset, FgGreen}
+	Info = &Theme{"info", Style{OpReset, FgGreen}}
 	// Note color style
-	Note = Style{OpBold, FgLightCyan}
+	Note = &Theme{"note", Style{OpBold, FgLightCyan}}
 	// Warn color style
-	Warn = Style{OpBold, FgYellow}
+	Warn = &Theme{"warning", Style{OpBold, FgYellow}}
 	// Light color style
-	Light = Style{FgLightWhite}
+	Light = &Theme{"light", Style{FgLightWhite}}
 	// Error color style
-	Error = Style{FgLightWhite, BgRed}
+	Error = &Theme{"error", Style{FgLightWhite, BgRed}}
 	// Danger color style
-	Danger = Style{OpBold, FgRed}
+	Danger = &Theme{"danger", Style{OpBold, FgRed}}
 	// Notice color style
-	Notice = Style{OpBold, FgCyan}
+	Notice = &Theme{"notice", Style{OpBold, FgCyan}}
 	// Comment color style
-	Comment = Style{OpReset, FgMagenta}
+	Comment = &Theme{"comment", Style{OpReset, FgMagenta}}
 	// Success color style
-	Success = Style{OpBold, FgGreen}
+	Success = &Theme{"success", Style{OpBold, FgGreen}}
 	// Primary color style
-	Primary = Style{OpReset, FgBlue}
+	Primary = &Theme{"primary", Style{OpReset, FgBlue}}
 	// Question color style
-	Question = Style{OpReset, FgMagenta}
+	Question = &Theme{"question", Style{OpReset, FgMagenta}}
 	// Secondary color style
-	Secondary = Style{FgDarkGray}
+	Secondary = &Theme{"secondary", Style{FgDarkGray}}
 )
 
-// Some defined styles, like bootstrap styles
-var Styles = map[string]Style{
+// Themes internal defined themes.
+// usage:
+// 	color.Themes["info"].Println("message")
+var Themes = map[string]*Theme{
 	"info":  Info,
 	"note":  Note,
 	"light": Light,
@@ -126,6 +166,41 @@ var Styles = map[string]Style{
 	"secondary": Secondary,
 }
 
+// AddTheme add a theme and style
+func AddTheme(name string, style Style) {
+	Themes[name] = NewTheme(name, style)
+	Styles[name] = style
+}
+
+// GetTheme get defined theme by name
+func GetTheme(name string) *Theme {
+	return Themes[name]
+}
+
+/*************************************************************
+ * internal styles
+ *************************************************************/
+
+// Styles internal defined styles, like bootstrap styles.
+// usage:
+// 	color.Styles["info"].Println("message")
+var Styles = map[string]Style{
+	"info":  {OpReset, FgGreen},
+	"note":  {OpBold, FgLightCyan},
+	"light": {FgLightWhite, BgRed},
+	"error": {FgLightWhite, BgRed},
+
+	"danger":  {OpBold, FgRed},
+	"notice":  {OpBold, FgCyan},
+	"success": {OpBold, FgGreen},
+	"comment": {OpReset, FgMagenta},
+	"primary": {OpReset, FgBlue},
+	"warning": {OpBold, FgYellow},
+
+	"question":  {OpReset, FgMagenta},
+	"secondary": {FgDarkGray},
+}
+
 // some style name alias
 var styleAliases = map[string]string{
 	"err":  "error",
@@ -138,7 +213,7 @@ func AddStyle(name string, s Style) {
 	Styles[name] = s
 }
 
-// GetStyle get style by name
+// GetStyle get defined style by name
 func GetStyle(name string) Style {
 	if s, ok := Styles[name]; ok {
 		return s
@@ -150,13 +225,4 @@ func GetStyle(name string) Style {
 
 	// empty style
 	return New()
-}
-
-// GetStyleName
-func GetStyleName(name string) string {
-	if realName, ok := styleAliases[name]; ok {
-		return realName
-	}
-
-	return name
 }

@@ -11,11 +11,11 @@ import (
 const (
 	// Regex to match color tags
 	// golang 不支持反向引用.  即不支持使用 \1 引用第一个匹配 ([a-z=;]+)
-	// TagExpr = `<([a-z=;]+)>(.*?)<\/\1>`
+	// MatchExpr = `<([a-z=;]+)>(.*?)<\/\1>`
 	// 所以调整一下 统一使用 `</>` 来结束标签，例如 "<info>some text</>"
 	// 支持自定义颜色属性的tag "<fg=white;bg=blue;op=bold>content</>"
 	// (?s:...) s - 让 "." 匹配换行
-	TagExpr = `<([a-zA-Z_=,;]+)>(?s:(.*?))<\/>`
+	MatchExpr = `<([a-zA-Z_=,;]+)>(?s:(.*?))<\/>`
 
 	// Regex to match color attributes
 	AttrExpr = `(fg|bg|op)=([a-z,]+);?`
@@ -24,6 +24,11 @@ const (
 	// StripExpr = `<[\/]?[a-zA-Z=;]+>`
 	// 随着上面的做一些调整
 	StripExpr = `<[\/]?[a-zA-Z_=,;]*>`
+)
+
+var (
+	matchRegex = regexp.MustCompile(MatchExpr)
+	stripRegex = regexp.MustCompile(StripExpr)
 )
 
 // Some internal defined color tags
@@ -133,7 +138,7 @@ var Options = map[string]Color{
 	"concealed":  OpConcealed,
 }
 
-// ApplyTag
+// ApplyTag for messages
 func ApplyTag(tag string, args ...interface{}) string {
 	return buildColoredText(GetStyleCode(tag), args...)
 }
@@ -160,7 +165,7 @@ func Fprint(w io.Writer, args ...interface{}) (int, error) {
 
 // Fprintf print format and rendered messages to writer
 func Fprintf(w io.Writer, format string, args ...interface{}) (int, error) {
-	return fmt.Fprint(w, Render(fmt.Sprintf(format, args...)))
+	return fmt.Fprint(w, String(fmt.Sprintf(format, args...)))
 }
 
 // Fprintln print rendered messages line to writer
@@ -173,6 +178,21 @@ func Render(args ...interface{}) string {
 	return ReplaceTag(fmt.Sprint(args...))
 }
 
+// Sprint return rendered string
+func Sprint(args ...interface{}) string {
+	return Render(args...)
+}
+
+// Sprintf format and return rendered string
+func Sprintf(format string, args ...interface{}) string {
+	return String(fmt.Sprintf(format, args...))
+}
+
+// String alias of the ReplaceTag
+func String(str string) string {
+	return ReplaceTag(str)
+}
+
 // RenderStr alias of the ReplaceTag
 func RenderStr(str string) string {
 	return ReplaceTag(str)
@@ -180,28 +200,18 @@ func RenderStr(str string) string {
 
 // ReplaceTag parse string, replace tag and return rendered string
 func ReplaceTag(str string, dumpIt ...bool) string {
+	// not contains color tag
 	if !strings.Contains(str, "<") {
 		return str
 	}
 
-	// disable color
-	if !Enable {
+	// disable color OR not support color render
+	if !Enable || isLikeInCmd {
 		return ClearTag(str)
 	}
 
-	// if not support color output
-	if isLikeInCmd {
-		return ClearTag(str)
-	}
-
-	// reg := regexp.MustCompile(TagExpr)
-	reg, err := regexp.Compile(TagExpr)
-	if err != nil {
-		return str
-	}
-
-	matched := reg.FindAllStringSubmatch(str, -1)
-	// fmt.Printf("matched %v\n", matched)
+	// find color tags by regex
+	matched := matchRegex.FindAllStringSubmatch(str, -1)
 
 	// item: 0 full text 1 tag name 2 tag content
 	for _, item := range matched {
@@ -300,12 +310,7 @@ func ClearTag(str string) string {
 		return str
 	}
 
-	rgp, err := regexp.Compile(StripExpr)
-	if err != nil {
-		return str
-	}
-
-	return rgp.ReplaceAllString(str, "")
+	return stripRegex.ReplaceAllString(str, "")
 }
 
 // GetColorTags
