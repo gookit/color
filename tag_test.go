@@ -1,82 +1,71 @@
 package color
 
 import (
-	c "github.com/smartystreets/goconvey/convey"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestWrapTag(t *testing.T) {
-	c.Convey("test wrap a tag", t, func() {
-		c.So(WrapTag("text", "info"), c.ShouldEqual, "<info>text</>")
-	})
-}
-
 func TestReplaceTag(t *testing.T) {
-	c.Convey("test parse color tags", t, func() {
-		c.Convey("sample 1", func() {
-			r := ReplaceTag("<err>text</>")
-			c.So(r, c.ShouldNotContainSubstring, "<")
-			c.So(r, c.ShouldNotContainSubstring, ">")
-		})
+	at := assert.New(t)
 
-		c.Convey("sample 2", func() {
-			s := "abc <err>err-text</> def <info>info text</>"
-			r := ReplaceTag(s)
-			c.So(r, c.ShouldNotContainSubstring, "<")
-			c.So(r, c.ShouldNotContainSubstring, ">")
-		})
+	// sample 1
+	r := ReplaceTag("<err>text</>")
+	at.NotContains(r, "<")
+	at.NotContains(r, ">")
 
-		c.Convey("sample 3", func() {
-			s := `abc <err>err-text</> 
+	// disable color
+	Enable = false
+	r = ReplaceTag("<err>text</>")
+	at.Equal("text", r)
+	Enable = true
+
+	// sample 2
+	s := "abc <err>err-text</> def <info>info text</>"
+	r = ReplaceTag(s)
+	at.NotContains(r, "<")
+	at.NotContains(r, ">")
+
+	// sample 3
+	s = `abc <err>err-text</> 
 def <info>info text
 </>`
-			r := ReplaceTag(s)
-			c.So(r, c.ShouldNotContainSubstring, "<")
-			c.So(r, c.ShouldNotContainSubstring, ">")
-		})
+	r = ReplaceTag(s)
+	at.NotContains(r, "<")
+	at.NotContains(r, ">")
 
-		c.Convey("sample 4", func() {
-			s := "abc <err>err-text</> def <err>err-text</> "
-			r := ReplaceTag(s)
-			c.So(r, c.ShouldNotContainSubstring, "<")
-			c.So(r, c.ShouldNotContainSubstring, ">")
-		})
+	// sample 4
+	s = "abc <err>err-text</> def <err>err-text</> "
+	r = ReplaceTag(s)
+	at.NotContains(r, "<")
+	at.NotContains(r, ">")
 
-		c.Convey("sample 5", func() {
-			s := "abc <err>err-text</> def <d>"
-			r := ReplaceTag(s)
-			c.So(r, c.ShouldNotContainSubstring, "<err>")
-			c.So(r, c.ShouldContainSubstring, "<d>")
-		})
-	})
+	// sample 5
+	s = "abc <err>err-text</> def <d>"
+	r = ReplaceTag(s)
+	at.NotContains(r, "<err>")
+	at.Contains(r, "<d>")
+}
+
+func TestWrapTag(t *testing.T) {
+	at := assert.New(t)
+	at.Equal("<info>text</>", WrapTag("text", "info"))
 }
 
 func TestClearTag(t *testing.T) {
-	s1 := "<err>text</>"
-	c.Convey(s1+" -> 'text'", t, func() {
-		c.So(ClearTag(s1), c.ShouldEqual, "text")
-	})
+	at := assert.New(t)
+	at.Equal("text", ClearTag("<err>text</>"))
 
-	s2 := "abc <err>error</> def <info>info text</>"
+	at.Equal("abc error def info text", ClearTag("abc <err>error</> def <info>info text</>"))
 
-	c.Convey(s1+" -> 'abc error def info text'", t, func() {
-		c.So(ClearTag(s2), c.ShouldEqual, "abc error def info text")
-	})
-
-	s3 := `abc <err>err-text</> 
+	str := `abc <err>err-text</> 
 def <info>info text
 </>`
-	c.Convey("clear color tags", t, func() {
-		r := ClearTag(s3)
+	ret := ClearTag(str)
+	at.Contains(ret, "def info")
+	at.NotContains(ret, "</>")
 
-		c.So(r, c.ShouldNotContainSubstring, "</>")
-		c.So(r, c.ShouldContainSubstring, "def in")
-
-		c.Convey("sample 1", func() {
-			s := "abc <err>text</> def<d>"
-			r := ClearTag(s)
-			c.So(r, c.ShouldNotContainSubstring, "<err>")
-			c.So(r, c.ShouldEqual, "abc text def")
-		})
-	})
+	str = "abc <err>text</> def<d>"
+	ret = ClearTag(str)
+	at.Equal("abc text def", ret)
+	at.NotContains(ret, "<err>")
 }

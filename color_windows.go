@@ -1,9 +1,10 @@
-// display color on windows
-// ref:
+// +build windows
+
+// Display color on windows
+// refer:
 //  golang.org/x/sys/windows
 // 	golang.org/x/crypto/ssh/terminal
 // 	https://docs.microsoft.com/en-us/windows/console
-
 package color
 
 import (
@@ -86,7 +87,7 @@ var (
 	// isMSys bool
 	kernel32 *syscall.LazyDLL
 
-	// procGetConsoleMode *syscall.LazyProc
+	procGetConsoleMode *syscall.LazyProc
 	// procSetConsoleMode *syscall.LazyProc
 
 	procSetTextAttribute           *syscall.LazyProc
@@ -98,10 +99,6 @@ var (
 )
 
 func init() {
-	// Byte8Color("test 8 byte color", 208)
-	// Byte24Color("test 24 byte color")
-	// os.Exit(0)
-
 	// if at linux, mac, or windows's ConEmu, Cmder, putty
 	if isSupportColor {
 		return
@@ -115,7 +112,7 @@ func init() {
 	kernel32 = syscall.NewLazyDLL("kernel32.dll")
 
 	// https://docs.microsoft.com/en-us/windows/console/setconsolemode
-	// procGetConsoleMode = kernel32.NewProc("GetConsoleMode")
+	procGetConsoleMode = kernel32.NewProc("GetConsoleMode")
 	// procSetConsoleMode = kernel32.NewProc("SetConsoleMode")
 
 	procSetTextAttribute = kernel32.NewProc("SetConsoleTextAttribute")
@@ -130,7 +127,7 @@ func init() {
 func initWinColorsMap() {
 	// init map
 	winColorsMap = map[Color]uint16{
-		// Foreground
+		// Foreground colors
 		FgBlack:   winFgBlack,
 		FgRed:     winFgRed,
 		FgGreen:   winFgGreen,
@@ -139,10 +136,9 @@ func initWinColorsMap() {
 		FgMagenta: winFgPink, // diff
 		FgCyan:    winFgAqua, // diff
 		FgWhite:   winFgWhite,
-
 		FgDefault: winFgWhite,
 
-		// Extra Foreground
+		// Extra Foreground colors
 		FgDarkGray:     winFgGray,
 		FgLightRed:     winFgLightBlue,
 		FgLightGreen:   winFgLightGreen,
@@ -152,7 +148,7 @@ func initWinColorsMap() {
 		FgLightCyan:    winFgLightAqua,
 		FgLightWhite:   winFgLightWhite,
 
-		// Background
+		// Background colors
 		BgBlack:   winBgBlack,
 		BgRed:     winBgRed,
 		BgGreen:   winBgGreen,
@@ -161,10 +157,9 @@ func initWinColorsMap() {
 		BgMagenta: winBgPink, // diff
 		BgCyan:    winBgAqua, // diff
 		BgWhite:   winBgWhite,
-
 		BgDefault: winBgBlack,
 
-		// Extra Background
+		// Extra Background colors
 		BgDarkGray:     winBgGray,
 		BgLightRed:     winBgLightBlue,
 		BgLightGreen:   winBgLightGreen,
@@ -267,7 +262,7 @@ func convertColorsToWinAttr(colors []Color) uint16 {
 	return setting
 }
 
-// getWinColor
+// getWinColor convert Color to win-color value
 func getWinColor(color Color) uint16 {
 	if wc, ok := winColorsMap[color]; ok {
 		return wc
@@ -285,20 +280,22 @@ func setConsoleTextAttr(consoleOutput uintptr, winAttr uint16) (n int, err error
 }
 
 // IsTty returns true if the given file descriptor is a terminal.
-// func IsTty(fd uintptr) bool {
-// 	var st uint32
-// 	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, fd, uintptr(unsafe.Pointer(&st)), 0)
-// 	return r != 0 && e == 0
-// }
+func IsTty(fd uintptr) bool {
+	var st uint32
+	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, fd, uintptr(unsafe.Pointer(&st)), 0)
+	return r != 0 && e == 0
+}
 
 // IsTerminal returns true if the given file descriptor is a terminal.
-// fd := os.Stdout.Fd()
-// fd := uintptr(syscall.Stdout) for windows
-// func IsTerminal(fd int) bool {
-// 	var st uint32
-// 	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, uintptr(fd), uintptr(unsafe.Pointer(&st)), 0)
-// 	return r != 0 && e == 0
-// }
+// Usage:
+// 	fd := os.Stdout.Fd()
+// 	fd := uintptr(syscall.Stdout) // for windows
+// 	IsTerminal(fd)
+func IsTerminal(fd int) bool {
+	var st uint32
+	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, uintptr(fd), uintptr(unsafe.Pointer(&st)), 0)
+	return r != 0 && e == 0
+}
 
 // from package: golang.org/x/sys/windows
 type (
@@ -334,7 +331,6 @@ type (
 // GetSize returns the dimensions of the given terminal.
 func getSize(fd int) (width, height int, err error) {
 	var info consoleScreenBufferInfo
-
 	if err := getConsoleScreenBufferInfo(uintptr(fd), &info); err != nil {
 		return 0, 0, err
 	}

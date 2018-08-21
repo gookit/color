@@ -8,6 +8,7 @@ import (
 // go run ./_examples/demo.go
 func main() {
 	colorUsage()
+
 }
 
 func colorUsage() {
@@ -49,7 +50,6 @@ func colorUsage() {
 	color.LiteTips("warn").Print("lite tips style message")
 
 	i := 0
-
 	fmt.Print("\n- All Available color Tags: \n\n")
 
 	for tag, _ := range color.GetColorTags() {

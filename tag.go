@@ -27,9 +27,52 @@ const (
 )
 
 var (
+	attrRegex  = regexp.MustCompile(AttrExpr)
 	matchRegex = regexp.MustCompile(MatchExpr)
 	stripRegex = regexp.MustCompile(StripExpr)
 )
+
+// Foreground colors map
+var FgColors = map[string]Color{
+	"black":   FgBlack,
+	"red":     FgRed,
+	"green":   FgGreen,
+	"yellow":  FgYellow,
+	"blue":    FgBlue,
+	"magenta": FgMagenta,
+	"cyan":    FgCyan,
+	"white":   FgWhite,
+	"default": FgDefault,
+}
+
+// Background colors map
+var BgColors = map[string]Color{
+	"black":   BgBlack,
+	"red":     BgRed,
+	"green":   BgGreen,
+	"yellow":  BgYellow,
+	"blue":    BgBlue,
+	"magenta": BgMagenta,
+	"cyan":    BgCyan,
+	"white":   BgWhite,
+	"default": BgDefault,
+}
+
+// color options map
+var Options = map[string]Color{
+	"reset":      OpReset,
+	"bold":       OpBold,
+	"fuzzy":      OpFuzzy,
+	"italic":     OpItalic,
+	"underscore": OpUnderscore,
+	"blink":      OpBlink,
+	"reverse":    OpReverse,
+	"concealed":  OpConcealed,
+}
+
+/*************************************************************
+ * internal defined color tags
+ *************************************************************/
 
 // Some internal defined color tags
 // usage: <tag>content text</>
@@ -42,11 +85,13 @@ var colorTags = map[string]string{
 	"black":    "0;30",
 	"green":    "0;32",
 	"white":    "1;37",
-	"default":  "39", // no color
-	"normal":   "39", // no color
+	"default":  "0;39", // no color
+	"normal":   "0;39", // no color
 	"brown":    "0;33",
 	"yellow":   "1;33",
+	"mga":      "0;35", // short name
 	"magenta":  "0;35",
+	"mgb":      "1;35", // short name
 	"magentaB": "1;35", // add bold
 
 	// alert tags, like bootstrap's alert
@@ -100,48 +145,9 @@ var colorTags = map[string]string{
 	"reverse":    "7",
 }
 
-// Foreground colors map
-var FgColors = map[string]Color{
-	"black":   FgBlack,
-	"red":     FgRed,
-	"green":   FgGreen,
-	"yellow":  FgYellow,
-	"blue":    FgBlue,
-	"magenta": FgMagenta,
-	"cyan":    FgCyan,
-	"white":   FgWhite,
-	"default": FgDefault,
-}
-
-// Background colors map
-var BgColors = map[string]Color{
-	"black":   BgBlack,
-	"red":     BgRed,
-	"green":   BgGreen,
-	"yellow":  BgYellow,
-	"blue":    BgBlue,
-	"magenta": BgMagenta,
-	"cyan":    BgCyan,
-	"white":   BgWhite,
-	"default": BgDefault,
-}
-
-// color options map
-var Options = map[string]Color{
-	"reset":      OpReset,
-	"bold":       OpBold,
-	"fuzzy":      OpFuzzy,
-	"italic":     OpItalic,
-	"underscore": OpUnderscore,
-	"blink":      OpBlink,
-	"reverse":    OpReverse,
-	"concealed":  OpConcealed,
-}
-
-// ApplyTag for messages
-func ApplyTag(tag string, args ...interface{}) string {
-	return buildColoredText(GetStyleCode(tag), args...)
-}
+/*************************************************************
+ * print methods(will auto parse color tags)
+ *************************************************************/
 
 // Print messages
 func Print(args ...interface{}) (int, error) {
@@ -187,6 +193,10 @@ func Sprint(args ...interface{}) string {
 func Sprintf(format string, args ...interface{}) string {
 	return String(fmt.Sprintf(format, args...))
 }
+
+/*************************************************************
+ * parse color tags
+ *************************************************************/
 
 // String alias of the ReplaceTag
 func String(str string) string {
@@ -256,9 +266,8 @@ func ParseCodeFromAttr(attr string) (code string) {
 	}
 
 	var colors []Color
-	reg := regexp.MustCompile(`(fg|bg|op)=([a-z,]+);?`)
-	matched := reg.FindAllStringSubmatch(attr, -1)
-	// fmt.Printf("matched %+v\n", matched)
+	// reg := regexp.MustCompile(`(fg|bg|op)=([a-z,]+);?`)
+	matched := attrRegex.FindAllStringSubmatch(attr, -1)
 
 	for _, item := range matched {
 		pos, val := item[1], item[2]
@@ -289,6 +298,10 @@ func ParseCodeFromAttr(attr string) (code string) {
 	return buildColorCode(colors...)
 }
 
+/*************************************************************
+ * helper methods
+ *************************************************************/
+
 // GetStyleCode get color code by tag name
 func GetStyleCode(name string) string {
 	if code, ok := colorTags[name]; ok {
@@ -296,6 +309,11 @@ func GetStyleCode(name string) string {
 	}
 
 	return ""
+}
+
+// ApplyTag for messages
+func ApplyTag(tag string, args ...interface{}) string {
+	return buildColoredText(GetStyleCode(tag), args...)
 }
 
 // WrapTag wrap a tag for a string "<tag>content</>"
@@ -313,7 +331,7 @@ func ClearTag(str string) string {
 	return stripRegex.ReplaceAllString(str, "")
 }
 
-// GetColorTags
+// GetColorTags get all internal color tags
 func GetColorTags() map[string]string {
 	return colorTags
 }
@@ -324,19 +342,19 @@ func IsDefinedTag(name string) bool {
 	return ok
 }
 
-// IsFgColor
+// IsFgColor name
 func IsFgColor(name string) bool {
 	_, ok := FgColors[name]
 	return ok
 }
 
-// IsBgColor
+// IsBgColor name
 func IsBgColor(name string) bool {
 	_, ok := BgColors[name]
 	return ok
 }
 
-// IsOption
+// IsOption name
 func IsOption(name string) bool {
 	_, ok := Options[name]
 	return ok

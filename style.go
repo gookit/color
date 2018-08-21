@@ -135,7 +135,7 @@ var (
 	// Notice color style
 	Notice = &Theme{"notice", Style{OpBold, FgCyan}}
 	// Comment color style
-	Comment = &Theme{"comment", Style{OpReset, FgMagenta}}
+	Comment = &Theme{"comment", Style{OpReset, FgLightYellow}}
 	// Success color style
 	Success = &Theme{"success", Style{OpBold, FgGreen}}
 	// Primary color style

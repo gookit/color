@@ -2,33 +2,31 @@ package color
 
 import (
 	"fmt"
-	"github.com/gookit/color/utils"
 	"regexp"
 	"strings"
 )
 
 // Color represents a text color.
+// 3/4 bite color.
 type Color uint8
 
-// Foreground colors.
+// Foreground colors. basic foreground colors 30 - 37
 const (
-	// basic Foreground colors 30 - 37
-	FgBlack   Color = iota + 30
+	FgBlack Color = iota + 30
 	FgRed
 	FgGreen
 	FgYellow
 	FgBlue
-	FgMagenta  // 品红
-	FgCyan     // 青色
+	FgMagenta // 品红
+	FgCyan    // 青色
 	FgWhite
-
-	// revert default FG
+	// FgDefault revert default FG
 	FgDefault Color = 39
 )
 
 // Extra foreground color 90 - 97(非标准)
 const (
-	FgDarkGray     Color = iota + 90 // 亮黑（灰）
+	FgDarkGray Color = iota + 90 // 亮黑（灰）
 	FgLightRed
 	FgLightGreen
 	FgLightYellow
@@ -40,24 +38,23 @@ const (
 	FgGray Color = 90 // 亮黑（灰）
 )
 
-// Background colors.
+// Background colors. basic background colors 40 - 47
 const (
-	// basic Background colors 40 - 47
-	BgBlack   Color = iota + 40
+	BgBlack Color = iota + 40
 	BgRed
 	BgGreen
-	BgYellow   // BgBrown like yellow
+	BgYellow // BgBrown like yellow
 	BgBlue
 	BgMagenta
 	BgCyan
 	BgWhite
-	// revert default BG
+	// BgDefault revert default BG
 	BgDefault Color = 49
 )
 
 // Extra background color 100 - 107(非标准)
 const (
-	BgDarkGray     Color = iota + 99
+	BgDarkGray Color = iota + 99
 	BgLightRed
 	BgLightGreen
 	BgLightYellow
@@ -83,25 +80,54 @@ const (
 	OpStrikethrough              // 9 删除的，删除线(未广泛支持)
 )
 
-// ESC 操作的表示 "\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
-const ResetCode = "\x1b[0m"
+// console color mode
+const (
+	ModeNormal = iota
+	Mode256    // 8 bite
+	ModeRGB    // 24 bite
+	ModeGrayscale
+)
+
+// There are basic foreground color alias
+const (
+	Red     = FgRed
+	Cyan    = FgCyan
+	Gray    = FgDarkGray
+	Blue    = FgBlue
+	Black   = FgBlack
+	Green   = FgGreen
+	White   = FgWhite
+	Yellow  = FgYellow
+	Magenta = FgMagenta
+	Bold    = OpBold
+	Normal  = FgDefault
+)
 
 // CLI color template
-const SettingTpl = "\x1b[%sm"
-const FullColorTpl = "\x1b[%sm%s\x1b[0m"
-const SingleColorTpl = "\x1b[%dm%s\x1b[0m"
+const (
+	SettingTpl     = "\x1b[%sm"
+	FullColorTpl   = "\x1b[%sm%s\x1b[0m"
+	FullColorNlTpl   = "\x1b[%sm%s\x1b[0m\n"
+	SingleColorTpl = "\x1b[%dm%s\x1b[0m"
+)
 
-// Regex to clear color codes eg "\033[1;36mText\x1b[0m"
+const StartCode = "\x1b["
+
+// ResetCode ESC 操作的表示
+// 	"\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
+const ResetCode = "\x1b[0m"
+
+// CodeExpr regex to clear color codes eg "\033[1;36mText\x1b[0m"
 const CodeExpr = `\033\[[\d;?]+m`
 
-// switch color display
+// Enable switch color display
 var Enable = true
 
-// It's like in cmd.exe
+// mark current env, It's like in cmd.exe
 var isLikeInCmd bool
 
 // check current env
-var isSupportColor = utils.IsSupportColor()
+var isSupportColor = IsSupportColor()
 
 // Set set console color attributes
 func Set(colors ...Color) (int, error) {
@@ -216,35 +242,6 @@ func (c Color) IsValid() bool {
 func (c Color) String() string {
 	return fmt.Sprintf("%d", c)
 }
-
-/*************************************************************
- * FG color aliases
- *************************************************************/
-
-const (
-	// Bold use bold for message
-	Bold = OpBold
-	// Red color for message
-	Red = FgRed
-	// Cyan color for message
-	Cyan = FgCyan
-	// Gray color for message
-	Gray = FgDarkGray
-	// Blue color for message
-	Blue = FgBlue
-	// Black color for message
-	Black = FgBlack
-	// Green color for message
-	Green = FgGreen
-	// White color for message
-	White = FgWhite
-	// Normal color for message
-	Normal = FgDefault
-	// Yellow color for message
-	Yellow = FgYellow
-	// Magenta color for message
-	Magenta = FgMagenta
-)
 
 /*************************************************************
  * helper methods
