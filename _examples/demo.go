@@ -8,7 +8,6 @@ import (
 // go run ./_examples/demo.go
 func main() {
 	colorUsage()
-
 }
 
 func colorUsage() {
@@ -28,9 +27,10 @@ func colorUsage() {
 	// internal theme/style:
 	color.Info.Tips("message")
 	color.Info.Prompt("message")
-	color.Info.Println("message")
-	color.Warn.Println("message")
-	color.Error.Println("message")
+	color.Info.Println("info message")
+	color.Warn.Println("warning message")
+	color.Error.Println("error message")
+	color.Danger.Println("danger message")
 
 	// use defined color tag
 	color.Print("use color tag: <suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
@@ -48,19 +48,4 @@ func colorUsage() {
 	// lite tips
 	color.LiteTips("info").Print("lite tips style message")
 	color.LiteTips("warn").Print("lite tips style message")
-
-	i := 0
-	fmt.Print("\n- All Available color Tags: \n\n")
-
-	for tag, _ := range color.GetColorTags() {
-		i++
-		color.Tag(tag).Print(tag)
-
-		if i%5 == 0 {
-			fmt.Print("\n")
-		} else {
-			fmt.Print(" ")
-		}
-	}
-	fmt.Print("\n")
 }

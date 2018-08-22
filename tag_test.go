@@ -9,7 +9,7 @@ func TestReplaceTag(t *testing.T) {
 	at := assert.New(t)
 
 	// sample 1
-	r := ReplaceTag("<err>text</>")
+	r := String("<err>text</>")
 	at.NotContains(r, "<")
 	at.NotContains(r, ">")
 

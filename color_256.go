@@ -32,29 +32,29 @@ const TplFg256 = "38;5;%d"
 const TplBg256 = "48;5;%d"
 
 /*************************************************************
- * 8bit(256) Color
+ * 8bit(256) Color: Bit8Color Color256
  *************************************************************/
 
-// Bit8Color 256 (8 bit) color, uint8 range at 0 - 255
+// Color256 256 (8 bit) color, uint8 range at 0 - 255
 //
 // 颜色值使用10进制和16进制都可 0x98 = 152
 //
 // 颜色有两位uint8组成,
 // 	0: color value
 // 	1: color type, Fg=0 Bg=1
-//	>1: unset value
+// 	>1: unset value
 // 	fg color: [152, 0]
 //  bg color: [152, 1]
-type Bit8Color [2]uint8
+type Color256 [2]uint8
 
 // Bit8 create a color256
-func Bit8(val uint8, isBg ...bool) Bit8Color {
+func Bit8(val uint8, isBg ...bool) Color256 {
 	return C256(val, isBg...)
 }
 
 // C256 create a color256
-func C256(val uint8, isBg ...bool) Bit8Color {
-	bc := Bit8Color{val}
+func C256(val uint8, isBg ...bool) Color256 {
+	bc := Color256{val}
 
 	// mark is bg color
 	if len(isBg) > 0 && isBg[0] {
@@ -65,37 +65,37 @@ func C256(val uint8, isBg ...bool) Bit8Color {
 }
 
 // Print print message
-func (c Bit8Color) Print(a ...interface{}) {
-	print(RenderCode(c.String(), a...))
+func (c Color256) Print(a ...interface{}) {
+	fmt.Print(RenderCode(c.String(), a...))
 }
 
 // Printf format and print message
-func (c Bit8Color) Printf(format string, a ...interface{}) {
-	print(RenderString(c.String(), fmt.Sprintf(format, a...)))
+func (c Color256) Printf(format string, a ...interface{}) {
+	fmt.Print(RenderString(c.String(), fmt.Sprintf(format, a...)))
 }
 
 // Println print message with newline
-func (c Bit8Color) Println(a ...interface{}) {
-	println(RenderCode(c.String(), a...))
+func (c Color256) Println(a ...interface{}) {
+	fmt.Println(RenderCode(c.String(), a...))
 }
 
 // Sprint returns rendered message
-func (c Bit8Color) Sprint(a ...interface{}) string {
+func (c Color256) Sprint(a ...interface{}) string {
 	return RenderCode(c.String(), a...)
 }
 
-// Sprint returns format and rendered message
-func (c Bit8Color) Sprintf(format string, a ...interface{}) string {
+// Sprintf returns format and rendered message
+func (c Color256) Sprintf(format string, a ...interface{}) string {
 	return RenderString(c.String(), fmt.Sprintf(format, a...))
 }
 
 // Value return color value
-func (c Bit8Color) Value() uint8 {
+func (c Color256) Value() uint8 {
 	return c[0]
 }
 
 // String convert to string
-func (c Bit8Color) String() string {
+func (c Color256) String() string {
 	if c[1] == AsFg { // 0 is Fg
 		return fmt.Sprintf(TplFg256, c[0])
 	}
@@ -109,7 +109,7 @@ func (c Bit8Color) String() string {
 }
 
 // IsEmpty value
-func (c Bit8Color) IsEmpty() bool {
+func (c Color256) IsEmpty() bool {
 	return c[1] > 1
 }
 
@@ -124,7 +124,7 @@ func (c Bit8Color) IsEmpty() bool {
 // 第二位与Bit8Color不一样的是，在这里表示是否设置了值 0 未设置 ^0 已设置
 type Style256 struct {
 	Name   string
-	fg, bg Bit8Color
+	fg, bg Color256
 }
 
 // S256 create a color256 style
@@ -136,39 +136,48 @@ func S256(values ...uint8) *Style256 {
 	s := &Style256{}
 	vl := len(values)
 	if vl > 0 { // with fg
-		s.fg = Bit8Color{values[0], 1}
+		s.fg = Color256{values[0], 1}
 
 		if vl > 1 { // and with bg
-			s.bg = Bit8Color{values[1], 1}
+			s.bg = Color256{values[1], 1}
 		}
 	}
 
 	return s
 }
 
+// Set fg and bg color value
+func (s *Style256) Set(fgVal, bgVal uint8) *Style256 {
+	s.fg = Color256{fgVal, 1}
+	s.bg = Color256{bgVal, 1}
+	return s
+}
+
 // SetBg set bg color value
-func (s *Style256) SetBg(bgVal uint8) {
-	s.bg = Bit8Color{bgVal, 1}
+func (s *Style256) SetBg(bgVal uint8) *Style256 {
+	s.bg = Color256{bgVal, 1}
+	return s
 }
 
 // SetFg set fg color value
-func (s *Style256) SetFg(fgVal uint8) {
-	s.fg = Bit8Color{fgVal, 1}
+func (s *Style256) SetFg(fgVal uint8) *Style256 {
+	s.fg = Color256{fgVal, 1}
+	return s
 }
 
 // Print print message
-func (s *Style256) Print(a ...interface{}) (n int, err error) {
-	return fmt.Printf(FullColorTpl, s.String(), fmt.Sprint(a...))
+func (s *Style256) Print(a ...interface{}) {
+	fmt.Printf(FullColorTpl, s.String(), fmt.Sprint(a...))
 }
 
 // Printf format and print message
-func (s *Style256) Printf(format string, a ...interface{}) (n int, err error) {
-	return fmt.Printf(FullColorTpl, s.String(), fmt.Sprintf(format, a...))
+func (s *Style256) Printf(format string, a ...interface{}) {
+	fmt.Printf(FullColorTpl, s.String(), fmt.Sprintf(format, a...))
 }
 
 // Println print message with newline
-func (s *Style256) Println(a ...interface{}) (n int, err error) {
-	return fmt.Printf(FullColorNlTpl, s.String(), fmt.Sprint(a...))
+func (s *Style256) Println(a ...interface{}) {
+	fmt.Printf(FullColorNlTpl, s.String(), fmt.Sprint(a...))
 }
 
 // Sprint returns rendered message
@@ -197,12 +206,6 @@ func (s *Style256) String() string {
 
 func Color256Table() {
 
-}
-
-// Byte8Color use 8 byte, 0 - 255 color
-func Byte8Color(str string, val Bit8Color) {
-	fmt.Printf("\x1b[38;5;242;48;5;208m%s\x1b[0m\n", str)
-	fmt.Printf("\x1b[38;5;%dm%s\x1b[0m\n", val, str)
 }
 
 // 16-231：6 × 6 × 6 立方（216色）: 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)

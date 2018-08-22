@@ -182,11 +182,7 @@ func IsDisabled() bool {
 
 // Text render a text message
 func (c Color) Text(message string) string {
-	if isLikeInCmd {
-		return message
-	}
-
-	return fmt.Sprintf(SingleColorTpl, c, message)
+	return RenderString(c.String(), message)
 }
 
 // Render messages by color setting
@@ -194,17 +190,12 @@ func (c Color) Text(message string) string {
 // 		green := color.FgGreen.Render
 // 		fmt.Println(green("message"))
 func (c Color) Render(a ...interface{}) string {
-	message := fmt.Sprint(a...)
-	if isLikeInCmd {
-		return message
-	}
-
-	return fmt.Sprintf(SingleColorTpl, c, message)
+	return RenderCode(c.String(), a...)
 }
 
 // Sprint render messages by color setting. is alias of the Render()
 func (c Color) Sprint(a ...interface{}) string {
-	return c.Render(a...)
+	return RenderCode(c.String(), a...)
 }
 
 // Sprintf format and render message.
@@ -213,11 +204,7 @@ func (c Color) Sprint(a ...interface{}) string {
 //  colored := green("message")
 func (c Color) Sprintf(format string, args ...interface{}) string {
 	message := fmt.Sprintf(format, args...)
-	if isLikeInCmd {
-		return message
-	}
-
-	return fmt.Sprintf(SingleColorTpl, c, message)
+	return RenderString(c.String(), message)
 }
 
 // Print messages.
@@ -226,12 +213,14 @@ func (c Color) Sprintf(format string, args ...interface{}) string {
 // OR:
 // 		green := color.FgGreen.Print
 // 		green("message")
-func (c Color) Print(args ...interface{}) (int, error) {
+func (c Color) Print(args ...interface{}) {
+	message := fmt.Sprint(args...)
 	if isLikeInCmd {
-		return winPrint(fmt.Sprint(args...), c)
+		winPrint(message, c)
+		return
 	}
 
-	return fmt.Printf(SingleColorTpl, c, fmt.Sprint(args...))
+	fmt.Print(RenderString(c.String(), message))
 }
 
 // Printf format and print messages.

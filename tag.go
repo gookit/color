@@ -32,7 +32,11 @@ var (
 	stripRegex = regexp.MustCompile(StripExpr)
 )
 
-// Foreground colors map
+/*************************************************************
+ * basic color maps
+ *************************************************************/
+
+// FgColors foreground colors map
 var FgColors = map[string]Color{
 	"black":   FgBlack,
 	"red":     FgRed,
@@ -45,7 +49,7 @@ var FgColors = map[string]Color{
 	"default": FgDefault,
 }
 
-// Background colors map
+// BgColors background colors map
 var BgColors = map[string]Color{
 	"black":   BgBlack,
 	"red":     BgRed,
@@ -58,7 +62,31 @@ var BgColors = map[string]Color{
 	"default": BgDefault,
 }
 
-// color options map
+// ExFgColors extra foreground colors map
+var ExFgColors = map[string]Color{
+	"darkGray":     FgDarkGray,
+	"lightRed":     FgLightRed,
+	"lightGreen":   FgLightGreen,
+	"lightYellow":  FgLightYellow,
+	"lightBlue":    FgLightBlue,
+	"lightMagenta": FgLightMagenta,
+	"lightCyan":    FgLightCyan,
+	"lightWhite":   FgLightWhite,
+}
+
+// ExBgColors extra background colors map
+var ExBgColors = map[string]Color{
+	"darkGray":     BgDarkGray,
+	"lightRed":     BgLightRed,
+	"lightGreen":   BgLightGreen,
+	"lightYellow":  BgLightYellow,
+	"lightBlue":    BgLightBlue,
+	"lightMagenta": BgLightMagenta,
+	"lightCyan":    BgLightCyan,
+	"lightWhite":   BgLightWhite,
+}
+
+// Options color options map
 var Options = map[string]Color{
 	"reset":      OpReset,
 	"bold":       OpBold,
@@ -136,8 +164,8 @@ var colorTags = map[string]string{
 	"light_blue_ex":  "0;94",
 	"lightCyanEx":    "0;96",
 	"light_cyan_ex":  "0;96",
-	"whiteEx":        "0;97",
-	"white_ex":       "0;97",
+	"whiteEx":        "0;97;40",
+	"white_ex":       "0;97;40",
 
 	// option
 	"bold":       "1",
@@ -191,7 +219,7 @@ func Sprint(args ...interface{}) string {
 
 // Sprintf format and return rendered string
 func Sprintf(format string, a ...interface{}) string {
-	return String(fmt.Sprintf(format, a...))
+	return ReplaceTag(fmt.Sprintf(format, a...))
 }
 
 /*************************************************************
@@ -203,8 +231,8 @@ func String(str string) string {
 	return ReplaceTag(str)
 }
 
-// RenderStr alias of the ReplaceTag
-func RenderStr(str string) string {
+// Text alias of the ReplaceTag
+func Text(str string) string {
 	return ReplaceTag(str)
 }
 
@@ -226,7 +254,6 @@ func ReplaceTag(str string, dumpIt ...bool) string {
 	// item: 0 full text 1 tag name 2 tag content
 	for _, item := range matched {
 		full, tag, content := item[0], item[1], item[2]
-		// fmt.Printf("full: %s tag: %s, tag content:%s old: %s \n", full, tag, content)
 
 		// custom color in tag: "<fg=white;bg=blue;op=bold>content</>"
 		if code := ParseCodeFromAttr(tag); len(code) > 0 {
@@ -266,18 +293,21 @@ func ParseCodeFromAttr(attr string) (code string) {
 	}
 
 	var colors []Color
-	// reg := regexp.MustCompile(`(fg|bg|op)=([a-z,]+);?`)
-	matched := attrRegex.FindAllStringSubmatch(attr, -1)
 
+	matched := attrRegex.FindAllStringSubmatch(attr, -1)
 	for _, item := range matched {
 		pos, val := item[1], item[2]
 		switch pos {
 		case "fg":
-			if c, ok := FgColors[val]; ok {
+			if c, ok := FgColors[val]; ok { // basic fg
+				colors = append(colors, c)
+			} else if c, ok := ExFgColors[val]; ok { // extra fg
 				colors = append(colors, c)
 			}
 		case "bg":
-			if c, ok := BgColors[val]; ok {
+			if c, ok := BgColors[val]; ok { // basic bg
+				colors = append(colors, c)
+			} else if c, ok := ExBgColors[val]; ok { // extra bg
 				colors = append(colors, c)
 			}
 		case "op": // options allow multi value
@@ -339,23 +369,5 @@ func GetColorTags() map[string]string {
 // IsDefinedTag is defined tag name
 func IsDefinedTag(name string) bool {
 	_, ok := colorTags[name]
-	return ok
-}
-
-// IsFgColor name
-func IsFgColor(name string) bool {
-	_, ok := FgColors[name]
-	return ok
-}
-
-// IsBgColor name
-func IsBgColor(name string) bool {
-	_, ok := BgColors[name]
-	return ok
-}
-
-// IsOption name
-func IsOption(name string) bool {
-	_, ok := Options[name]
 	return ok
 }

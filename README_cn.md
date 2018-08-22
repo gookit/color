@@ -8,8 +8,11 @@ golang下的命令行色彩使用库
 
 - 使用简单方便
 - 支持丰富的颜色输出
-- 同时支持html标签式的颜色渲染
-- 兼容Windows
+- 通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
+- 同时支持html标签式的颜色渲染. eg: `<green>message</>`
+- 兼容Windows系统环境
+- 基础色彩: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
+- 扩展风格: `Info` `Note` `Light` `Error` `Danger` `Notice` `Success` `Comment` `Primary` `Warning` `Question` `Secondary`
 
 ## 获取安装
 
@@ -27,12 +30,6 @@ dep ensure -add github.com/gookit/color
 go get gopkg.in/gookit/color.v1 // 推荐
 // OR
 go get -u github.com/gookit/color
-```
-
-- git 克隆
-
-```bash
-git clone https://github.com/gookit/color
 ```
 
 ## Godoc
@@ -94,13 +91,11 @@ func main() {
 }
 ```
 
-运行 demo: `go run ./_examples/app.go`
+> 运行 demo: `go run ./_examples/app.go`
 
-### 颜色输出展示
+![colored-out](_examples/images/color-demo.jpg)
 
-![colored-out](_examples/images/colored-out.jpg)
-
-### 构建风格
+## 构建风格
 
 ```go
 // 仅设置前景色
@@ -127,9 +122,9 @@ fmt.Print("message")
 color.Reset()
 ```
 
-### 使用内置风格
+## 使用内置风格
 
-#### 基础颜色方法
+### 基础颜色方法
 
 > 支持在windows `cmd.exe` 使用
 
@@ -149,7 +144,11 @@ color.Bold.Println("bold message")
 color.Yellow.Println("yellow message")
 ```
 
-#### 扩展风格方法 
+> 运行 demo: `go run ./_examples/basiccolor.go`
+
+![basic-color](_examples/images/basic-color.png)
+
+### 扩展风格方法 
 
 > 支持在windows `cmd.exe` 使用
 
@@ -171,11 +170,16 @@ color.Info.Println("Info message")
 color.Success.Println("Success message")
 ```
 
-#### 使用颜色html标签
+> 运行 demo: `go run ./_examples/theme_style.go`
+
+![theme-style](_examples/images/theme-style.jpg)
+
+
+### 使用颜色html标签
 
 > **不** 支持在windows `cmd.exe` 使用，但不影响使用，会自动去除颜色标签
 
-使用颜色标签可以非常方便简单的构建自己需要的任何格式
+使用内置的颜色标签可以非常方便简单的构建自己需要的任何格式
 
 ```go
 // 使用内置的 color tag
@@ -188,7 +192,7 @@ color.Println("<warning>hello</>")
 color.Print("<fg=yellow;bg=black;op=underscore;>hello, welcome</>\n")
 ```
 
-#### 使用 `color.Tag`
+- 使用 `color.Tag`
 
 给后面输出的文本信息加上给定的颜色风格标签
 
@@ -199,77 +203,9 @@ color.Tag("info").Printf("%s style text", "info")
 color.Tag("info").Println("info style text")
 ```
 
-### 内置的标签
+> 运行 demo: `go run ./_examples/colortag.go`
 
-这里列出了内置的标签，基本上涵盖了各种风格和颜色搭配。它们都可用作颜色html标签，或者作为 `color.Tag` `color.Tips` 等的参数
-
-```text
-// Some internal defined style tags
-// usage: <tag>content text</>
-
-// basic tags
-- red
-- blue
-- cyan
-- black
-- green
-- brown
-- white
-- default  // no color
-- normal// no color
-- yellow  
-- magenta 
-
-// alert tags like bootstrap's alert
-- suc // same "green" and "bold"
-- success 
-- info // same "green"
-- comment  // same "brown"
-- note 
-- notice  
-- warn
-- warning 
-- primary 
-- danger // same "red"
-- err 
-- error
-
-// more tags
-- lightRed
-- light_red
-- lightGreen
-- light_green
-- lightBlue 
-- light_blue
-- lightCyan
-- light_cyan
-- lightDray
-- light_gray
-- gray
-- darkGray
-- dark_gray
-- lightYellow
-- light_yellow  
-- lightMagenta  
-- light_magenta 
-
-// extra
-- lightRedEx
-- light_red_ex
-- lightGreenEx
-- light_green_ex 
-- lightBlueEx
-- light_blue_ex  
-- lightCyanEx
-- light_cyan_ex  
-- whiteEx
-- white_ex
-
-// option
-- bold
-- underscore 
-- reverse
-```
+![color-tags](_examples/images/color-tags.jpg)
 
 ## 参考项目
 

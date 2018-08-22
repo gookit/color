@@ -59,29 +59,19 @@ func RGB(r, g, b uint8, isBg ...bool) RGBColor {
 	return rgb
 }
 
-// HEX string to RGBColor
-func HEX(hex string, isBg ...bool) RGBColor {
-	if rgb := HexToRGB(hex); len(rgb) > 0 {
-		return RGB(uint8(rgb[0]), uint8(rgb[1]), uint8(rgb[2]), isBg...)
-	}
-
-	// mark is empty
-	return RGBColor{3: 99}
-}
-
 // Print print message
 func (c RGBColor) Print(a ...interface{}) {
-	print(RenderCode(c.String(), a...))
+	fmt.Print(RenderCode(c.String(), a...))
 }
 
 // Printf format and print message
 func (c RGBColor) Printf(format string, a ...interface{}) {
-	print(RenderString(c.String(), fmt.Sprintf(format, a...)))
+	fmt.Print(RenderString(c.String(), fmt.Sprintf(format, a...)))
 }
 
 // Println print message with newline
 func (c RGBColor) Println(a ...interface{}) {
-	println(RenderCode(c.String(), a...))
+	fmt.Println(RenderCode(c.String(), a...))
 }
 
 // Sprint returns rendered message
@@ -89,7 +79,7 @@ func (c RGBColor) Sprint(a ...interface{}) string {
 	return RenderCode(c.String(), a...)
 }
 
-// Sprint returns format and rendered message
+// Sprintf returns format and rendered message
 func (c RGBColor) Sprintf(format string, a ...interface{}) string {
 	return RenderString(c.String(), fmt.Sprintf(format, a...))
 }
@@ -117,6 +107,55 @@ func (c RGBColor) String() string {
 // IsEmpty value
 func (c RGBColor) IsEmpty() bool {
 	return c[3] > 1
+}
+
+// HEX string to RGBColor
+func HEX(hex string, isBg ...bool) RGBColor {
+	if rgb := HexToRGB(hex); len(rgb) > 0 {
+		return RGB(uint8(rgb[0]), uint8(rgb[1]), uint8(rgb[2]), isBg...)
+	}
+
+	// mark is empty
+	return RGBColor{3: 99}
+}
+
+// HexToRGB hex color string to RGB numbers
+// Usage:
+// 	rgb := HexToRGB("ccc") // rgb: [204 204 204]
+// 	rgb := HexToRGB("aabbcc") // rgb: [170 187 204]
+// 	rgb := HexToRGB("0xad99c0") // rgb: [170 187 204]
+func HexToRGB(hex string) (rgb []int) {
+	hex = strings.TrimSpace(hex)
+	if hex == "" {
+		return
+	}
+
+	hex = strings.ToLower(hex)
+	switch len(hex) {
+	case 3: // "ccc"
+		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
+	case 6: // "ad99c0"
+	case 8: // "0xad99c0"
+		hex = strings.TrimPrefix(hex, "0x")
+	default: // invalid
+		return
+	}
+
+	// convert string to int64
+	i64, err := strconv.ParseInt(hex, 16, 32)
+	if err != nil {
+		// panic("invalid color string, error: " + err.Error())
+		return
+	}
+
+	color := int(i64)
+	// parse int
+	rgb = make([]int, 3)
+	rgb[0] = color >> 16
+	rgb[1] = (color & 0x00FF00) >> 8
+	rgb[2] = color & 0x0000FF
+
+	return
 }
 
 /*************************************************************
@@ -160,43 +199,4 @@ func TrueColor(str string, rgb RGBColor) {
 
 func RGBto256(r, g, b uint8) {
 
-}
-
-// HexToRGB hex color string to RGB numbers
-// Usage:
-// 	rgb := HexToRGB("ccc") // rgb: [204 204 204]
-// 	rgb := HexToRGB("aabbcc") // rgb: [170 187 204]
-// 	rgb := HexToRGB("0xad99c0") // rgb: [170 187 204]
-func HexToRGB(hex string) (rgb []int) {
-	hex = strings.TrimSpace(hex)
-	if hex == "" {
-		return
-	}
-
-	hex = strings.ToLower(hex)
-	switch len(hex) {
-	case 3: // "ccc"
-		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
-	case 6: // "ad99c0"
-	case 8: // "0xad99c0"
-		hex = strings.TrimPrefix(hex, "0x")
-	default: // invalid
-		return
-	}
-
-	// convert string to int64
-	i64, err := strconv.ParseInt(hex, 16, 32)
-	if err != nil {
-		// panic("invalid color string, error: " + err.Error())
-		return
-	}
-
-	color := int(i64)
-	// parse int
-	rgb = make([]int, 3)
-	rgb[0] = color >> 16
-	rgb[1] = (color & 0x00FF00) >> 8
-	rgb[2] = color & 0x0000FF
-
-	return
 }

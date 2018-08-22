@@ -6,10 +6,13 @@ Command line color library, written using golang
 
 ## Features
 
-- Easy to use
-- supports rich color output
-- supports html tab-style color rendering
-- compatible with Windows
+- Simple to use
+- Supports rich color output
+- Generic API method: `Print` `Printf` `Println` `Sprint` `Sprintf`
+- Supports html tab-style color rendering. like: `<green>message</>`
+- Compatible with Windows system environment
+- Basic color: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
+- Extra style: `Info` `Note` `Light` `Error` `Danger` `Notice` `Success` `Comment` `Primary` `Warning` `Question` `Secondary`
 
 ## Install
 
@@ -27,12 +30,6 @@ dep ensure -add github.com/gookit/color
 go get gopkg.in/gookit/color.v1 // is recommended
 // OR
 go get -u github.com/gookit/color
-```
-
-- git clone
-
-```bash
-git clone https://github.com/gookit/color
 ```
 
 ## Godoc
@@ -92,15 +89,13 @@ func main() {
 }
 ```
 
-run demo: `go run ./_examples/app.go`
+> run demo: `go run ./_examples/app.go`
 
-### Color output display
+![colored-out](_examples/images/color-demo.jpg)
 
-![colored-out](_examples/images/colored-out.jpg)
+## More usage
 
-### More usage
-
-#### Basic color usage
+### Basic color
 
 > support on windows `cmd.exe`
 
@@ -120,7 +115,11 @@ color.Bold.Println("bold message")
 color.Yellow.Println("yellow message")
 ```
 
-#### Extra styles 
+> run demo: `go run ./_examples/basiccolor.go`
+
+![basic-color](_examples/images/basic-color.png)
+
+### Extra styles 
 
 > support on windows `cmd.exe`
 
@@ -142,7 +141,11 @@ color.Info.Print("Info message")
 color.Success.Print("Success message")
 ```
 
-#### Use like html tag
+> run demo: `go run ./_examples/theme_style.go`
+
+![theme-style](_examples/images/theme-style.jpg)
+
+### Use like html tag
 
 > **not** support on windows `cmd.exe`
 
@@ -166,77 +169,11 @@ color.Tag("info").Printf("%s style text", "info")
 color.Tag("info").Println("info style text")
 ```
 
-### Internal color tags
+> run demo: `go run ./_examples/colortag.go`
 
-```text
-// Some internal defined style tags
-// usage: <tag>content text</>
+![color-tags](_examples/images/color-tags.jpg)
 
-// basic tags
-- red
-- blue
-- cyan
-- black
-- green
-- brown
-- white
-- default  // no color
-- normal// no color
-- yellow  
-- magenta 
-
-// alert tags like bootstrap's alert
-- suc // same "green" and "bold"
-- success 
-- info // same "green"
-- comment  // same "brown"
-- note 
-- notice  
-- warn
-- warning 
-- primary 
-- danger // same "red"
-- err 
-- error
-
-// more tags
-- lightRed
-- light_red
-- lightGreen
-- light_green
-- lightBlue 
-- light_blue
-- lightCyan
-- light_cyan
-- lightDray
-- light_gray
-- gray
-- darkGray
-- dark_gray
-- lightYellow
-- light_yellow  
-- lightMagenta  
-- light_magenta 
-
-// extra
-- lightRedEx
-- light_red_ex
-- lightGreenEx
-- light_green_ex 
-- lightBlueEx
-- light_blue_ex  
-- lightCyanEx
-- light_cyan_ex  
-- whiteEx
-- white_ex
-
-// option
-- bold
-- underscore 
-- reverse
-```
-
-## Ref
+## Refer
 
 - `issue9/term` https://github.com/issue9/term
 - `beego/bee` https://github.com/beego/bee
@@ -245,4 +182,4 @@ color.Tag("info").Println("info style text")
 
 ## License
 
-MIT
+**MIT**

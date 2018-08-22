@@ -22,10 +22,12 @@ func Example() {
 	Style{FgCyan, OpBold}.Println("custom color style")
 
 	// internal theme/style:
+	Info.Tips("message")
 	Info.Prompt("message")
-	Info.Println("message")
-	Warn.Println("message")
-	Error.Println("message")
+	Info.Println("info message")
+	Warn.Println("warning message")
+	Error.Println("error message")
+	Danger.Println("danger message")
 
 	// use style tag
 	Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
@@ -80,20 +82,21 @@ func TestClearCode(t *testing.T) {
 	art.Equal("Text other", ClearCode("\033[36;1mText\x1b[0m other"))
 }
 
-func Test256Color(t *testing.T) {
+func TestColor256(t *testing.T) {
 	forceOpenColorRender()
 	defer resetColorRender()
 
 	at := assert.New(t)
 
 	// empty
-	c := Bit8Color{1: 99}
+	c := Color256{1: 99}
 	at.True(c.IsEmpty())
 	at.Equal(ResetCode, c.String())
 
 	// fg
 	c = Bit8(132)
 	at.False(c.IsEmpty())
+	at.Equal(uint8(132), c.Value())
 	at.Equal("38;5;132", c.String())
 
 	str := c.Sprint("msg")
@@ -144,4 +147,7 @@ func TestHexToRGB(t *testing.T) {
 
 	rgb = HEX("0xad99c0") // rgb: [170 187 204]
 	at.Equal("38;2;173;153;192", rgb.String())
+
+	rgb = HEX("invalid code")
+	at.Equal(ResetCode, rgb.String())
 }

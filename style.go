@@ -104,7 +104,7 @@ func (t *Theme) Tips(format string, a ...interface{}) {
 // Prompt use name as title, and apply style for message
 func (t *Theme) Prompt(format string, a ...interface{}) {
 	title := strings.ToUpper(t.Name) + ": "
-	t.Printf(title+format+"\n", a...)
+	t.Println(title, fmt.Sprintf(format, a...))
 }
 
 // Block like Prompt, but will wrap a empty line
@@ -133,7 +133,7 @@ var (
 	// Warn color style
 	Warn = &Theme{"warning", Style{OpBold, FgYellow}}
 	// Light color style
-	Light = &Theme{"light", Style{FgLightWhite}}
+	Light = &Theme{"light", Style{FgLightWhite, BgBlack}}
 	// Error color style
 	Error = &Theme{"error", Style{FgLightWhite, BgRed}}
 	// Danger color style
