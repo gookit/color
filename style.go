@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+/*************************************************************
+ * 16 color Style
+ *************************************************************/
+
 // Style a 16 color style
 // can add: fg color, bg color, color options
 // Example:
@@ -35,31 +39,31 @@ func (s Style) Sprint(a ...interface{}) string {
 }
 
 // Print render and Print text
-func (s Style) Print(a ...interface{}) (int, error) {
+func (s Style) Print(a ...interface{}) {
 	if isLikeInCmd {
-		return winPrint(fmt.Sprint(a...), s...)
+		 winPrint(fmt.Sprint(a...), s...)
+	} else {
+		fmt.Print(RenderCode(s.String(), a...))
 	}
-
-	return fmt.Print(RenderCode(s.String(), a...))
 }
 
 // Printf render and print text
-func (s Style) Printf(format string, args ...interface{}) (int, error) {
+func (s Style) Printf(format string, args ...interface{}) {
 	message := fmt.Sprintf(format, args...)
 	if isLikeInCmd {
-		return winPrint(message, s...)
+		 winPrint(message, s...)
+	} else {
+		fmt.Print(RenderString(s.String(), message))
 	}
-
-	return fmt.Print(RenderString(s.String(), message))
 }
 
 // Println render and print text line
-func (s Style) Println(a ...interface{}) (int, error) {
+func (s Style) Println(a ...interface{}) {
 	if isLikeInCmd {
-		return winPrintln(fmt.Sprint(a...), s...)
+		 winPrintln(fmt.Sprint(a...), s...)
+	} else {
+		fmt.Println(RenderCode(s.String(), a...))
 	}
-
-	return fmt.Println(RenderCode(s.String(), a...))
 }
 
 // String convert to code string. returns like "32;45;3"
@@ -90,14 +94,13 @@ func NewTheme(name string, style Style) *Theme {
 }
 
 // Save to themes map
-func (t *Theme) Save(name string) {
-	AddStyle(name, t.Style)
+func (t *Theme) Save() {
+	AddTheme(t.Name, t.Style)
 }
 
 // Tips use name as title, only apply style for name
 func (t *Theme) Tips(format string, a ...interface{}) {
-	title := strings.ToUpper(t.Name) + ": "
-	t.Print(title) // only apply style for name
+	t.Print(strings.ToUpper(t.Name) + ": ") // only apply style for name
 	Printf(format+"\n", a...)
 }
 
@@ -121,7 +124,6 @@ func (t *Theme) Block(format string, a ...interface{}) {
 // internal themes(like bootstrap style)
 // Usage:
 // 	color.Info.Print("message")
-// 	color.Info.Println("new line")
 // 	color.Info.Printf("a %s message", "test")
 // 	color.Warn.Println("message")
 // 	color.Error.Println("message")

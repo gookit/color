@@ -196,15 +196,12 @@ func winPrintln(str string, colors ...Color) (int, error) {
 // winInternalPrint
 // winInternalPrint("hello [OK];", 2|8, true) //亮绿色
 func winInternalPrint(str string, attribute uint16, newline bool) (int, error) {
-	// not enable
-	if !Enable {
+	if !Enable { // not enable
 		if newline {
-			fmt.Println(str)
-		} else {
-			fmt.Print(str)
+			return fmt.Println(str)
 		}
 
-		return 0, nil
+		return fmt.Print(str)
 	}
 
 	// fmt.Print("attribute val: ", attribute, "\n")
@@ -231,8 +228,7 @@ func winInternalPrint(str string, attribute uint16, newline bool) (int, error) {
 
 // winSet set console color attributes
 func winSet(colors ...Color) (int, error) {
-	// not enable
-	if !Enable {
+	if !Enable { // not enable
 		return 0, nil
 	}
 
@@ -300,7 +296,7 @@ func IsTerminal(fd int) bool {
 // from package: golang.org/x/sys/windows
 type (
 	short int16
-	word  uint16
+	word uint16
 
 	// coord cursor position coordinates
 	coord struct {

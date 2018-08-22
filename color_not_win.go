@@ -6,7 +6,7 @@
 package color
 
 // winSet
-func winSet(colors ...Color) (n int, err error) {
+func winSet(_ ...Color) (n int, err error) {
 	return
 }
 

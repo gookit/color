@@ -112,23 +112,23 @@ var colorTags = map[string]string{
  *************************************************************/
 
 // Print messages
-func Print(a ...interface{}) (int, error) {
-	return fmt.Print(Render(a...))
+func Print(a ...interface{}) {
+	fmt.Print(Render(a...))
 }
 
 // Printf format and print messages
-func Printf(format string, a ...interface{}) (int, error) {
-	return fmt.Print(ReplaceTag(fmt.Sprintf(format, a...)))
+func Printf(format string, a ...interface{}) {
+	fmt.Print(ReplaceTag(fmt.Sprintf(format, a...)))
 }
 
 // Println messages with new line
-func Println(a ...interface{}) (int, error) {
-	return fmt.Println(Render(a...))
+func Println(a ...interface{}) {
+	fmt.Println(Render(a...))
 }
 
 // Fprint print rendered messages to writer
-func Fprint(w io.Writer, a ...interface{}) (int, error) {
-	return fmt.Fprint(w, Render(a...))
+func Fprint(w io.Writer, a ...interface{}) {
+	fmt.Fprint(w, Render(a...))
 }
 
 // Fprintf print format and rendered messages to writer
@@ -177,8 +177,8 @@ func ReplaceTag(str string, dumpIt ...bool) string {
 		return str
 	}
 
-	// disable color OR not support color render(Always: isLikeInCmd != isSupportColor)
-	if !Enable || isLikeInCmd {
+	// disabled OR not support color
+	if !Enable || !isSupportColor {
 		return ClearTag(str)
 	}
 
@@ -256,7 +256,6 @@ func ParseCodeFromAttr(attr string) (code string) {
 				colors = append(colors, c)
 			}
 		}
-		// fmt.Printf("pos: %s, val: %s\n", pos, val)
 	}
 
 	return colors2code(colors...)
@@ -326,13 +325,12 @@ func (tg Tag) Print(a ...interface{}) {
 // Printf format and print messages
 func (tg Tag) Printf(format string, args ...interface{}) {
 	name := string(tg)
+	msg := fmt.Sprintf(format, args...)
 	if stl := GetStyle(name); !stl.IsEmpty() {
-		stl.Printf(format, args...)
-		return
+		stl.Print(msg)
+	} else {
+		fmt.Print(RenderString(GetTagCode(name), msg))
 	}
-
-	str := RenderString(GetTagCode(name), fmt.Sprintf(format, args...))
-	fmt.Print(str)
 }
 
 // Println messages line
@@ -340,10 +338,9 @@ func (tg Tag) Println(args ...interface{}) {
 	name := string(tg)
 	if stl := GetStyle(name); !stl.IsEmpty() {
 		stl.Println(args...)
-		return
+	} else {
+		fmt.Println(RenderCode(GetTagCode(name), args...))
 	}
-
-	fmt.Println(RenderCode(GetTagCode(name), args...))
 }
 
 // Sprint render messages
@@ -361,66 +358,55 @@ func (tg Tag) Sprint(args ...interface{}) string {
 type Tips string
 
 // Print messages
-func (t Tips) Print(args ...interface{}) (int, error) {
+func (t Tips) Print(args ...interface{}) {
 	name := string(t)
-	upName := strings.ToUpper(name)
+	msg := strings.ToUpper(name) + ": " + fmt.Sprint(args...)
 
 	if isLikeInCmd {
-		return GetStyle(name).Println(upName, ": ", fmt.Sprint(args...))
+		GetStyle(name).Println(msg)
+	} else {
+		fmt.Println(RenderString(GetTagCode(name), msg))
 	}
-
-	str := RenderCode(GetTagCode(name), upName, ": ", fmt.Sprint(args...))
-	return fmt.Println(str)
-}
-
-// Println messages line
-func (t Tips) Println(args ...interface{}) (int, error) {
-	return t.Print(args...)
 }
 
 // Printf format and print messages
-func (t Tips) Printf(format string, args ...interface{}) (int, error) {
+func (t Tips) Printf(format string, a ...interface{}) {
 	name := string(t)
-	upName := strings.ToUpper(name)
+	msg := strings.ToUpper(name) + ": " + fmt.Sprintf(format, a...)
 
 	if isLikeInCmd {
-		return GetStyle(name).Println(upName, ": ", fmt.Sprintf(format, args...))
+		GetStyle(name).Println(msg)
+	} else {
+		fmt.Println(RenderString(GetTagCode(name), msg))
 	}
-
-	str := RenderCode(GetTagCode(name), upName, ": ", fmt.Sprintf(format, args...))
-	return fmt.Println(str)
 }
 
 // LiteTips will only add color for tag name
 // value is a defined style name
 type LiteTips string
 
-// Print messages
-func (t LiteTips) Print(args ...interface{}) (int, error) {
+// Print tips message with new line
+func (t LiteTips) Print(a ...interface{}) {
 	tag := string(t)
+	title := strings.ToUpper(tag) + ":"
 
 	if isLikeInCmd {
-		GetStyle(tag).Print(strings.ToUpper(tag), ": ")
-		return fmt.Println(args...)
+		GetStyle(tag).Print(title)
+		fmt.Println(a...)
+	} else {
+		fmt.Println(RenderString(GetTagCode(tag), title), fmt.Sprint(a...))
 	}
-
-	str := RenderCode(GetTagCode(tag), strings.ToUpper(tag), ":")
-	return fmt.Println(str, fmt.Sprint(args...))
-}
-
-// Println messages with new line
-func (t LiteTips) Println(args ...interface{}) (int, error) {
-	return t.Print(args...)
 }
 
 // Printf format and print messages
-func (t LiteTips) Printf(format string, args ...interface{}) (int, error) {
+func (t LiteTips) Printf(format string, a ...interface{}) {
 	tag := string(t)
-	if isLikeInCmd {
-		GetStyle(tag).Print(strings.ToUpper(tag), ": ")
-		return fmt.Printf(format+"\n", args...)
-	}
+	title := strings.ToUpper(tag) + ":"
 
-	str := RenderCode(GetTagCode(tag), strings.ToUpper(tag), ":")
-	return fmt.Println(str, fmt.Sprintf(format, args...))
+	if isLikeInCmd {
+		GetStyle(tag).Print(title)
+		fmt.Println(fmt.Sprintf(format, a...))
+	} else {
+		fmt.Println(RenderString(GetTagCode(tag), title), fmt.Sprintf(format, a...))
+	}
 }

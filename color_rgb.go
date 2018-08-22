@@ -22,8 +22,10 @@ import (
 // 	fg: \x1b[38;2;30;144;255mMESSAGE\x1b[0m
 // 	bg: \x1b[48;2;30;144;255mMESSAGE\x1b[0m
 // 	both: \x1b[38;2;233;90;203;48;2;30;144;255mMESSAGE\x1b[0m
-const TplFgRGB = "38;2;%d;%d;%d"
-const TplBgRGB = "48;2;%d;%d;%d"
+const (
+	TplFgRGB = "38;2;%d;%d;%d"
+	TplBgRGB = "48;2;%d;%d;%d"
+)
 
 // mark color is fg or bg
 const (
@@ -197,6 +199,7 @@ func TrueColor(str string, rgb RGBColor) {
 
 }
 
+// RGBto256 value
 func RGBto256(r, g, b uint8) {
 
 }

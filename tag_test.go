@@ -6,6 +6,10 @@ import (
 )
 
 func TestReplaceTag(t *testing.T) {
+	// force open color render for testing
+	forceOpenColorRender()
+	defer resetColorRender()
+
 	at := assert.New(t)
 
 	// sample 1

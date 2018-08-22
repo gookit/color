@@ -12,17 +12,17 @@ func IsWin() bool {
 	return runtime.GOOS == "windows"
 }
 
-// IsMac
+// IsMac system
 func IsMac() bool {
 	return runtime.GOOS == "darwin"
 }
 
-// IsLinux
+// IsLinux system
 func IsLinux() bool {
 	return runtime.GOOS == "linux"
 }
 
-// 判断 w 是否为 stderr、stdout、stdin 三者之一
+// IsConsole 判断 w 是否为 stderr、stdout、stdin 三者之一
 func IsConsole(out io.Writer) bool {
 	o, ok := out.(*os.File)
 	if !ok {
@@ -67,7 +67,7 @@ func IsSupportColor() bool {
 	return false
 }
 
-// IsSupport256Color
+// IsSupport256Color render
 func IsSupport256Color() bool {
 	// "TERM=xterm-256color"
 	return strings.Contains(os.Getenv("TERM"), "256color")

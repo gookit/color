@@ -15,7 +15,7 @@ from wikipedia:
    232-255：从黑到白的24阶灰度色
 */
 
-// TplFg256 8 bit 256 color(`2^8`)
+// tpl for 8 bit 256 color(`2^8`)
 //
 // format:
 // 	ESC[ … 38;5;<n> … m // 选择前景色
@@ -28,8 +28,10 @@ from wikipedia:
 //
 // links:
 // 	https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#8位
-const TplFg256 = "38;5;%d"
-const TplBg256 = "48;5;%d"
+const (
+	TplFg256 = "38;5;%d"
+	TplBg256 = "48;5;%d"
+)
 
 /*************************************************************
  * 8bit(256) Color: Bit8Color Color256
@@ -185,7 +187,7 @@ func (s *Style256) Sprint(a ...interface{}) string {
 	return RenderCode(s.String(), a...)
 }
 
-// Sprint returns format and rendered message
+// Sprintf returns format and rendered message
 func (s *Style256) Sprintf(format string, a ...interface{}) string {
 	return RenderString(s.String(), fmt.Sprintf(format, a...))
 }
@@ -204,11 +206,12 @@ func (s *Style256) String() string {
 	return strings.Join(ss, ";")
 }
 
+// Color256Table display
 func Color256Table() {
 
 }
 
-// 16-231：6 × 6 × 6 立方（216色）: 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)
+// RGBto216 16-231：6 × 6 × 6 立方（216色）: 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)
 func RGBto216(n int) int {
 	if n < 0 {
 		return 0

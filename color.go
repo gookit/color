@@ -1,3 +1,12 @@
+/*
+Package color is command line color library, written using golang
+
+Source code and other details for the project are available at GitHub:
+
+	https://github.com/gookit/color
+
+More usage please see README and tests.
+*/
 package color
 
 import (
@@ -7,19 +16,16 @@ import (
 
 // console color mode
 const (
-	ModeNormal = iota
-	Mode256    // 8 bite
-	ModeRGB    // 24 bite
+	ModeNormal    = iota
+	Mode256        // 8 bite
+	ModeRGB        // 24 bite
 	ModeGrayscale
 )
 
 // color render templates
 const (
-	SettingTpl       = "\x1b[%sm"
-	FullColorTpl     = "\x1b[%sm%s\x1b[0m"
-	FullColorNlTpl   = "\x1b[%sm%s\x1b[0m\n"
-	SingleColorTpl   = "\x1b[%dm%s\x1b[0m"
-	SingleColorNlTpl = "\x1b[%dm%s\x1b[0m\n"
+	SettingTpl   = "\x1b[%sm"
+	FullColorTpl = "\x1b[%sm%s\x1b[0m"
 )
 
 // ResetCode value
@@ -81,11 +87,6 @@ func Disable() {
 	Enable = false
 }
 
-// IsDisabled color
-func IsDisabled() bool {
-	return Enable == false
-}
-
 /*************************************************************
  * render color code
  *************************************************************/
@@ -95,16 +96,12 @@ func IsDisabled() bool {
 // 	msg := RenderCode("3;32;45", "some", "message")
 func RenderCode(code string, args ...interface{}) string {
 	message := fmt.Sprint(args...)
-	if len(code) == 0 || isLikeInCmd {
+	if len(code) == 0 {
 		return message
 	}
 
-	if !Enable {
-		return ClearCode(message)
-	}
-
-	// if not support color output
-	if !isSupportColor {
+	// disabled OR not support color
+	if !Enable || !isSupportColor {
 		return ClearCode(message)
 	}
 
@@ -114,22 +111,18 @@ func RenderCode(code string, args ...interface{}) string {
 // RenderString render a string with color code.
 // Usage:
 // 	msg := RenderString("3;32;45", "a message")
-func RenderString(code string, message string) string {
+func RenderString(code string, str string) string {
 	// some check
-	if isLikeInCmd || len(code) == 0 || message == "" {
-		return message
+	if len(code) == 0 || str == "" {
+		return str
 	}
 
-	if !Enable {
-		return ClearCode(message)
+	// disabled OR not support color
+	if !Enable || !isSupportColor {
+		return ClearCode(str)
 	}
 
-	// if not support color output
-	if !isSupportColor {
-		return ClearCode(message)
-	}
-
-	return fmt.Sprintf(FullColorTpl, code, message)
+	return fmt.Sprintf(FullColorTpl, code, str)
 }
 
 // ClearCode clear color codes.

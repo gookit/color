@@ -124,11 +124,10 @@ func (c Color) Sprint(a ...interface{}) string {
 
 // Sprintf format and render message.
 // Usage:
-// 	green := color.FgGreen.RenderFn()
+// 	green := color.Green.Sprintf
 //  colored := green("message")
 func (c Color) Sprintf(format string, args ...interface{}) string {
-	message := fmt.Sprintf(format, args...)
-	return RenderString(c.String(), message)
+	return RenderString(c.String(), fmt.Sprintf(format, args...))
 }
 
 // Print messages.
@@ -141,30 +140,30 @@ func (c Color) Print(args ...interface{}) {
 	message := fmt.Sprint(args...)
 	if isLikeInCmd {
 		winPrint(message, c)
-		return
+	} else {
+		fmt.Print(RenderString(c.String(), message))
 	}
-
-	fmt.Print(RenderString(c.String(), message))
 }
 
 // Printf format and print messages.
 // usage:
 // 		color.Cyan.Printf("string %s", "arg0")
-func (c Color) Printf(format string, args ...interface{}) (int, error) {
+func (c Color) Printf(format string, a ...interface{}) {
+	msg := fmt.Sprintf(format, a...)
 	if isLikeInCmd {
-		return winPrint(fmt.Sprintf(format, args...), c)
+		winPrint(msg, c)
+	} else {
+		fmt.Print(RenderString(c.String(), msg))
 	}
-
-	return fmt.Printf(SingleColorTpl, c, fmt.Sprintf(format, args...))
 }
 
 // Println messages with new line
-func (c Color) Println(args ...interface{}) (int, error) {
+func (c Color) Println(a ...interface{}) {
 	if isLikeInCmd {
-		return winPrintln(fmt.Sprint(args...), c)
+		winPrintln(fmt.Sprint(a...), c)
+	} else {
+		fmt.Println(RenderCode(c.String(), a...))
 	}
-
-	return fmt.Printf(SingleColorNlTpl, c, fmt.Sprint(args...))
 }
 
 // String to code string. eg "35"
