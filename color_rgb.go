@@ -25,13 +25,24 @@ import (
 const TplFgRGB = "38;2;%d;%d;%d"
 const TplBgRGB = "48;2;%d;%d;%d"
 
+// mark color is fg or bg
+const (
+	AsFg uint8 = iota
+	AsBg
+)
+
+/*************************************************************
+ * RGB Color
+ *************************************************************/
+
 // RGBColor definition.
 //
-// The first to third digits represent the color value,
-// The last digit represents the foreground(0) or background(^0)
+// The first to third digits represent the color value.
+// The last digit represents the foreground(0), background(1), >1 is unset value
 //
 // Usage:
-// 	// 0, 1, 2 is R,G,B. 3 is Fg(0) or Bg(^0).
+// 	// 0, 1, 2 is R,G,B.
+// 	// 3th: Fg=0, Bg=1, >1: unset value
 // 	RGBColor{30,144,255, 0}
 // 	RGBColor{30,144,255, 1}
 type RGBColor [4]uint8
@@ -42,46 +53,75 @@ func RGB(r, g, b uint8, isBg ...bool) RGBColor {
 
 	// mark is bg color
 	if len(isBg) > 0 && isBg[0] {
-		rgb[3] = 1
+		rgb[3] = AsBg
 	}
 
 	return rgb
 }
 
+// HEX string to RGBColor
+func HEX(hex string, isBg ...bool) RGBColor {
+	if rgb := HexToRGB(hex); len(rgb) > 0 {
+		return RGB(uint8(rgb[0]), uint8(rgb[1]), uint8(rgb[2]), isBg...)
+	}
+
+	// mark is empty
+	return RGBColor{3: 99}
+}
+
 // Print print message
 func (c RGBColor) Print(a ...interface{}) {
-	fmt.Printf(FullColorTpl, c.String(), fmt.Sprint(a...))
+	print(RenderCode(c.String(), a...))
 }
 
 // Printf format and print message
 func (c RGBColor) Printf(format string, a ...interface{}) {
-	fmt.Printf(FullColorTpl, c.String(), fmt.Sprintf(format, a...))
+	print(RenderString(c.String(), fmt.Sprintf(format, a...)))
 }
 
 // Println print message with newline
 func (c RGBColor) Println(a ...interface{}) {
-	fmt.Printf(FullColorNlTpl, c.String(), fmt.Sprint(a...))
+	println(RenderCode(c.String(), a...))
 }
 
 // Sprint returns rendered message
 func (c RGBColor) Sprint(a ...interface{}) string {
-	return fmt.Sprintf(FullColorTpl, c.String(), fmt.Sprint(a...))
+	return RenderCode(c.String(), a...)
 }
 
 // Sprint returns format and rendered message
 func (c RGBColor) Sprintf(format string, a ...interface{}) string {
-	return fmt.Sprintf(FullColorTpl, c.String(), fmt.Sprintf(format, a...))
+	return RenderString(c.String(), fmt.Sprintf(format, a...))
 }
 
-// String to string
+// Values to RGB values
+func (c RGBColor) Values() []int {
+	return []int{int(c[0]), int(c[1]), int(c[2])}
+}
+
+// String to color code string
 func (c RGBColor) String() string {
-	if c[3] == 0 { // 0 is Fg
+	if c[3] == AsFg { // 0 is Fg
 		return fmt.Sprintf(TplFgRGB, c[0], c[1], c[2])
 	}
 
-	// ^0 is Bg
-	return fmt.Sprintf(TplBgRGB, c[0], c[1], c[2])
+	if c[3] == AsBg { // 1 is Bg
+		return fmt.Sprintf(TplBgRGB, c[0], c[1], c[2])
+
+	}
+
+	// is empty
+	return ResetCode
 }
+
+// IsEmpty value
+func (c RGBColor) IsEmpty() bool {
+	return c[3] > 1
+}
+
+/*************************************************************
+ * RGB Style
+ *************************************************************/
 
 // RGBStyle definition.
 //
@@ -93,10 +133,10 @@ type RGBStyle struct {
 	fg, bg RGBColor
 }
 
-// String convert to string
+// String convert to color code string
 func (s *RGBStyle) String() string {
 	var ss []string
-	if s.fg[3] > 0 {
+	if s.fg[3] > 0 { // last value ensure is enable.
 		ss = append(ss, fmt.Sprintf(TplFgRGB, s.fg[0], s.fg[1], s.fg[2]))
 	}
 
@@ -144,7 +184,7 @@ func HexToRGB(hex string) (rgb []int) {
 		return
 	}
 
-	// 字串到数据整型
+	// convert string to int64
 	i64, err := strconv.ParseInt(hex, 16, 32)
 	if err != nil {
 		// panic("invalid color string, error: " + err.Error())

@@ -44,6 +44,12 @@ def <info>info text
 	r = ReplaceTag(s)
 	at.NotContains(r, "<err>")
 	at.Contains(r, "<d>")
+
+	// sample 6
+	s = "custom tag: <fg=yellow;bg=black;op=underscore;>hello, welcome</>"
+	r = ReplaceTag(s)
+	at.NotContains(r, "<")
+	at.NotContains(r, ">")
 }
 
 func TestWrapTag(t *testing.T) {
@@ -53,8 +59,8 @@ func TestWrapTag(t *testing.T) {
 
 func TestClearTag(t *testing.T) {
 	at := assert.New(t)
+	at.Equal("text", ClearTag("text"))
 	at.Equal("text", ClearTag("<err>text</>"))
-
 	at.Equal("abc error def info text", ClearTag("abc <err>error</> def <info>info text</>"))
 
 	str := `abc <err>err-text</> 

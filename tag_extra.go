@@ -16,7 +16,7 @@ func (tg Tag) Print(args ...interface{}) {
 		return
 	}
 
-	str := buildColoredText(GetStyleCode(name), args...)
+	str := RenderCode(GetTagCode(name), args...)
 	fmt.Print(str)
 }
 
@@ -28,7 +28,7 @@ func (tg Tag) Printf(format string, args ...interface{}) {
 		return
 	}
 
-	str := buildColoredText(GetStyleCode(name), fmt.Sprintf(format, args...))
+	str := RenderCode(GetTagCode(name), fmt.Sprintf(format, args...))
 	fmt.Print(str)
 }
 
@@ -40,7 +40,7 @@ func (tg Tag) Println(args ...interface{}) {
 		return
 	}
 
-	str := buildColoredText(GetStyleCode(name), args...)
+	str := RenderCode(GetTagCode(name), args...)
 	fmt.Println(str)
 }
 
@@ -50,7 +50,8 @@ func (tg Tag) Sprint(args ...interface{}) string {
 	if stl := GetStyle(name); !stl.IsEmpty() {
 		return stl.Render(args...)
 	}
-	return buildColoredText(GetStyleCode(name), args...)
+
+	return RenderCode(GetTagCode(name), args...)
 }
 
 // Tips will add color for all text
@@ -66,7 +67,7 @@ func (t Tips) Print(args ...interface{}) (int, error) {
 		return GetStyle(name).Println(upName, ": ", fmt.Sprint(args...))
 	}
 
-	str := buildColoredText(GetStyleCode(name), upName, ": ", fmt.Sprint(args...))
+	str := RenderCode(GetTagCode(name), upName, ": ", fmt.Sprint(args...))
 	return fmt.Println(str)
 }
 
@@ -84,7 +85,7 @@ func (t Tips) Printf(format string, args ...interface{}) (int, error) {
 		return GetStyle(name).Println(upName, ": ", fmt.Sprintf(format, args...))
 	}
 
-	str := buildColoredText(GetStyleCode(name), upName, ": ", fmt.Sprintf(format, args...))
+	str := RenderCode(GetTagCode(name), upName, ": ", fmt.Sprintf(format, args...))
 	return fmt.Println(str)
 }
 
@@ -101,7 +102,7 @@ func (t LiteTips) Print(args ...interface{}) (int, error) {
 		return fmt.Println(args...)
 	}
 
-	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ":")
+	str := RenderCode(GetTagCode(tag), strings.ToUpper(tag), ":")
 	return fmt.Println(str, fmt.Sprint(args...))
 }
 
@@ -118,6 +119,6 @@ func (t LiteTips) Printf(format string, args ...interface{}) (int, error) {
 		return fmt.Printf(format+"\n", args...)
 	}
 
-	str := buildColoredText(GetStyleCode(tag), strings.ToUpper(tag), ":")
+	str := RenderCode(GetTagCode(tag), strings.ToUpper(tag), ":")
 	return fmt.Println(str, fmt.Sprintf(format, args...))
 }

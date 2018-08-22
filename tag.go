@@ -150,38 +150,38 @@ var colorTags = map[string]string{
  *************************************************************/
 
 // Print messages
-func Print(args ...interface{}) (int, error) {
-	return fmt.Print(Render(args...))
+func Print(a ...interface{}) (int, error) {
+	return fmt.Print(Render(a...))
 }
 
 // Printf format and print messages
-func Printf(format string, args ...interface{}) (int, error) {
-	return fmt.Print(Render(fmt.Sprintf(format, args...)))
+func Printf(format string, a ...interface{}) (int, error) {
+	return fmt.Print(Render(fmt.Sprintf(format, a...)))
 }
 
 // Println messages line
-func Println(args ...interface{}) (int, error) {
-	return fmt.Println(Render(args...))
+func Println(a ...interface{}) (int, error) {
+	return fmt.Println(Render(a...))
 }
 
 // Fprint print rendered messages to writer
-func Fprint(w io.Writer, args ...interface{}) (int, error) {
-	return fmt.Fprint(w, Render(args...))
+func Fprint(w io.Writer, a ...interface{}) (int, error) {
+	return fmt.Fprint(w, Render(a...))
 }
 
 // Fprintf print format and rendered messages to writer
-func Fprintf(w io.Writer, format string, args ...interface{}) (int, error) {
-	return fmt.Fprint(w, String(fmt.Sprintf(format, args...)))
+func Fprintf(w io.Writer, format string, a ...interface{}) (int, error) {
+	return fmt.Fprint(w, String(fmt.Sprintf(format, a...)))
 }
 
 // Fprintln print rendered messages line to writer
-func Fprintln(w io.Writer, args ...interface{}) (int, error) {
-	return fmt.Fprintln(w, Render(args...))
+func Fprintln(w io.Writer, a ...interface{}) (int, error) {
+	return fmt.Fprintln(w, Render(a...))
 }
 
 // Render return rendered string
-func Render(args ...interface{}) string {
-	return ReplaceTag(fmt.Sprint(args...))
+func Render(a ...interface{}) string {
+	return ReplaceTag(fmt.Sprint(a...))
 }
 
 // Sprint return rendered string
@@ -190,8 +190,8 @@ func Sprint(args ...interface{}) string {
 }
 
 // Sprintf format and return rendered string
-func Sprintf(format string, args ...interface{}) string {
-	return String(fmt.Sprintf(format, args...))
+func Sprintf(format string, a ...interface{}) string {
+	return String(fmt.Sprintf(format, a...))
 }
 
 /*************************************************************
@@ -230,14 +230,14 @@ func ReplaceTag(str string, dumpIt ...bool) string {
 
 		// custom color in tag: "<fg=white;bg=blue;op=bold>content</>"
 		if code := ParseCodeFromAttr(tag); len(code) > 0 {
-			now := buildColoredText(code, content)
+			now := RenderCode(code, content)
 			str = strings.Replace(str, full, now, 1)
 			continue
 		}
 
 		// use defined tag: "<tag>content</>"
-		if code := GetStyleCode(tag); len(code) > 0 {
-			now := buildColoredText(code, content)
+		if code := GetTagCode(tag); len(code) > 0 {
+			now := RenderCode(code, content)
 			// old := WrapTag(content, tag) is equals to var 'full'
 			str = strings.Replace(str, full, now, 1)
 		}
@@ -295,15 +295,15 @@ func ParseCodeFromAttr(attr string) (code string) {
 		// fmt.Printf("pos: %s, val: %s\n", pos, val)
 	}
 
-	return buildColorCode(colors...)
+	return colors2code(colors...)
 }
 
 /*************************************************************
  * helper methods
  *************************************************************/
 
-// GetStyleCode get color code by tag name
-func GetStyleCode(name string) string {
+// GetTagCode get color code by tag name
+func GetTagCode(name string) string {
 	if code, ok := colorTags[name]; ok {
 		return code
 	}
@@ -312,8 +312,8 @@ func GetStyleCode(name string) string {
 }
 
 // ApplyTag for messages
-func ApplyTag(tag string, args ...interface{}) string {
-	return buildColoredText(GetStyleCode(tag), args...)
+func ApplyTag(tag string, a ...interface{}) string {
+	return RenderCode(GetTagCode(tag), a...)
 }
 
 // WrapTag wrap a tag for a string "<tag>content</>"

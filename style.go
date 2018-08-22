@@ -16,7 +16,7 @@ func New(colors ...Color) Style {
 	return Style(colors)
 }
 
-// Save save to styles map
+// Save to styles map
 func (s Style) Save(name string) {
 	AddStyle(name, s)
 }
@@ -25,45 +25,46 @@ func (s Style) Save(name string) {
 // usage:
 //  color.New(color.FgGreen).Render("text")
 //  color.New(color.FgGreen, color.BgBlack, color.OpBold).Render("text")
-func (s Style) Render(args ...interface{}) string {
-	if isLikeInCmd {
-		return fmt.Sprint(args...)
-	}
-
-	return buildColoredText(buildColorCode(s...), args...)
+func (s Style) Render(a ...interface{}) string {
+	return RenderCode(s.String(), a...)
 }
 
 // Sprint is alias of the 'Render'
-func (s Style) Sprint(args ...interface{}) string {
-	return s.Render(args...)
+func (s Style) Sprint(a ...interface{}) string {
+	return RenderCode(s.String(), a...)
 }
 
 // Print render and Print text
-func (s Style) Print(args ...interface{}) (int, error) {
+func (s Style) Print(a ...interface{}) (int, error) {
 	if isLikeInCmd {
-		return winPrint(fmt.Sprint(args...), s...)
+		return winPrint(fmt.Sprint(a...), s...)
 	}
 
-	return fmt.Print(s.Render(args...))
+	return fmt.Print(RenderCode(s.String(), a...))
 }
 
 // Printf render and print text
 func (s Style) Printf(format string, args ...interface{}) (int, error) {
-	str := fmt.Sprintf(format, args...)
+	message := fmt.Sprintf(format, args...)
 	if isLikeInCmd {
-		return winPrint(str, s...)
+		return winPrint(message, s...)
 	}
 
-	return fmt.Print(s.Render(str))
+	return fmt.Print(RenderString(s.String(), message))
 }
 
 // Println render and print text line
-func (s Style) Println(args ...interface{}) (int, error) {
+func (s Style) Println(a ...interface{}) (int, error) {
 	if isLikeInCmd {
-		return winPrintln(fmt.Sprint(args...), s...)
+		return winPrintln(fmt.Sprint(a...), s...)
 	}
 
-	return fmt.Println(s.Render(args...))
+	return fmt.Println(RenderCode(s.String(), a...))
+}
+
+// String convert to code string. returns like "32;45;3"
+func (s Style) String() string {
+	return colors2code(s...)
 }
 
 // IsEmpty style
@@ -72,7 +73,7 @@ func (s Style) IsEmpty() bool {
 }
 
 /*************************************************************
- * Theme
+ * Theme(extended Style)
  *************************************************************/
 
 // Theme definition. extends from Style
@@ -83,37 +84,42 @@ type Theme struct {
 	Style
 }
 
+// NewTheme instance
 func NewTheme(name string, style Style) *Theme {
 	return &Theme{name, style}
 }
 
+// Save to themes map
+func (t *Theme) Save(name string) {
+	AddStyle(name, t.Style)
+}
+
 // Tips use name as title, only apply style for name
-func (t *Theme) Tips(format string, args ...interface{}) {
+func (t *Theme) Tips(format string, a ...interface{}) {
 	title := strings.ToUpper(t.Name) + ": "
 	t.Print(title) // only apply style for name
-	Printf(format+"\n", args...)
+	Printf(format+"\n", a...)
 }
 
 // Prompt use name as title, and apply style for message
-func (t *Theme) Prompt(format string, args ...interface{}) {
+func (t *Theme) Prompt(format string, a ...interface{}) {
 	title := strings.ToUpper(t.Name) + ": "
-	t.Printf(title+format+"\n", args...)
+	t.Printf(title+format+"\n", a...)
 }
 
 // Block like Prompt, but will wrap a empty line
-func (t *Theme) Block(format string, args ...interface{}) {
-	title := strings.ToUpper(t.Name) + ":\n  "
-	message := Sprintf(format, args...)
+func (t *Theme) Block(format string, a ...interface{}) {
+	title := strings.ToUpper(t.Name) + ":\n "
 
-	t.Println(title, message)
+	t.Println(title, fmt.Sprintf(format, a...))
 }
 
 /*************************************************************
- * internal themes
+ * Theme: internal themes
  *************************************************************/
 
 // internal themes(like bootstrap style)
-// usage:
+// Usage:
 // 	color.Info.Print("message")
 // 	color.Info.Println("new line")
 // 	color.Info.Printf("a %s message", "test")

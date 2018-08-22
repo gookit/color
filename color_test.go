@@ -40,6 +40,18 @@ func Example() {
 	LiteTips("info").Print("blocked tips style text")
 }
 
+var oldVal bool
+
+// force open color render for testing
+func forceOpenColorRender() {
+	oldVal = isSupportColor
+	isSupportColor = true
+}
+
+func resetColorRender() {
+	isSupportColor = oldVal
+}
+
 func TestColor_Render(t *testing.T) {
 	at := assert.New(t)
 
@@ -48,9 +60,14 @@ func TestColor_Render(t *testing.T) {
 	// at.Equal(fmt.Sprintf("%q", r), "\x1b[1mtext\x1b[0m")
 }
 
-func TestRenderCodes(t *testing.T) {
-	art := assert.New(t)
-	art.Contains(RenderCodes("36;1", "Text"), "36;1")
+func TestRenderCode(t *testing.T) {
+	// force open color render for testing
+	forceOpenColorRender()
+	defer resetColorRender()
+
+	at := assert.New(t)
+	str := RenderCode("36;1", "Text")
+	at.Contains(str, "\x1b[36;1m")
 }
 
 func TestClearCode(t *testing.T) {
@@ -61,4 +78,70 @@ func TestClearCode(t *testing.T) {
 	// 24bit
 	art.Equal("Text", ClearCode("\x1b[38;2;30;144;255mText\x1b[0m"))
 	art.Equal("Text other", ClearCode("\033[36;1mText\x1b[0m other"))
+}
+
+func Test256Color(t *testing.T) {
+	forceOpenColorRender()
+	defer resetColorRender()
+
+	at := assert.New(t)
+
+	// empty
+	c := Bit8Color{1: 99}
+	at.True(c.IsEmpty())
+	at.Equal(ResetCode, c.String())
+
+	// fg
+	c = Bit8(132)
+	at.False(c.IsEmpty())
+	at.Equal("38;5;132", c.String())
+
+	str := c.Sprint("msg")
+	at.Equal("\x1b[38;5;132mmsg\x1b[0m", str)
+	str = c.Sprintf("msg")
+	at.Equal("\x1b[38;5;132mmsg\x1b[0m", str)
+
+	// bg
+	c = Bit8(132, true)
+	at.False(c.IsEmpty())
+	at.Equal("48;5;132", c.String())
+}
+
+func TestRGBColor(t *testing.T) {
+	forceOpenColorRender()
+	defer resetColorRender()
+
+	at := assert.New(t)
+
+	// empty
+	c := RGBColor{3: 99}
+	at.True(c.IsEmpty())
+	at.Equal(ResetCode, c.String())
+
+	// fg
+	c = RGB(204, 204, 204)
+	at.False(c.IsEmpty())
+	at.Equal("38;2;204;204;204", c.String())
+
+	str := c.Sprint("msg")
+	at.Equal("\x1b[38;2;204;204;204mmsg\x1b[0m", str)
+	str = c.Sprintf("msg")
+	at.Equal("\x1b[38;2;204;204;204mmsg\x1b[0m", str)
+
+	// bg
+	c = RGB(204, 204, 204, true)
+	at.False(c.IsEmpty())
+	at.Equal("48;2;204;204;204", c.String())
+}
+
+func TestHexToRGB(t *testing.T) {
+	at := assert.New(t)
+	rgb := HEX("ccc") // rgb: [204 204 204]
+	at.Equal("38;2;204;204;204", rgb.String())
+
+	rgb = HEX("aabbcc") // rgb: [170 187 204]
+	at.Equal("38;2;170;187;204", rgb.String())
+
+	rgb = HEX("0xad99c0") // rgb: [170 187 204]
+	at.Equal("38;2;173;153;192", rgb.String())
 }

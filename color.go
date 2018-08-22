@@ -6,8 +6,9 @@ import (
 	"strings"
 )
 
-// Color represents a text color.
-// 3/4 bite color.
+// Color represents a text color. 3/4 bite color.
+// ESC 操作的表示:
+// 	"\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
 type Color uint8
 
 // Foreground colors. basic foreground colors 30 - 37
@@ -103,19 +104,20 @@ const (
 	Normal  = FgDefault
 )
 
-// CLI color template
+// color render templates
 const (
-	SettingTpl     = "\x1b[%sm"
-	FullColorTpl   = "\x1b[%sm%s\x1b[0m"
+	SettingTpl       = "\x1b[%sm"
+	FullColorTpl     = "\x1b[%sm%s\x1b[0m"
 	FullColorNlTpl   = "\x1b[%sm%s\x1b[0m\n"
-	SingleColorTpl = "\x1b[%dm%s\x1b[0m"
+	SingleColorTpl   = "\x1b[%dm%s\x1b[0m"
+	SingleColorNlTpl = "\x1b[%dm%s\x1b[0m\n"
 )
 
-const StartCode = "\x1b["
+// ResetCode value
+const ResetCode = "0"
 
-// ResetCode ESC 操作的表示
-// 	"\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
-const ResetCode = "\x1b[0m"
+// ResetSet 重置/正常 关闭所有属性。
+const ResetSet = "\x1b[0m"
 
 // CodeExpr regex to clear color codes eg "\033[1;36mText\x1b[0m"
 const CodeExpr = `\033\[[\d;?]+m`
@@ -123,40 +125,45 @@ const CodeExpr = `\033\[[\d;?]+m`
 // Enable switch color display
 var Enable = true
 
-// mark current env, It's like in cmd.exe
-var isLikeInCmd bool
+var (
+	// mark current env, It's like in cmd.exe
+	isLikeInCmd bool
+	// match color codes
+	codeRegex = regexp.MustCompile(CodeExpr)
+	// check current env
+	isSupportColor = IsSupportColor()
+)
 
-// check current env
-var isSupportColor = IsSupportColor()
+/*************************************************************
+ * global settings
+ *************************************************************/
 
 // Set set console color attributes
 func Set(colors ...Color) (int, error) {
-	// not enable
-	if !Enable {
+	if !Enable { // not enable
 		return 0, nil
 	}
 
-	// on cmd.exe
+	// on windows cmd.exe
 	if isLikeInCmd {
 		return winSet(colors...)
 	}
 
-	return fmt.Printf(SettingTpl, buildColorCode(colors...))
+	return fmt.Printf(SettingTpl, colors2code(colors...))
 }
 
 // Reset reset console color attributes
 func Reset() (int, error) {
-	// not enable
-	if !Enable {
+	if !Enable { // not enable
 		return 0, nil
 	}
 
-	// on cmd.exe
+	// on windows cmd.exe
 	if isLikeInCmd {
 		return winReset()
 	}
 
-	return fmt.Print(ResetCode)
+	return fmt.Print(ResetSet)
 }
 
 // Disable disable color output
@@ -173,36 +180,50 @@ func IsDisabled() bool {
  * basic render methods
  *************************************************************/
 
+// Text render a text message
+func (c Color) Text(message string) string {
+	if isLikeInCmd {
+		return message
+	}
+
+	return fmt.Sprintf(SingleColorTpl, c, message)
+}
+
 // Render messages by color setting
 // usage:
 // 		green := color.FgGreen.Render
 // 		fmt.Println(green("message"))
-func (c Color) Render(args ...interface{}) string {
-	str := fmt.Sprint(args...)
+func (c Color) Render(a ...interface{}) string {
+	message := fmt.Sprint(a...)
 	if isLikeInCmd {
-		return str
+		return message
 	}
 
-	return fmt.Sprintf(SingleColorTpl, c, str)
+	return fmt.Sprintf(SingleColorTpl, c, message)
 }
 
-// Renderf format and render message
-// usage:
+// Sprint render messages by color setting. is alias of the Render()
+func (c Color) Sprint(a ...interface{}) string {
+	return c.Render(a...)
+}
+
+// Sprintf format and render message.
+// Usage:
 // 	green := color.FgGreen.RenderFn()
 //  colored := green("message")
-func (c Color) Renderf(format string, args ...interface{}) string {
-	str := fmt.Sprintf(format, args...)
+func (c Color) Sprintf(format string, args ...interface{}) string {
+	message := fmt.Sprintf(format, args...)
 	if isLikeInCmd {
-		return str
+		return message
 	}
 
-	return fmt.Sprintf(SingleColorTpl, c, str)
+	return fmt.Sprintf(SingleColorTpl, c, message)
 }
 
-// Print messages
-// usage:
-// 		color.FgGreen.Print("message")
-// or:
+// Print messages.
+// Usage:
+// 		color.Green.Print("message")
+// OR:
 // 		green := color.FgGreen.Print
 // 		green("message")
 func (c Color) Print(args ...interface{}) (int, error) {
@@ -210,37 +231,83 @@ func (c Color) Print(args ...interface{}) (int, error) {
 		return winPrint(fmt.Sprint(args...), c)
 	}
 
-	return fmt.Print(c.Render(args...))
+	return fmt.Printf(SingleColorTpl, c, fmt.Sprint(args...))
 }
 
-// Println messages line
-func (c Color) Println(args ...interface{}) (int, error) {
-	if isLikeInCmd {
-		return winPrintln(fmt.Sprint(args...), c)
-	}
-
-	return fmt.Println(c.Render(args...))
-}
-
-// Printf format and print messages
+// Printf format and print messages.
 // usage:
-// 		color.FgCyan.Printf("string %s", "arg0")
+// 		color.Cyan.Printf("string %s", "arg0")
 func (c Color) Printf(format string, args ...interface{}) (int, error) {
 	if isLikeInCmd {
 		return winPrint(fmt.Sprintf(format, args...), c)
 	}
 
-	return fmt.Print(c.Renderf(format, args...))
+	return fmt.Printf(SingleColorTpl, c, fmt.Sprintf(format, args...))
 }
 
-// IsValid 检测是否为一个有效的 Color 值
+// Println messages with new line
+func (c Color) Println(args ...interface{}) (int, error) {
+	if isLikeInCmd {
+		return winPrintln(fmt.Sprint(args...), c)
+	}
+
+	return fmt.Printf(SingleColorNlTpl, c, fmt.Sprint(args...))
+}
+
+// String to code string. eg "35"
+func (c Color) String() string {
+	return fmt.Sprintf("%d", c)
+}
+
+// IsValid color value
 func (c Color) IsValid() bool {
 	return c < 107
 }
 
-// String to string
-func (c Color) String() string {
-	return fmt.Sprintf("%d", c)
+/*************************************************************
+ * render color code
+ *************************************************************/
+
+// RenderCode render message by color code.
+// Usage:
+// 	msg := RenderCode("3;32;45", "some", "message")
+func RenderCode(code string, args ...interface{}) string {
+	message := fmt.Sprint(args...)
+	if len(code) == 0 || isLikeInCmd {
+		return message
+	}
+
+	if !Enable {
+		return ClearCode(message)
+	}
+
+	// if not support color output
+	if !isSupportColor {
+		return ClearCode(message)
+	}
+
+	return fmt.Sprintf(FullColorTpl, code, message)
+}
+
+// RenderString render a string with color code.
+// Usage:
+// 	msg := RenderString("3;32;45", "a message")
+func RenderString(code string, message string) string {
+	// some check
+	if isLikeInCmd || len(code) == 0 || message == "" {
+		return message
+	}
+
+	if !Enable {
+		return ClearCode(message)
+	}
+
+	// if not support color output
+	if !isSupportColor {
+		return ClearCode(message)
+	}
+
+	return fmt.Sprintf(FullColorTpl, code, message)
 }
 
 /*************************************************************
@@ -248,31 +315,23 @@ func (c Color) String() string {
  *************************************************************/
 
 // Apply custom colors.
-// usage:
+// Usage:
 // 		// (string, fg-color,bg-color, options...)
 //  	color.Apply("text", color.FgGreen)
 //  	color.Apply("text", color.FgGreen, color.BgBlack, color.OpBold)
-func Apply(str string, colors ...Color) string {
-	return buildColoredText(buildColorCode(colors...), str)
+func Apply(message string, colors ...Color) string {
+	return RenderCode(colors2code(colors...), message)
 }
 
-// RenderCodes render by color code "3;32;45"
-func RenderCodes(code string, str string) string {
-	return buildColoredText(code, str)
-}
-
-// ClearCode clear color codes
+// ClearCode clear color codes.
 // eg:
 // 		"\033[36;1mText\x1b[0m" -> "Text"
 func ClearCode(str string) string {
-	reg := regexp.MustCompile(CodeExpr)
-	// r1 := reg.FindAllString("\033[36;1mText\x1b[0m", -1)
-
-	return reg.ReplaceAllString(str, "")
+	return codeRegex.ReplaceAllString(str, "")
 }
 
-// buildColorCode return like "32;45;3"
-func buildColorCode(colors ...Color) string {
+// convert colors to code. return like "32;45;3"
+func colors2code(colors ...Color) string {
 	if len(colors) == 0 {
 		return ""
 	}
@@ -283,23 +342,4 @@ func buildColorCode(colors ...Color) string {
 	}
 
 	return strings.Join(codes, ";")
-}
-
-// buildColoredText
-func buildColoredText(code string, args ...interface{}) string {
-	str := fmt.Sprint(args...)
-	if len(code) == 0 {
-		return str
-	}
-
-	if !Enable {
-		return ClearCode(str)
-	}
-
-	// if not support color output
-	if !isSupportColor {
-		return ClearCode(str)
-	}
-
-	return fmt.Sprintf(FullColorTpl, code, str)
 }
