@@ -130,16 +130,16 @@ type Style256 struct {
 // S256 create a color256 style
 // Usage:
 // 	s := color.S256()
-// 	s := color.S256(132)
-// 	s := color.S256(132, 203)
-func S256(values ...uint8) *Style256 {
+// 	s := color.S256(132) // fg
+// 	s := color.S256(132, 203) // fg and bg
+func S256(fgAndBg ...uint8) *Style256 {
 	s := &Style256{}
-	vl := len(values)
+	vl := len(fgAndBg)
 	if vl > 0 { // with fg
-		s.fg = Color256{values[0], 1}
+		s.fg = Color256{fgAndBg[0], 1}
 
 		if vl > 1 { // and with bg
-			s.bg = Color256{values[1], 1}
+			s.bg = Color256{fgAndBg[1], 1}
 		}
 	}
 
@@ -167,27 +167,27 @@ func (s *Style256) SetFg(fgVal uint8) *Style256 {
 
 // Print print message
 func (s *Style256) Print(a ...interface{}) {
-	fmt.Printf(FullColorTpl, s.String(), fmt.Sprint(a...))
+	fmt.Print(RenderCode(s.String(), a...))
 }
 
 // Printf format and print message
 func (s *Style256) Printf(format string, a ...interface{}) {
-	fmt.Printf(FullColorTpl, s.String(), fmt.Sprintf(format, a...))
+	fmt.Print(RenderString(s.String(), fmt.Sprintf(format, a...)))
 }
 
 // Println print message with newline
 func (s *Style256) Println(a ...interface{}) {
-	fmt.Printf(FullColorNlTpl, s.String(), fmt.Sprint(a...))
+	fmt.Println(RenderCode(s.String(), a...))
 }
 
 // Sprint returns rendered message
 func (s *Style256) Sprint(a ...interface{}) string {
-	return fmt.Sprintf(FullColorTpl, s.String(), fmt.Sprint(a...))
+	return RenderCode(s.String(), a...)
 }
 
 // Sprint returns format and rendered message
 func (s *Style256) Sprintf(format string, a ...interface{}) string {
-	return fmt.Sprintf(FullColorTpl, s.String(), fmt.Sprintf(format, a...))
+	return RenderString(s.String(), fmt.Sprintf(format, a...))
 }
 
 // String convert to color code string

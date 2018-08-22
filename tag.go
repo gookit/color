@@ -33,72 +33,6 @@ var (
 )
 
 /*************************************************************
- * basic color maps
- *************************************************************/
-
-// FgColors foreground colors map
-var FgColors = map[string]Color{
-	"black":   FgBlack,
-	"red":     FgRed,
-	"green":   FgGreen,
-	"yellow":  FgYellow,
-	"blue":    FgBlue,
-	"magenta": FgMagenta,
-	"cyan":    FgCyan,
-	"white":   FgWhite,
-	"default": FgDefault,
-}
-
-// BgColors background colors map
-var BgColors = map[string]Color{
-	"black":   BgBlack,
-	"red":     BgRed,
-	"green":   BgGreen,
-	"yellow":  BgYellow,
-	"blue":    BgBlue,
-	"magenta": BgMagenta,
-	"cyan":    BgCyan,
-	"white":   BgWhite,
-	"default": BgDefault,
-}
-
-// ExFgColors extra foreground colors map
-var ExFgColors = map[string]Color{
-	"darkGray":     FgDarkGray,
-	"lightRed":     FgLightRed,
-	"lightGreen":   FgLightGreen,
-	"lightYellow":  FgLightYellow,
-	"lightBlue":    FgLightBlue,
-	"lightMagenta": FgLightMagenta,
-	"lightCyan":    FgLightCyan,
-	"lightWhite":   FgLightWhite,
-}
-
-// ExBgColors extra background colors map
-var ExBgColors = map[string]Color{
-	"darkGray":     BgDarkGray,
-	"lightRed":     BgLightRed,
-	"lightGreen":   BgLightGreen,
-	"lightYellow":  BgLightYellow,
-	"lightBlue":    BgLightBlue,
-	"lightMagenta": BgLightMagenta,
-	"lightCyan":    BgLightCyan,
-	"lightWhite":   BgLightWhite,
-}
-
-// Options color options map
-var Options = map[string]Color{
-	"reset":      OpReset,
-	"bold":       OpBold,
-	"fuzzy":      OpFuzzy,
-	"italic":     OpItalic,
-	"underscore": OpUnderscore,
-	"blink":      OpBlink,
-	"reverse":    OpReverse,
-	"concealed":  OpConcealed,
-}
-
-/*************************************************************
  * internal defined color tags
  *************************************************************/
 
@@ -184,10 +118,10 @@ func Print(a ...interface{}) (int, error) {
 
 // Printf format and print messages
 func Printf(format string, a ...interface{}) (int, error) {
-	return fmt.Print(Render(fmt.Sprintf(format, a...)))
+	return fmt.Print(ReplaceTag(fmt.Sprintf(format, a...)))
 }
 
-// Println messages line
+// Println messages with new line
 func Println(a ...interface{}) (int, error) {
 	return fmt.Println(Render(a...))
 }
@@ -199,7 +133,7 @@ func Fprint(w io.Writer, a ...interface{}) (int, error) {
 
 // Fprintf print format and rendered messages to writer
 func Fprintf(w io.Writer, format string, a ...interface{}) (int, error) {
-	return fmt.Fprint(w, String(fmt.Sprintf(format, a...)))
+	return fmt.Fprint(w, ReplaceTag(fmt.Sprintf(format, a...)))
 }
 
 // Fprintln print rendered messages line to writer
@@ -222,10 +156,6 @@ func Sprintf(format string, a ...interface{}) string {
 	return ReplaceTag(fmt.Sprintf(format, a...))
 }
 
-/*************************************************************
- * parse color tags
- *************************************************************/
-
 // String alias of the ReplaceTag
 func String(str string) string {
 	return ReplaceTag(str)
@@ -236,6 +166,10 @@ func Text(str string) string {
 	return ReplaceTag(str)
 }
 
+/*************************************************************
+ * parse color tags
+ *************************************************************/
+
 // ReplaceTag parse string, replace tag and return rendered string
 func ReplaceTag(str string, dumpIt ...bool) string {
 	// not contains color tag
@@ -243,7 +177,7 @@ func ReplaceTag(str string, dumpIt ...bool) string {
 		return str
 	}
 
-	// disable color OR not support color render
+	// disable color OR not support color render(Always: isLikeInCmd != isSupportColor)
 	if !Enable || isLikeInCmd {
 		return ClearTag(str)
 	}
@@ -328,6 +262,15 @@ func ParseCodeFromAttr(attr string) (code string) {
 	return colors2code(colors...)
 }
 
+// ClearTag clear all tag for a string
+func ClearTag(str string) string {
+	if !strings.Contains(str, "<") {
+		return str
+	}
+
+	return stripRegex.ReplaceAllString(str, "")
+}
+
 /*************************************************************
  * helper methods
  *************************************************************/
@@ -348,17 +291,7 @@ func ApplyTag(tag string, a ...interface{}) string {
 
 // WrapTag wrap a tag for a string "<tag>content</>"
 func WrapTag(str string, tag string) string {
-	// return fmt.Sprintf("<%s>%s</%s>", tag, str, tag)
 	return fmt.Sprintf("<%s>%s</>", tag, str)
-}
-
-// ClearTag clear all tag for a string
-func ClearTag(str string) string {
-	if !strings.Contains(str, "<") {
-		return str
-	}
-
-	return stripRegex.ReplaceAllString(str, "")
 }
 
 // GetColorTags get all internal color tags
@@ -370,4 +303,124 @@ func GetColorTags() map[string]string {
 func IsDefinedTag(name string) bool {
 	_, ok := colorTags[name]
 	return ok
+}
+
+/*************************************************************
+ * Tag extra
+ *************************************************************/
+
+// Tag value is a defined style name
+type Tag string
+
+// Print messages
+func (tg Tag) Print(a ...interface{}) {
+	name := string(tg)
+	if stl := GetStyle(name); !stl.IsEmpty() {
+		stl.Print(a...)
+		return
+	}
+
+	fmt.Print(RenderCode(GetTagCode(name), a...))
+}
+
+// Printf format and print messages
+func (tg Tag) Printf(format string, args ...interface{}) {
+	name := string(tg)
+	if stl := GetStyle(name); !stl.IsEmpty() {
+		stl.Printf(format, args...)
+		return
+	}
+
+	str := RenderString(GetTagCode(name), fmt.Sprintf(format, args...))
+	fmt.Print(str)
+}
+
+// Println messages line
+func (tg Tag) Println(args ...interface{}) {
+	name := string(tg)
+	if stl := GetStyle(name); !stl.IsEmpty() {
+		stl.Println(args...)
+		return
+	}
+
+	fmt.Println(RenderCode(GetTagCode(name), args...))
+}
+
+// Sprint render messages
+func (tg Tag) Sprint(args ...interface{}) string {
+	name := string(tg)
+	if stl := GetStyle(name); !stl.IsEmpty() {
+		return stl.Render(args...)
+	}
+
+	return RenderCode(GetTagCode(name), args...)
+}
+
+// Tips will add color for all text
+// value is a defined style name
+type Tips string
+
+// Print messages
+func (t Tips) Print(args ...interface{}) (int, error) {
+	name := string(t)
+	upName := strings.ToUpper(name)
+
+	if isLikeInCmd {
+		return GetStyle(name).Println(upName, ": ", fmt.Sprint(args...))
+	}
+
+	str := RenderCode(GetTagCode(name), upName, ": ", fmt.Sprint(args...))
+	return fmt.Println(str)
+}
+
+// Println messages line
+func (t Tips) Println(args ...interface{}) (int, error) {
+	return t.Print(args...)
+}
+
+// Printf format and print messages
+func (t Tips) Printf(format string, args ...interface{}) (int, error) {
+	name := string(t)
+	upName := strings.ToUpper(name)
+
+	if isLikeInCmd {
+		return GetStyle(name).Println(upName, ": ", fmt.Sprintf(format, args...))
+	}
+
+	str := RenderCode(GetTagCode(name), upName, ": ", fmt.Sprintf(format, args...))
+	return fmt.Println(str)
+}
+
+// LiteTips will only add color for tag name
+// value is a defined style name
+type LiteTips string
+
+// Print messages
+func (t LiteTips) Print(args ...interface{}) (int, error) {
+	tag := string(t)
+
+	if isLikeInCmd {
+		GetStyle(tag).Print(strings.ToUpper(tag), ": ")
+		return fmt.Println(args...)
+	}
+
+	str := RenderCode(GetTagCode(tag), strings.ToUpper(tag), ":")
+	return fmt.Println(str, fmt.Sprint(args...))
+}
+
+// Println messages with new line
+func (t LiteTips) Println(args ...interface{}) (int, error) {
+	return t.Print(args...)
+}
+
+// Printf format and print messages
+func (t LiteTips) Printf(format string, args ...interface{}) (int, error) {
+	tag := string(t)
+	if isLikeInCmd {
+		GetStyle(tag).Print(strings.ToUpper(tag), ": ")
+		return fmt.Printf(format+"\n", args...)
+	}
+
+	str := RenderCode(GetTagCode(tag), strings.ToUpper(tag), ":")
+	return fmt.Println(str, fmt.Sprintf(format, args...))
 }

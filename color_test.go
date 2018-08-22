@@ -55,11 +55,16 @@ func resetColorRender() {
 }
 
 func TestColor_Render(t *testing.T) {
+	forceOpenColorRender()
+	defer resetColorRender()
 	at := assert.New(t)
 
 	r := Bold.Render("text")
-	at.Equal(r, "\x1b[1mtext\x1b[0m")
-	// at.Equal(fmt.Sprintf("%q", r), "\x1b[1mtext\x1b[0m")
+	at.Equal("\x1b[1mtext\x1b[0m", r)
+	r = Bold.Text("text")
+	at.Equal("\x1b[1mtext\x1b[0m", r)
+	r = Bold.Sprint("text")
+	at.Equal("\x1b[1mtext\x1b[0m", r)
 }
 
 func TestRenderCode(t *testing.T) {
@@ -108,6 +113,39 @@ func TestColor256(t *testing.T) {
 	c = Bit8(132, true)
 	at.False(c.IsEmpty())
 	at.Equal("48;5;132", c.String())
+}
+
+func TestStyle256(t *testing.T) {
+	forceOpenColorRender()
+	defer resetColorRender()
+
+	at := assert.New(t)
+	// empty
+	s := S256()
+	at.Equal("", s.String())
+	at.Equal("MSG", s.Sprint("MSG"))
+
+	// only fg
+	s = S256(132)
+	at.Equal("38;5;132", s.String())
+	at.Equal("\x1b[38;5;132mMSG\x1b[0m", s.Sprint("MSG"))
+	at.Equal("\x1b[38;5;132mMSG\x1b[0m", s.Sprintf("%s", "MSG"))
+
+	// only bg
+	s = S256(132)
+	at.Equal("38;5;132", s.String())
+	at.Equal("\x1b[38;5;132mMSG\x1b[0m", s.Sprint("MSG"))
+
+	// fg and bg
+	s = S256(132, 23)
+	at.Equal("38;5;132;48;5;23", s.String())
+	at.Equal("\x1b[38;5;132;48;5;23mMSG\x1b[0m", s.Sprint("MSG"))
+	s = S256().Set(132, 23)
+	at.Equal("38;5;132;48;5;23", s.String())
+	at.Equal("\x1b[38;5;132;48;5;23mMSG\x1b[0m", s.Sprint("MSG"))
+	s = S256().SetFg(132).SetBg(23)
+	at.Equal("38;5;132;48;5;23", s.String())
+	at.Equal("\x1b[38;5;132;48;5;23mMSG\x1b[0m", s.Sprint("MSG"))
 }
 
 func TestRGBColor(t *testing.T) {

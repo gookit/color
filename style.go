@@ -5,10 +5,10 @@ import (
 	"strings"
 )
 
-// Style a colored style
+// Style a 16 color style
 // can add: fg color, bg color, color options
-// quick use:
-// 	color.Style(color.FgGreen).
+// Example:
+// 	color.Style(color.FgGreen).Print("message")
 type Style []Color
 
 // New create a custom style

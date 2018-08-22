@@ -16,7 +16,7 @@ func TestStyles(t *testing.T) {
 	s := Style{}
 	at.True(s.IsEmpty())
 
-	at.Equal("97", Light.String())
+	at.Equal("97;40", Light.String())
 	str := Light.Render("msg")
 	at.Contains(str, "97")
 
@@ -27,10 +27,20 @@ func TestStyles(t *testing.T) {
 	at.Contains(str, FgMagenta.String())
 
 	// add new
+	s = GetStyle("new0")
+	at.True(s.IsEmpty())
 	AddStyle("new0", Style{OpFastBlink})
 	s = GetStyle("new0")
 	at.False(s.IsEmpty())
 	delete(Styles, "new0")
+
+	// add new
+	s = GetStyle("new1")
+	at.True(s.IsEmpty())
+	New(OpStrikethrough).Save("new1")
+	s = GetStyle("new1")
+	at.False(s.IsEmpty())
+	delete(Styles, "new1")
 }
 
 func TestThemes(t *testing.T) {

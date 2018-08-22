@@ -15,7 +15,7 @@ func TestReplaceTag(t *testing.T) {
 
 	// disable color
 	Enable = false
-	r = ReplaceTag("<err>text</>")
+	r = Text("<err>text</>")
 	at.Equal("text", r)
 	Enable = true
 
@@ -50,6 +50,22 @@ def <info>info text
 	r = ReplaceTag(s)
 	at.NotContains(r, "<")
 	at.NotContains(r, ">")
+}
+
+func TestPrint(t *testing.T) {
+	// force open color render for testing
+	forceOpenColorRender()
+	defer resetColorRender()
+	at := assert.New(t)
+
+	s := Sprint("<red>MSG</>")
+	at.Equal("\x1b[0;31mMSG\x1b[0m", s)
+
+	s = Sprint("<red>H</><green>I</>")
+	at.Equal("\x1b[0;31mH\x1b[0m\x1b[0;32mI\x1b[0m", s)
+
+	s = Sprintf("<red>%s</>", "MSG")
+	at.Equal("\x1b[0;31mMSG\x1b[0m", s)
 }
 
 func TestWrapTag(t *testing.T) {
