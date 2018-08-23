@@ -61,7 +61,7 @@
 
 当硬件开始使用8位DAC时，多个软件为这些颜色名称分配了24位的代码。下面的图表显示了发送到DAC的一些常用硬件和软件的值。
 
-![cmd-term-colors](../images/cmd-term-colors.jpg)
+![cmd-term-colors](4bit-colors.jpg)
 
 ### 8位
 
@@ -77,7 +77,7 @@
    232-255：从黑到白的24阶灰度色
 ```
 
-![8-byte-colors](../images/8-byte-colors.jpg)
+![8-byte-colors](8bit-colors.jpg)
 
 ### 24位
 

@@ -38,20 +38,25 @@ func (s Style) Sprint(a ...interface{}) string {
 	return RenderCode(s.String(), a...)
 }
 
+// Sprintf is alias of the 'Render'
+func (s Style) Sprintf(format string, a ...interface{}) string {
+	return RenderString(s.String(), fmt.Sprintf(format, a...))
+}
+
 // Print render and Print text
 func (s Style) Print(a ...interface{}) {
 	if isLikeInCmd {
-		 winPrint(fmt.Sprint(a...), s...)
+		winPrint(fmt.Sprint(a...), s...)
 	} else {
 		fmt.Print(RenderCode(s.String(), a...))
 	}
 }
 
 // Printf render and print text
-func (s Style) Printf(format string, args ...interface{}) {
-	message := fmt.Sprintf(format, args...)
+func (s Style) Printf(format string, a ...interface{}) {
+	message := fmt.Sprintf(format, a...)
 	if isLikeInCmd {
-		 winPrint(message, s...)
+		winPrint(message, s...)
 	} else {
 		fmt.Print(RenderString(s.String(), message))
 	}
@@ -60,7 +65,7 @@ func (s Style) Printf(format string, args ...interface{}) {
 // Println render and print text line
 func (s Style) Println(a ...interface{}) {
 	if isLikeInCmd {
-		 winPrintln(fmt.Sprint(a...), s...)
+		winPrintln(fmt.Sprint(a...), s...)
 	} else {
 		fmt.Println(RenderCode(s.String(), a...))
 	}

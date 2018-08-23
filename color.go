@@ -1,5 +1,6 @@
 /*
-Package color is command line color library, written using golang
+Package color is Command line color library.
+Support rich color rendering output, universal API method, compatible with Windows system
 
 Source code and other details for the project are available at GitHub:
 
@@ -16,9 +17,9 @@ import (
 
 // console color mode
 const (
-	ModeNormal    = iota
-	Mode256        // 8 bite
-	ModeRGB        // 24 bite
+	ModeNormal = iota
+	Mode256    // 8 bite
+	ModeRGB    // 24 bite
 	ModeGrayscale
 )
 
@@ -130,4 +131,58 @@ func RenderString(code string, str string) string {
 // 		"\033[36;1mText\x1b[0m" -> "Text"
 func ClearCode(str string) string {
 	return codeRegex.ReplaceAllString(str, "")
+}
+
+/*************************************************************
+ * colored message Printer
+ *************************************************************/
+
+// PrinterFace interface
+type PrinterFace interface {
+	fmt.Stringer
+	Sprint(a ...interface{}) string
+	Sprintf(format string, a ...interface{}) string
+	Print(a ...interface{})
+	Printf(format string, a ...interface{})
+	Println(a ...interface{})
+}
+
+// Printer a generic color message printer.
+// Usage:
+//	p := &Printer{"32;45;3"}
+//	p.Print("message")
+type Printer struct {
+	// ColorCode color code string. eg "32;45;3"
+	ColorCode string
+}
+
+// String returns color code string. eg: "32;45;3"
+func (p *Printer) String() string {
+	// panic("implement me")
+	return p.ColorCode
+}
+
+// Sprint returns rendering colored messages
+func (p *Printer) Sprint(a ...interface{}) string {
+	return RenderCode(p.String(), a...)
+}
+
+// Sprintf returns format and rendering colored messages
+func (p *Printer) Sprintf(format string, a ...interface{}) string {
+	return RenderString(p.String(), fmt.Sprintf(format, a...))
+}
+
+// Print rendering colored messages
+func (p *Printer) Print(a ...interface{}) {
+	fmt.Print(RenderCode(p.String(), a...))
+}
+
+// Printf format and rendering colored messages
+func (p *Printer) Printf(format string, a ...interface{}) {
+	fmt.Print(RenderString(p.String(), fmt.Sprintf(format, a...)))
+}
+
+// Println rendering colored messages with newline
+func (p *Printer) Println(a ...interface{}) {
+	fmt.Println(RenderCode(p.String(), a...))
 }

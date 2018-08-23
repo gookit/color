@@ -72,3 +72,19 @@ func IsSupport256Color() bool {
 	// "TERM=xterm-256color"
 	return strings.Contains(os.Getenv("TERM"), "256color")
 }
+
+func stringToArr(str, sep string) (arr []string) {
+	str = strings.TrimSpace(str)
+	if str == "" {
+		return
+	}
+
+	ss := strings.Split(str, sep)
+	for _, val := range ss {
+		if val = strings.TrimSpace(val); val != "" {
+			arr = append(arr, val)
+		}
+	}
+
+	return
+}

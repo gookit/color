@@ -6,7 +6,7 @@ import (
 )
 
 /*
-from wikipedia:
+from wikipedia, 256 color:
    ESC[ … 38;5;<n> … m选择前景色
    ESC[ … 48;5;<n> … m选择背景色
      0-  7：标准颜色（同 ESC[30–37m）
@@ -96,7 +96,7 @@ func (c Color256) Value() uint8 {
 	return c[0]
 }
 
-// String convert to string
+// String convert to color code string.
 func (c Color256) String() string {
 	if c[1] == AsFg { // 0 is Fg
 		return fmt.Sprintf(TplFg256, c[0])
@@ -125,7 +125,10 @@ func (c Color256) IsEmpty() bool {
 // 都是由两位uint8组成, 第一位是色彩值；
 // 第二位与Bit8Color不一样的是，在这里表示是否设置了值 0 未设置 ^0 已设置
 type Style256 struct {
-	Name   string
+	p *Printer
+	// Name of the style
+	Name string
+	// fg and bg color
 	fg, bg Color256
 }
 
@@ -204,22 +207,4 @@ func (s *Style256) String() string {
 	}
 
 	return strings.Join(ss, ";")
-}
-
-// Color256Table display
-func Color256Table() {
-
-}
-
-// RGBto216 16-231：6 × 6 × 6 立方（216色）: 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)
-func RGBto216(n int) int {
-	if n < 0 {
-		return 0
-	}
-
-	if n > 5 {
-		return 5
-	}
-
-	return n
 }
