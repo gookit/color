@@ -5,19 +5,21 @@
 [![Coverage Status](https://coveralls.io/repos/github/gookit/color/badge.svg?branch=master)](https://coveralls.io/github/gookit/color?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gookit/color)](https://goreportcard.com/report/github.com/gookit/color)
 
-golang下的命令行色彩使用库
+golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用的API方法，兼容Windows系统
 
 **[EN Readme](README.md)**
 
 ## 功能特色
 
 - 使用简单方便
-- 支持丰富的颜色输出
+- 支持丰富的颜色输出, 16色(4bit)，256色(8bit)，RGB色彩(24bit)
+  - 16色(4bit)是最常用和支持最广的，支持Windows `cmd.exe`
+  - 另外两种支持 `linux` `mac` 和 Windows下的 `CONEMU` `git-bash` `mintty` 等部分终端
 - 通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
 - 同时支持html标签式的颜色渲染. eg: `<green>message</>`
-- 兼容Windows系统环境
 - 基础色彩: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
 - 扩展风格: `Info` `Note` `Light` `Error` `Danger` `Notice` `Success` `Comment` `Primary` `Warning` `Question` `Secondary`
+- 兼容Windows系统环境
 
 ## 获取安装
 
@@ -179,12 +181,11 @@ color.Success.Println("Success message")
 
 ![theme-style](_examples/images/theme-style.jpg)
 
-
-### 使用颜色html标签
+### 使用颜色标签
 
 > **不** 支持在windows `cmd.exe` 使用，但不影响使用，会自动去除颜色标签
 
-使用内置的颜色标签可以非常方便简单的构建自己需要的任何格式
+使用内置的颜色标签，可以非常方便简单的构建自己需要的任何格式
 
 ```go
 // 使用内置的 color tag
@@ -211,6 +212,86 @@ color.Tag("info").Println("info style text")
 > 运行 demo: `go run ./_examples/colortag.go`
 
 ![color-tags](_examples/images/color-tags.jpg)
+
+## 256色使用
+
+### 使用前景或后景色
+ 
+- `color.C256(val uint8, isBg ...bool) Color256`
+
+```go
+c := color.C256(132) // fg color
+c.Println("message")
+c.Printf("format %s", "message")
+
+c := color.C256(132, true) // bg color
+c.Println("message")
+c.Printf("format %s", "message")
+```
+
+### 使用风格
+
+> 可同时设置前景和背景色
+ 
+- `color.S256(fgAndBg ...uint8) *Style256`
+
+```go
+s := color.S256(32, 203)
+s.Println("message")
+s.Printf("format %s", "message")
+```
+
+> 运行 demo: `go run ./_examples/color256.go`
+
+![color-tags](_examples/images/256-color.jpg)
+
+## RGB色彩使用
+
+### 使用前景或后景色 
+
+- `color.RGB(r, g, b uint8, isBg ...bool) RGBColor`
+
+```go
+c := color.RGB(30,144,255) // fg color
+c.Println("message")
+c.Printf("format %s", "message")
+
+c := color.RGB(30,144,255, true) // bg color
+c.Println("message")
+c.Printf("format %s", "message")
+```
+
+- `color.HEX(hex string, isBg ...bool) RGBColor` 从16进制颜色创建
+
+```go
+c := HEX("ccc") // 也可以写为: "cccccc" "#cccccc"
+c.Println("message")
+c.Printf("format %s", "message")
+
+c = HEX("aabbcc", true) // as bg color
+c.Println("message")
+c.Printf("format %s", "message")
+```
+
+### 使用风格
+
+> 可同时设置前景和背景色
+
+- `color.NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle`
+
+```go
+s := NewRGBStyle(RGB(20, 144, 234), RGB(234, 78, 23))
+s.Println("message")
+s.Printf("format %s", "message")
+```
+
+- `color.HEXStyle(fg string, bg ...string) *RGBStyle` 从16进制颜色创建
+
+```go
+s := HEXStyle("11aa23", "eee")
+s.Println("message")
+s.Printf("format %s", "message")
+```
 
 ## 参考项目
 

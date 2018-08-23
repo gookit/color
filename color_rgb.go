@@ -147,7 +147,7 @@ func (c RGBColor) String() string {
 	}
 
 	// >1 is empty
-	return ResetCode
+	return ""
 }
 
 // IsEmpty value
@@ -314,6 +314,6 @@ func (s *RGBStyle) IsEmpty() bool {
 }
 
 // RGBto256 value
-func RGBto256(r, g, b uint8) {
-
-}
+// func RGBto256(r, g, b uint8) {
+//
+// }

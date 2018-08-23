@@ -184,13 +184,13 @@ func initWinColorsMap() {
 }
 
 // winPrint
-func winPrint(str string, colors ...Color) (int, error) {
-	return winInternalPrint(str, convertColorsToWinAttr(colors), false)
+func winPrint(str string, colors ...Color) {
+	winInternalPrint(str, convertColorsToWinAttr(colors), false)
 }
 
 // winPrintln
-func winPrintln(str string, colors ...Color) (int, error) {
-	return winInternalPrint(str, convertColorsToWinAttr(colors), true)
+func winPrintln(str string, colors ...Color) {
+	winInternalPrint(str, convertColorsToWinAttr(colors), true)
 }
 
 // winInternalPrint

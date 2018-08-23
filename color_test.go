@@ -1,6 +1,7 @@
 package color
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -67,11 +68,27 @@ func TestSet(t *testing.T) {
 	Set(FgGreen)
 	str := restoreStdout()
 	at.Equal("\x1b[32m", str)
+
 	// unset
 	rewriteStdout()
 	Reset()
 	str = restoreStdout()
 	at.Equal("\x1b[0m", str)
+
+	old = isLikeInCmd
+	isLikeInCmd = true
+	// set
+	rewriteStdout()
+	Set(FgGreen)
+	str = restoreStdout()
+	at.Equal("", str)
+
+	// unset
+	rewriteStdout()
+	Reset()
+	str = restoreStdout()
+	at.Equal("", str)
+	isLikeInCmd = old
 }
 
 func TestRenderCode(t *testing.T) {
@@ -116,6 +133,46 @@ func TestClearCode(t *testing.T) {
 	// 24bit
 	art.Equal("Text", ClearCode("\x1b[38;2;30;144;255mText\x1b[0m"))
 	art.Equal("Text other", ClearCode("\033[36;1mText\x1b[0m other"))
+}
+
+/*************************************************************
+ * test printer
+ *************************************************************/
+
+func TestPrinter(t *testing.T) {
+	forceOpenColorRender()
+	defer resetColorRender()
+	at := assert.New(t)
+
+	p := NewPrinter("48;5;132")
+
+	// Color256.Sprint
+	str := p.Sprint("msg")
+	at.Equal("\x1b[48;5;132mmsg\x1b[0m", str)
+	// Color256.Sprintf
+	str = p.Sprintf("msg")
+	at.Equal("\x1b[48;5;132mmsg\x1b[0m", str)
+
+	at.False(p.IsEmpty())
+	at.Equal("48;5;132", p.String())
+
+	// Color256.Print
+	rewriteStdout()
+	p.Print("MSG")
+	str = restoreStdout()
+	at.Equal("\x1b[48;5;132mMSG\x1b[0m", str)
+
+	// Color256.Printf
+	rewriteStdout()
+	p.Printf("A %s", "MSG")
+	str = restoreStdout()
+	at.Equal("\x1b[48;5;132mA MSG\x1b[0m", str)
+
+	// Color256.Println
+	rewriteStdout()
+	p.Println("MSG")
+	str = restoreStdout()
+	at.Equal("\x1b[48;5;132mMSG\x1b[0m\n", str)
 }
 
 /*************************************************************
@@ -180,7 +237,7 @@ func TestColor256(t *testing.T) {
 	// empty
 	c := Color256{1: 99}
 	at.True(c.IsEmpty())
-	at.Equal(ResetCode, c.String())
+	at.Equal("", c.String())
 
 	// fg
 	c = Bit8(132)
@@ -285,7 +342,7 @@ func TestRGBColor(t *testing.T) {
 	// empty
 	c := RGBColor{3: 99}
 	at.True(c.IsEmpty())
-	at.Equal(ResetCode, c.String())
+	at.Equal("", c.String())
 
 	// bg
 	c = RGB(204, 204, 204, true)
@@ -339,31 +396,31 @@ func TestRGBFromString(t *testing.T) {
 
 func TestHexToRGB(t *testing.T) {
 	at := assert.New(t)
-	rgb := HEX("ccc") // rgb: [204 204 204]
-	at.False(rgb.IsEmpty())
-	at.Equal("38;2;204;204;204", rgb.String())
+	c := HEX("ccc") // rgb: [204 204 204]
+	at.False(c.IsEmpty())
+	at.Equal("38;2;204;204;204", c.String())
 
-	rgb = HEX("aabbcc") // rgb: [170 187 204]
-	at.Equal("38;2;170;187;204", rgb.String())
+	c = HEX("aabbcc") // rgb: [170 187 204]
+	at.Equal("38;2;170;187;204", c.String())
 
-	rgb = HEX("#aabbcc") // rgb: [170 187 204]
-	at.Equal("38;2;170;187;204", rgb.String())
+	c = HEX("#aabbcc") // rgb: [170 187 204]
+	at.Equal("38;2;170;187;204", c.String())
 
-	rgb = HEX("0xad99c0") // rgb: [170 187 204]
-	at.Equal("38;2;173;153;192", rgb.String())
+	c = HEX("0xad99c0") // rgb: [170 187 204]
+	at.Equal("38;2;173;153;192", c.String())
 
-	rgb = HEX(" ")
-	at.True(rgb.IsEmpty())
-	at.Equal(ResetCode, rgb.String())
+	c = HEX(" ")
+	at.True(c.IsEmpty())
+	at.Equal("", c.String())
 
-	rgb = HEX("!#$bbcc")
-	at.Equal(ResetCode, rgb.String())
+	c = HEX("!#$bbcc")
+	at.Equal("", c.String())
 
-	rgb = HEX("#invalid")
-	at.Equal(ResetCode, rgb.String())
+	c = HEX("#invalid")
+	at.Equal("", c.String())
 
-	rgb = HEX("invalid code")
-	at.Equal(ResetCode, rgb.String())
+	c = HEX("invalid code")
+	at.Equal("", c.String())
 }
 
 func TestRGBStyle(t *testing.T) {
@@ -373,15 +430,61 @@ func TestRGBStyle(t *testing.T) {
 
 	s := &RGBStyle{}
 	at.True(s.IsEmpty())
+	at.Equal("", s.String())
+	s.Set(RGB(20, 144, 234), RGB(234, 78, 23))
+	at.False(s.IsEmpty())
+	at.Equal("38;2;20;144;234;48;2;234;78;23", s.String())
+
 	// NewRGBStyle
+	s = NewRGBStyle(RGB(20, 144, 234))
+	at.False(s.IsEmpty())
+	at.Equal("38;2;20;144;234", s.String())
+
 	s = NewRGBStyle(RGB(20, 144, 234), RGB(234, 78, 23))
 	at.False(s.IsEmpty())
+	at.Equal("38;2;20;144;234;48;2;234;78;23", s.String())
+
 	// HEXStyle
 	s = HEXStyle("555", "eee")
 	at.False(s.IsEmpty())
+	at.Equal("38;2;85;85;85;48;2;238;238;238", s.String())
+
 	// RGBStyleFromString
 	s = RGBStyleFromString("20, 144, 234", "234, 78, 23")
 	at.False(s.IsEmpty())
+	at.Equal("38;2;20;144;234;48;2;234;78;23", s.String())
+
+	// RGBColor.Sprint
+	at.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m", s.Sprint("msg"))
+	// RGBColor.Sprintf
+	at.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m", s.Sprintf("m%s", "sg"))
+
+	// RGBColor.Print
+	rewriteStdout()
+	s.Print("msg")
+	str := restoreStdout()
+	at.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m", str)
+
+	// RGBColor.Printf
+	rewriteStdout()
+	s.Printf("m%s", "sg")
+	str = restoreStdout()
+	at.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m", str)
+
+	// RGBColor.Println
+	rewriteStdout()
+	s.Println("msg")
+	str = restoreStdout()
+	at.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m\n", str)
+}
+
+func TestOther(t *testing.T) {
+	at := assert.New(t)
+
+	at.True(IsConsole(os.Stdout))
+	at.False(IsConsole(&bytes.Buffer{}))
+
+	at.False(IsMSys())
 }
 
 /*************************************************************

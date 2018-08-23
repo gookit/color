@@ -62,6 +62,11 @@ func TestPrint(t *testing.T) {
 	defer resetColorRender()
 	at := assert.New(t)
 
+	at.True(len(GetColorTags()) > 0)
+	at.True(IsDefinedTag("info"))
+	at.Equal("0;32", GetTagCode("info"))
+	at.Equal("", GetTagCode("not-exist"))
+
 	s := Sprint("<red>MSG</>")
 	at.Equal("\x1b[0;31mMSG\x1b[0m", s)
 
@@ -70,11 +75,36 @@ func TestPrint(t *testing.T) {
 
 	s = Sprintf("<red>%s</>", "MSG")
 	at.Equal("\x1b[0;31mMSG\x1b[0m", s)
+
+	// Print
+	rewriteStdout()
+	Print("<red>MSG</>")
+	s = restoreStdout()
+	at.Equal("\x1b[0;31mMSG\x1b[0m", s)
+
+	// Printf
+	rewriteStdout()
+	Printf("<red>%s</>", "MSG")
+	s = restoreStdout()
+	at.Equal("\x1b[0;31mMSG\x1b[0m", s)
+
+	// Println
+	rewriteStdout()
+	Println("<red>MSG</>")
+	s = restoreStdout()
+	at.Equal("\x1b[0;31mMSG\x1b[0m\n", s)
 }
 
 func TestWrapTag(t *testing.T) {
 	at := assert.New(t)
 	at.Equal("<info>text</>", WrapTag("text", "info"))
+}
+
+func TestApplyTag(t *testing.T) {
+	forceOpenColorRender()
+	defer resetColorRender()
+	at := assert.New(t)
+	at.Equal("\x1b[0;32mMSG\x1b[0m", ApplyTag("info", "MSG"))
 }
 
 func TestClearTag(t *testing.T) {

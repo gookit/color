@@ -107,7 +107,7 @@ func (c Color256) String() string {
 	}
 
 	// empty
-	return ResetCode
+	return ""
 }
 
 // IsEmpty value

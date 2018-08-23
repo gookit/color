@@ -3,24 +3,8 @@ package color
 import (
 	"io"
 	"os"
-	"runtime"
 	"strings"
 )
-
-// IsWin linux windows darwin
-func IsWin() bool {
-	return runtime.GOOS == "windows"
-}
-
-// IsMac system
-func IsMac() bool {
-	return runtime.GOOS == "darwin"
-}
-
-// IsLinux system
-func IsLinux() bool {
-	return runtime.GOOS == "linux"
-}
 
 // IsConsole 判断 w 是否为 stderr、stdout、stdin 三者之一
 func IsConsole(out io.Writer) bool {

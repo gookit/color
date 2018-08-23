@@ -12,12 +12,14 @@ Command line color library. rich color rendering output, universal API method, c
 ## Features
 
 - Simple to use
-- Supports rich color output
+- Supports rich color output 16色(4bit)，256色(8bit)，RGB色彩(24bit)
+  - 16 color (4bit) is the most commonly used and most widely supported, supporting Windows `cmd.exe`
+  - 256 and RGB color support `linux` `mac` and Windows `CONEMU` `git-bash` `mintty` part terminal
 - Generic API method: `Print` `Printf` `Println` `Sprint` `Sprintf`
 - Supports html tab-style color rendering. like: `<green>message</>`
-- Compatible with Windows system environment
 - Basic color: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
 - Extra style: `Info` `Note` `Light` `Error` `Danger` `Notice` `Success` `Comment` `Primary` `Warning` `Question` `Secondary`
+- Compatible with Windows system environment
 
 ## Install
 
@@ -177,6 +179,86 @@ color.Tag("info").Println("info style text")
 > run demo: `go run ./_examples/colortag.go`
 
 ![color-tags](_examples/images/color-tags.jpg)
+
+## Use 256 color
+
+### Use foreground or background color
+ 
+- `color.C256(val uint8, isBg ...bool) Color256`
+
+```go
+c := color.C256(132) // fg color
+c.Println("message")
+c.Printf("format %s", "message")
+
+c := color.C256(132, true) // bg color
+c.Println("message")
+c.Printf("format %s", "message")
+```
+
+### Use 256 color style
+
+> Can set foreground and background colors at the same time
+ 
+- `color.S256(fgAndBg ...uint8) *Style256`
+
+```go
+s := color.S256(32, 203)
+s.Println("message")
+s.Printf("format %s", "message")
+```
+
+> run demo: `go run ./_examples/color256.go`
+
+![color-tags](_examples/images/256-color.jpg)
+
+## Use RGB color
+
+### Use foreground or background color 
+
+- `color.RGB(r, g, b uint8, isBg ...bool) RGBColor`
+
+```go
+c := color.RGB(30,144,255) // fg color
+c.Println("message")
+c.Printf("format %s", "message")
+
+c := color.RGB(30,144,255, true) // bg color
+c.Println("message")
+c.Printf("format %s", "message")
+```
+
+- `color.HEX(hex string, isBg ...bool) RGBColor` Create from hexadecimal color string
+
+```go
+c := HEX("ccc") // 也可以写为: "cccccc" "#cccccc"
+c.Println("message")
+c.Printf("format %s", "message")
+
+c = HEX("aabbcc", true) // as bg color
+c.Println("message")
+c.Printf("format %s", "message")
+```
+
+### Use RGB color style
+
+> Can set foreground and background colors at the same time
+
+- `color.NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle`
+
+```go
+s := NewRGBStyle(RGB(20, 144, 234), RGB(234, 78, 23))
+s.Println("message")
+s.Printf("format %s", "message")
+```
+
+- `color.HEXStyle(fg string, bg ...string) *RGBStyle` Create from hexadecimal color string
+
+```go
+s := HEXStyle("11aa23", "eee")
+s.Println("message")
+s.Printf("format %s", "message")
+```
 
 ## Refer
 

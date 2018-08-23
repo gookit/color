@@ -16,21 +16,18 @@ import (
 )
 
 // console color mode
-const (
-	ModeNormal = iota
-	Mode256    // 8 bite
-	ModeRGB    // 24 bite
-	ModeGrayscale
-)
+// const (
+// 	ModeNormal = iota
+// 	Mode256    // 8 bite
+// 	ModeRGB    // 24 bite
+// 	ModeGrayscale
+// )
 
 // color render templates
 const (
 	SettingTpl   = "\x1b[%sm"
 	FullColorTpl = "\x1b[%sm%s\x1b[0m"
 )
-
-// ResetCode value
-const ResetCode = "0"
 
 // ResetSet 重置/正常 关闭所有属性。
 const ResetSet = "\x1b[0m"
@@ -156,6 +153,11 @@ type Printer struct {
 	ColorCode string
 }
 
+// NewPrinter instance
+func NewPrinter(colorCode string) *Printer {
+	return &Printer{colorCode}
+}
+
 // String returns color code string. eg: "32;45;3"
 func (p *Printer) String() string {
 	// panic("implement me")
@@ -185,4 +187,9 @@ func (p *Printer) Printf(format string, a ...interface{}) {
 // Println rendering colored messages with newline
 func (p *Printer) Println(a ...interface{}) {
 	fmt.Println(RenderCode(p.String(), a...))
+}
+
+// IsEmpty color code
+func (p *Printer) IsEmpty() bool {
+	return p.ColorCode == ""
 }
