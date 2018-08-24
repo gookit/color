@@ -519,6 +519,7 @@ func TestOther(t *testing.T) {
 	at.False(IsConsole(&bytes.Buffer{}))
 
 	at.False(IsMSys())
+	os.Unsetenv("TERM")
 	at.False(IsSupport256Color())
 
 	at.False(IsSupportColor())
