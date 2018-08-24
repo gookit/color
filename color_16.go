@@ -5,10 +5,8 @@ import (
 	"strings"
 )
 
-// Color value type
+// Color Color16, 16 color value type
 // 3(2^3=8) OR 4(2^4=16) bite color.
-// ESC 操作的表示:
-// 	"\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
 type Color uint8
 
 /*************************************************************
@@ -85,19 +83,28 @@ const (
 	OpStrikethrough              // 9 删除的，删除线(未广泛支持)
 )
 
-// There are basic foreground color alias
+// There are basic and light foreground color aliases
 const (
 	Red     = FgRed
 	Cyan    = FgCyan
-	Gray    = FgDarkGray
+	Gray    = FgDarkGray // is light Black
 	Blue    = FgBlue
 	Black   = FgBlack
 	Green   = FgGreen
 	White   = FgWhite
 	Yellow  = FgYellow
 	Magenta = FgMagenta
-	Bold    = OpBold
-	Normal  = FgDefault
+	// special
+	Bold   = OpBold
+	Normal = FgDefault
+	// extra light
+	LightRed     = FgLightRed
+	LightCyan    = FgLightCyan
+	LightBlue    = FgLightBlue
+	LightGreen   = FgLightGreen
+	LightWhite   = FgLightWhite
+	LightYellow  = FgLightYellow
+	LightMagenta = FgLightMagenta
 )
 
 /*************************************************************
@@ -157,13 +164,32 @@ func (c Color) Printf(format string, a ...interface{}) {
 	}
 }
 
-// Println messages with new line
-func (c Color) Println(a ...interface{}) {
-	if isLikeInCmd {
-		winPrintln(fmt.Sprint(a...), c)
-	} else {
-		fmt.Println(RenderCode(c.String(), a...))
+// Light current color. eg: 36(FgCyan) -> 96(FgLightCyan).
+// Usage:
+//	lightCyan := Cyan.Light()
+//	lightCyan.Print("message")
+func (c Color) Light() Color {
+	val := int(c)
+	if val >= 30 && val <= 47 {
+		return Color(uint8(c) + 60)
 	}
+
+	// don't change
+	return c
+}
+
+// Darken current color. eg. 96(FgLightCyan) -> 36(FgCyan)
+// Usage:
+//	cyan := LightCyan.Darken()
+//	cyan.Print("message")
+func (c Color) Darken() Color {
+	val := int(c)
+	if val >= 90 && val <= 107 {
+		return Color(uint8(c) - 60)
+	}
+
+	// don't change
+	return c
 }
 
 // String to code string. eg "35"
@@ -258,4 +284,13 @@ func colors2code(colors ...Color) string {
 	}
 
 	return strings.Join(codes, ";")
+}
+
+// Println messages with new line
+func (c Color) Println(a ...interface{}) {
+	if isLikeInCmd {
+		winPrintln(fmt.Sprint(a...), c)
+	} else {
+		fmt.Println(RenderCode(c.String(), a...))
+	}
 }

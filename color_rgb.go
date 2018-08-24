@@ -255,7 +255,7 @@ func (s *RGBStyle) Set(fg, bg RGBColor) *RGBStyle {
 	return s.SetFg(fg).SetBg(bg)
 }
 
-// SetBg set fg color
+// SetFg set fg color
 func (s *RGBStyle) SetFg(fg RGBColor) *RGBStyle {
 	fg[3] = 1
 	s.fg = fg

@@ -18,7 +18,7 @@ func IsConsole(out io.Writer) bool {
 
 // IsMSys msys(MINGW64) 环境，不一定支持颜色
 func IsMSys() bool {
-	// "MSYSTEM=MINGW64"
+	// like "MSYSTEM=MINGW64"
 	if len(os.Getenv("MSYSTEM")) > 0 {
 		return true
 	}
@@ -26,9 +26,12 @@ func IsMSys() bool {
 	return false
 }
 
-// IsSupportColor check console is support color.
-// supported: linux, mac, or windows's ConEmu, Cmder, putty, git-bash.exe
-// not support: windows cmd, powerShell
+// IsSupportColor check current console is support color.
+//
+// Supported:
+// 	linux, mac, or windows's ConEmu, Cmder, putty, git-bash.exe
+// Not support:
+// 	windows cmd.exe, powerShell.exe
 func IsSupportColor() bool {
 	// "TERM=xterm"  support color
 	// "TERM=xterm-vt220" support color
@@ -39,7 +42,7 @@ func IsSupportColor() bool {
 	}
 
 	// like on ConEmu software, e.g "ConEmuANSI=ON"
-	if os.Getenv("ConEmuANSI") == "NO" {
+	if os.Getenv("ConEmuANSI") == "ON" {
 		return true
 	}
 

@@ -24,6 +24,8 @@ import (
 // )
 
 // color render templates
+// ESC 操作的表示:
+// 	"\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
 const (
 	SettingTpl   = "\x1b[%sm"
 	FullColorTpl = "\x1b[%sm%s\x1b[0m"
@@ -39,7 +41,8 @@ const CodeExpr = `\033\[[\d;?]+m`
 var Enable = true
 
 var (
-	// mark current env, It's like in cmd.exe
+	// mark current env, It's like in `cmd.exe`
+	// if not in windows, is's always is False.
 	isLikeInCmd bool
 	// match color codes
 	codeRegex = regexp.MustCompile(CodeExpr)

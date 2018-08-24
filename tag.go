@@ -18,7 +18,7 @@ const (
 	MatchExpr = `<([a-zA-Z_=,;]+)>(?s:(.*?))<\/>`
 
 	// Regex to match color attributes
-	AttrExpr = `(fg|bg|op)=([a-z,]+);?`
+	AttrExpr = `(fg|bg|op)[\s]*=[\s]*([a-zA-Z,]+);?`
 
 	// Regex used for removing color tags
 	// StripExpr = `<[\/]?[a-zA-Z=;]+>`
@@ -170,8 +170,8 @@ func Text(str string) string {
  * parse color tags
  *************************************************************/
 
-// ReplaceTag parse string, replace tag and return rendered string
-func ReplaceTag(str string, dumpIt ...bool) string {
+// ReplaceTag parse string, replace color tag and return rendered string
+func ReplaceTag(str string) string {
 	// not contains color tag
 	if !strings.Contains(str, "<") {
 		return str
@@ -209,7 +209,7 @@ func ReplaceTag(str string, dumpIt ...bool) string {
 
 // ParseCodeFromAttr parse color attributes.
 // attr like:
-// 		"fg=VALUE;bg=VALUE;op=VALUE", VALUE please see var: FgColors, BgColors, Options
+// 		"fg=VALUE;bg=VALUE;op=VALUE" // VALUE please see var: FgColors, BgColors, Options
 // eg:
 // 		"fg=yellow"
 // 		"bg=red"
@@ -245,7 +245,7 @@ func ParseCodeFromAttr(attr string) (code string) {
 				colors = append(colors, c)
 			}
 		case "op": // options allow multi value
-			if !strings.Contains(val, ",") {
+			if strings.Contains(val, ",") {
 				ns := strings.Split(val, ",")
 				for _, n := range ns {
 					if c, ok := Options[n]; ok {
@@ -334,34 +334,39 @@ func (tg Tag) Printf(format string, args ...interface{}) {
 }
 
 // Println messages line
-func (tg Tag) Println(args ...interface{}) {
+func (tg Tag) Println(a ...interface{}) {
 	name := string(tg)
 	if stl := GetStyle(name); !stl.IsEmpty() {
-		stl.Println(args...)
+		stl.Println(a...)
 	} else {
-		fmt.Println(RenderCode(GetTagCode(name), args...))
+		fmt.Println(RenderCode(GetTagCode(name), a...))
 	}
 }
 
 // Sprint render messages
-func (tg Tag) Sprint(args ...interface{}) string {
+func (tg Tag) Sprint(a ...interface{}) string {
 	name := string(tg)
-	if stl := GetStyle(name); !stl.IsEmpty() {
-		return stl.Render(args...)
-	}
+	// if stl := GetStyle(name); !stl.IsEmpty() {
+	// 	return stl.Render(args...)
+	// }
 
-	return RenderCode(GetTagCode(name), args...)
+	return RenderCode(GetTagCode(name), a...)
 }
 
-// Tips will add color for all text
-// value is a defined style name
+// Sprintf format and render messages
+func (tg Tag) Sprintf(format string, a ...interface{}) string {
+	name := string(tg)
+	return RenderString(GetTagCode(name), fmt.Sprintf(format, a...))
+}
+
+// Tips value is a defined style name, will add color for all text.
+// Deprecated: please use `Color.Info.Prompt()` instead of
 type Tips string
 
 // Print messages
 func (t Tips) Print(args ...interface{}) {
 	name := string(t)
 	msg := strings.ToUpper(name) + ": " + fmt.Sprint(args...)
-
 	if isLikeInCmd {
 		GetStyle(name).Println(msg)
 	} else {
@@ -373,7 +378,6 @@ func (t Tips) Print(args ...interface{}) {
 func (t Tips) Printf(format string, a ...interface{}) {
 	name := string(t)
 	msg := strings.ToUpper(name) + ": " + fmt.Sprintf(format, a...)
-
 	if isLikeInCmd {
 		GetStyle(name).Println(msg)
 	} else {
@@ -383,13 +387,13 @@ func (t Tips) Printf(format string, a ...interface{}) {
 
 // LiteTips will only add color for tag name
 // value is a defined style name
+// Deprecated: please use `Color.Info.Tips()` instead of
 type LiteTips string
 
 // Print tips message with new line
 func (t LiteTips) Print(a ...interface{}) {
 	tag := string(t)
 	title := strings.ToUpper(tag) + ":"
-
 	if isLikeInCmd {
 		GetStyle(tag).Print(title)
 		fmt.Println(a...)
@@ -402,7 +406,6 @@ func (t LiteTips) Print(a ...interface{}) {
 func (t LiteTips) Printf(format string, a ...interface{}) {
 	tag := string(t)
 	title := strings.ToUpper(tag) + ":"
-
 	if isLikeInCmd {
 		GetStyle(tag).Print(title)
 		fmt.Println(fmt.Sprintf(format, a...))

@@ -38,14 +38,14 @@ func colorUsage() {
 	// use custom color tag
 	color.Print("custom color tag: <fg=yellow;bg=black;op=underscore;>hello, welcome</>\n")
 
-	// set a color tag
+	// apply a color tag
 	color.Tag("info").Println("info style message")
 
-	// tips
-	color.Tips("info").Print("tips style message")
-	color.Tips("warn").Print("tips style message")
+	// prompt message
+	color.Info.Prompt("prompt style message")
+	color.Warn.Prompt("prompt style message")
 
-	// lite tips
-	color.LiteTips("info").Print("lite tips style message")
-	color.LiteTips("warn").Print("lite tips style message")
+	// tips message
+	color.Info.Tips("tips style message")
+	color.Warn.Tips("tips style message")
 }

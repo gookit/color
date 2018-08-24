@@ -35,14 +35,16 @@ func Example() {
 	// use style tag
 	Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
 
-	// set a style tag
+	// apply a style tag
 	Tag("info").Println("info style text")
 
-	// use info style tips
-	Tips("info").Print("tips style text")
+	// prompt message
+	Info.Prompt("prompt style message")
+	Warn.Prompt("prompt style message")
 
-	// use info style blocked tips
-	LiteTips("info").Print("blocked tips style text")
+	// tips message
+	Info.Tips("tips style message")
+	Warn.Tips("tips style message")
 }
 
 /*************************************************************
@@ -187,10 +189,10 @@ func TestColor16(t *testing.T) {
 	at.True(Bold.IsValid())
 	r := Bold.Render("text")
 	at.Equal("\x1b[1mtext\x1b[0m", r)
-	r = Bold.Text("text")
-	at.Equal("\x1b[1mtext\x1b[0m", r)
-	r = Bold.Sprint("text")
-	at.Equal("\x1b[1mtext\x1b[0m", r)
+	r = LightYellow.Text("text")
+	at.Equal("\x1b[93mtext\x1b[0m", r)
+	r = LightWhite.Sprint("text")
+	at.Equal("\x1b[97mtext\x1b[0m", r)
 
 	str := Red.Sprintf("A %s", "MSG")
 	at.Equal("\x1b[31mA MSG\x1b[0m", str)
@@ -209,9 +211,32 @@ func TestColor16(t *testing.T) {
 
 	// Color.Println
 	rewriteStdout()
-	BgGray.Println("MSG")
+	LightMagenta.Println("MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[100mMSG\x1b[0m\n", str)
+	at.Equal("\x1b[95mMSG\x1b[0m\n", str)
+
+	old := isLikeInCmd
+	isLikeInCmd = true
+	rewriteStdout()
+	LightCyan.Print("msg")
+	LightRed.Printf("m%s", "sg")
+	LightGreen.Println("msg")
+	str = restoreStdout()
+	isLikeInCmd = old
+
+	// Color.Darken
+	blue := LightBlue.Darken()
+	at.Equal(94, int(LightBlue))
+	at.Equal(34, int(blue))
+	c := Color(120).Darken()
+	at.Equal(120, int(c))
+
+	// Color.Light
+	lightCyan := Cyan.Light()
+	at.Equal(36, int(Cyan))
+	at.Equal(96, int(lightCyan))
+	c = Color(120).Light()
+	at.Equal(120, int(c))
 
 	// Colors vars
 	_, ok := FgColors["red"]
@@ -392,6 +417,15 @@ func TestRGBFromString(t *testing.T) {
 
 	c = RGBFromString("170,187,204", true)
 	at.Equal("\x1b[48;2;170;187;204mmsg\x1b[0m", c.Sprint("msg"))
+
+	c = RGBFromString("170,187,")
+	at.Equal("msg", c.Sprint("msg"))
+
+	c = RGBFromString("")
+	at.Equal("msg", c.Sprint("msg"))
+
+	c = RGBFromString("170,187,error")
+	at.Equal("msg", c.Sprint("msg"))
 }
 
 func TestHexToRGB(t *testing.T) {
@@ -485,6 +519,20 @@ func TestOther(t *testing.T) {
 	at.False(IsConsole(&bytes.Buffer{}))
 
 	at.False(IsMSys())
+	at.False(IsSupport256Color())
+
+	at.False(IsSupportColor())
+	os.Setenv("TERM", "xterm-vt220")
+	at.True(IsSupportColor())
+	os.Unsetenv("TERM")
+
+	os.Setenv("ConEmuANSI", "ON")
+	at.True(IsSupportColor())
+	os.Unsetenv("ConEmuANSI")
+
+	os.Setenv("ANSICON", "189x2000 (189x43)")
+	at.True(IsSupportColor())
+	os.Unsetenv("ANSICON")
 }
 
 /*************************************************************

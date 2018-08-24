@@ -27,6 +27,9 @@ func TestStyle(t *testing.T) {
 	str = Question.Render("msg")
 	at.Contains(str, FgMagenta.String())
 
+	str = Secondary.Sprintf("m%s", "sg")
+	at.Contains(str, FgDarkGray.String())
+
 	// Style.Print
 	rewriteStdout()
 	Info.Print("MSG")
@@ -47,6 +50,15 @@ func TestStyle(t *testing.T) {
 
 	s = GetStyle("err")
 	at.False(s.IsEmpty())
+
+	old := isLikeInCmd
+	isLikeInCmd = true
+	rewriteStdout()
+	s.Print("msg")
+	s.Printf("m%s", "sg")
+	s.Println("msg")
+	str = restoreStdout()
+	isLikeInCmd = old
 
 	// add new
 	s = GetStyle("new0")

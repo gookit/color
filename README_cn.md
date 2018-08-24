@@ -14,7 +14,7 @@ golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
 - 使用简单方便
 - 支持丰富的颜色输出, 16色(4bit)，256色(8bit)，RGB色彩(24bit)
   - 16色(4bit)是最常用和支持最广的，支持Windows `cmd.exe`
-  - 另外两种支持 `linux` `mac` 和 Windows下的 `CONEMU` `git-bash` `mintty` 等部分终端
+  - 另外两种支持 `linux` `mac` 和 Windows下的 `ConEmu` `git-bash` `mintty` 等部分终端
 - 通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
 - 同时支持html标签式的颜色渲染. eg: `<green>message</>`
 - 基础色彩: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
@@ -87,14 +87,16 @@ func main() {
 	// use style tag
 	color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
 
-	// set a style tag
+	// apply a style tag
 	color.Tag("info").Println("info style text")
 
-	// use info style tips
-	color.Tips("info").Print("tips style text")
+	// prompt message
+	color.Info.Prompt("prompt style message")
+	color.Warn.Prompt("prompt style message")
 
-	// use info style blocked tips
-	color.LiteTips("info").Print("blocked tips style text")
+	// tips message
+	color.Info.Tips("tips style message")
+	color.Warn.Tips("tips style message")
 }
 ```
 

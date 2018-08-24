@@ -14,7 +14,7 @@ Command line color library. rich color rendering output, universal API method, c
 - Simple to use
 - Supports rich color output 16色(4bit)，256色(8bit)，RGB色彩(24bit)
   - 16 color (4bit) is the most commonly used and most widely supported, supporting Windows `cmd.exe`
-  - 256 and RGB color support `linux` `mac` and Windows `CONEMU` `git-bash` `mintty` part terminal
+  - 256 and RGB color support `linux` `mac` and Windows `ConEmu` `git-bash` `mintty` part terminal
 - Generic API method: `Print` `Printf` `Println` `Sprint` `Sprintf`
 - Supports html tab-style color rendering. like: `<green>message</>`
 - Basic color: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
@@ -85,14 +85,16 @@ func main() {
 	// use style tag
 	color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
 
-	// set a style tag
+	// apply a style tag
 	color.Tag("info").Println("info style text")
 
-	// use info style tips
-	color.Tips("info").Print("tips style text")
+	// prompt message
+	color.Info.Prompt("prompt style message")
+	color.Warn.Prompt("prompt style message")
 
-	// use info style blocked tips
-	color.LiteTips("info").Print("blocked tips style text")
+	// tips message
+	color.Info.Tips("tips style message")
+	color.Warn.Tips("tips style message")
 }
 ```
 
