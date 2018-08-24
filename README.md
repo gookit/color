@@ -9,6 +9,10 @@ Command line color library. rich color rendering output, universal API method, c
 
 **[中文说明](README_cn.md)**
 
+Basic color preview:
+
+![basic-color](_examples/images/basic-color.png)
+
 ## Features
 
 - Simple to use

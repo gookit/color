@@ -9,6 +9,10 @@ golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
 
 **[EN Readme](README.md)**
 
+基本颜色预览：
+
+![basic-color](_examples/images/basic-color.png)
+
 ## 功能特色
 
 - 使用简单方便
