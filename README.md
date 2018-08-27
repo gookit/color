@@ -16,7 +16,7 @@ Basic color preview:
 ## Features
 
 - Simple to use
-- Supports rich color output 16色(4bit)，256色(8bit)，RGB色彩(24bit)
+- Supports rich color output 16 color(4bit)，256 color(8bit)，RGB color(24bit)
   - 16 color (4bit) is the most commonly used and most widely supported, supporting Windows `cmd.exe`
   - 256 and RGB color support `linux` `mac` and Windows `ConEmu` `git-bash` `mintty` part terminal
 - Generic API method: `Print` `Printf` `Println` `Sprint` `Sprintf`
