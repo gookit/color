@@ -222,6 +222,7 @@ func TestColor16(t *testing.T) {
 	LightRed.Printf("m%s", "sg")
 	LightGreen.Println("msg")
 	str = restoreStdout()
+	at.Equal("", str)
 	isLikeInCmd = old
 
 	// Color.Darken

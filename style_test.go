@@ -58,6 +58,7 @@ func TestStyle(t *testing.T) {
 	s.Printf("m%s", "sg")
 	s.Println("msg")
 	str = restoreStdout()
+	at.Equal("", str)
 	isLikeInCmd = old
 
 	// add new
