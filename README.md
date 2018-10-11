@@ -25,25 +25,7 @@ Basic color preview:
 - Extra style: `Info` `Note` `Light` `Error` `Danger` `Notice` `Success` `Comment` `Primary` `Warning` `Question` `Secondary`
 - Compatible with Windows system environment
 
-## Install
-
-- use dep
-
-```bash
-dep ensure -add gopkg.in/gookit/color.v1 // is recommended
-// OR
-dep ensure -add github.com/gookit/color
-```
-
-- go get
-
-```bash
-go get gopkg.in/gookit/color.v1 // is recommended
-// OR
-go get -u github.com/gookit/color
-```
-
-## Godoc
+## GoDoc
 
 - [godoc for gopkg](https://godoc.org/gopkg.in/gookit/color.v1)
 - [godoc for github](https://godoc.org/github.com/gookit/color)
@@ -150,8 +132,17 @@ color.Yellow.Println("yellow message")
 - `color.Secondary`
 
 ```go
+// print message
 color.Info.Print("Info message")
 color.Success.Print("Success message")
+
+// prompt message
+color.Info.Prompt("prompt style message")
+color.Warn.Prompt("prompt style message")
+
+// tips message
+color.Info.Tips("tips style message")
+color.Warn.Tips("tips style message")
 ```
 
 > run demo: `go run ./_examples/theme_style.go`

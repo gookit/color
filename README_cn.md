@@ -1,4 +1,4 @@
-# color
+# CLI Color
 
 [![GoDoc](https://godoc.org/github.com/gookit/color?status.svg)](https://godoc.org/github.com/gookit/color)
 [![Build Status](https://travis-ci.org/gookit/color.svg?branch=master)](https://travis-ci.org/gookit/color)
@@ -25,25 +25,7 @@ golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
 - 扩展风格: `Info` `Note` `Light` `Error` `Danger` `Notice` `Success` `Comment` `Primary` `Warning` `Question` `Secondary`
 - 兼容Windows系统环境
 
-## 获取安装
-
-- 使用 dep 包管理
-
-```bash
-dep ensure -add gopkg.in/gookit/color.v1 // 推荐
-// OR
-dep ensure -add github.com/gookit/color
-```
-
-- 使用 go get
-
-```bash
-go get gopkg.in/gookit/color.v1 // 推荐
-// OR
-go get -u github.com/gookit/color
-```
-
-## Godoc
+## GoDoc
 
 - [godoc for gopkg](https://godoc.org/gopkg.in/gookit/color.v1)
 - [godoc for github](https://godoc.org/github.com/gookit/color)
