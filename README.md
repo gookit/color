@@ -1,4 +1,4 @@
-# cli color
+# CLI Color
 
 [![GoDoc](https://godoc.org/github.com/gookit/color?status.svg)](https://godoc.org/github.com/gookit/color)
 [![Build Status](https://travis-ci.org/gookit/color.svg?branch=master)](https://travis-ci.org/gookit/color)
@@ -15,7 +15,7 @@ Basic color preview:
 
 ## Features
 
-- Simple to use
+- Simple to use, zero dependencies
 - Supports rich color output 16 color(4bit)，256 color(8bit)，RGB color(24bit)
   - 16 color (4bit) is the most commonly used and most widely supported, supporting Windows `cmd.exe`
   - 256 and RGB color support `linux` `mac` and Windows `ConEmu` `git-bash` `mintty` part terminal
@@ -160,7 +160,7 @@ color.Success.Print("Success message")
 
 ### Use like html tag
 
-> **not** support on windows `cmd.exe`
+> **not** support on windows `cmd.exe`, will auto clear color tag on `cmd.exe`
 
 ```go
 // use style tag

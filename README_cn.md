@@ -15,7 +15,7 @@ golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
 
 ## 功能特色
 
-- 使用简单方便
+- 使用简单方便，无其他依赖
 - 支持丰富的颜色输出, 16色(4bit)，256色(8bit)，RGB色彩(24bit)
   - 16色(4bit)是最常用和支持最广的，支持Windows `cmd.exe`
   - 另外两种支持 `linux` `mac` 和 Windows下的 `ConEmu` `git-bash` `mintty` 等部分终端
