@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/gookit/color/badge.svg?branch=master)](https://coveralls.io/github/gookit/color?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gookit/color)](https://goreportcard.com/report/github.com/gookit/color)
 
-Command line color library. rich color rendering output, universal API method, compatible with Windows system
+A command-line color library with true color support, universal API methods and Windows support.
 
 **[中文说明](README_cn.md)**
 
@@ -16,14 +16,13 @@ Basic color preview:
 ## Features
 
 - Simple to use, zero dependencies
-- Supports rich color output 16 color(4bit)，256 color(8bit)，RGB color(24bit)
-  - 16 color (4bit) is the most commonly used and most widely supported, supporting Windows `cmd.exe`
-  - 256 and RGB color support `linux` `mac` and Windows `ConEmu` `git-bash` `mintty` part terminal
-- Generic API method: `Print` `Printf` `Println` `Sprint` `Sprintf`
-- Supports html tab-style color rendering. like: `<green>message</>`
-- Basic color: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
-- Extra style: `Info` `Note` `Light` `Error` `Danger` `Notice` `Success` `Comment` `Primary` `Warning` `Question` `Secondary`
-- Compatible with Windows system environment
+- Supports rich color output: 16-color, 256-color, true color (24-bit)
+  - 16-color output is the most commonly used and most widely supported, working on any Windows version
+  - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
+- Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
+- Supports HTML tag-style color rendering, such as `<green>message</>`
+- Basic colors: `Bold`, `Black`, `White`, `Gray`, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`
+- Additional styles: `Info`, `Note`, `Light`, `Error`, `Danger`, `Notice`, `Success`, `Comment`, `Primary`, `Warning`, `Question`, `Secondary`
 
 ## GoDoc
 
@@ -60,14 +59,14 @@ func main() {
 
 	// can also:
 	color.Style{color.FgCyan, color.OpBold}.Println("custom color style")
-	
+
 	// internal theme/style:
 	color.Info.Tips("message")
 	color.Info.Prompt("message")
 	color.Info.Println("message")
 	color.Warn.Println("message")
 	color.Error.Println("message")
-	
+
 	// use style tag
 	color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
 
@@ -84,15 +83,15 @@ func main() {
 }
 ```
 
-> run demo: `go run ./_examples/app.go`
+Run demo: `go run ./_examples/app.go`
 
 ![colored-out](_examples/images/color-demo.jpg)
 
-## More usage
+## Detailed usage
 
 ### Basic color
 
-> support on windows `cmd.exe`
+Supported on any Windows version.
 
 - `color.Bold`
 - `color.Black`
@@ -110,13 +109,13 @@ color.Bold.Println("bold message")
 color.Yellow.Println("yellow message")
 ```
 
-> run demo: `go run ./_examples/basiccolor.go`
+Run demo: `go run ./_examples/basiccolor.go`
 
 ![basic-color](_examples/images/basic-color.png)
 
-### Extra styles 
+### Additional styles
 
-> support on windows `cmd.exe`
+Supported on any Windows version.
 
 - `color.Info`
 - `color.Note`
@@ -145,13 +144,13 @@ color.Info.Tips("tips style message")
 color.Warn.Tips("tips style message")
 ```
 
-> run demo: `go run ./_examples/theme_style.go`
+Run demo: `go run ./_examples/theme_style.go`
 
 ![theme-style](_examples/images/theme-style.jpg)
 
-### Use like html tag
+### HTML-like tag usage
 
-> **not** support on windows `cmd.exe`, will auto clear color tag on `cmd.exe`
+Not supported on Windows (tags will be stripped).
 
 ```go
 // use style tag
@@ -173,14 +172,14 @@ color.Tag("info").Printf("%s style text", "info")
 color.Tag("info").Println("info style text")
 ```
 
-> run demo: `go run ./_examples/colortag.go`
+Run demo: `go run ./_examples/colortag.go`
 
 ![color-tags](_examples/images/color-tags.jpg)
 
-## Use 256 color
+## 256-color usage
 
-### Use foreground or background color
- 
+### Set the foreground or background color
+
 - `color.C256(val uint8, isBg ...bool) Color256`
 
 ```go
@@ -193,10 +192,10 @@ c.Println("message")
 c.Printf("format %s", "message")
 ```
 
-### Use 256 color style
+### Use a 256-color style
 
-> Can set foreground and background colors at the same time
- 
+Can be used to set foreground and background colors at the same time.
+
 - `color.S256(fgAndBg ...uint8) *Style256`
 
 ```go
@@ -205,13 +204,13 @@ s.Println("message")
 s.Printf("format %s", "message")
 ```
 
-> run demo: `go run ./_examples/color256.go`
+Run demo: `go run ./_examples/color256.go`
 
 ![color-tags](_examples/images/256-color.jpg)
 
 ## Use RGB color
 
-### Use foreground or background color 
+### Set the foreground or background color
 
 - `color.RGB(r, g, b uint8, isBg ...bool) RGBColor`
 
@@ -225,7 +224,9 @@ c.Println("message")
 c.Printf("format %s", "message")
 ```
 
-- `color.HEX(hex string, isBg ...bool) RGBColor` Create from hexadecimal color string
+ Create a style from an hexadecimal color string:
+
+- `color.HEX(hex string, isBg ...bool) RGBColor`
 
 ```go
 c := HEX("ccc") // 也可以写为: "cccccc" "#cccccc"
@@ -237,9 +238,9 @@ c.Println("message")
 c.Printf("format %s", "message")
 ```
 
-### Use RGB color style
+### Use a RGB color style
 
-> Can set foreground and background colors at the same time
+Can be used to set the foreground and background colors at the same time.
 
 - `color.NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle`
 
@@ -249,7 +250,9 @@ s.Println("message")
 s.Printf("format %s", "message")
 ```
 
-- `color.HEXStyle(fg string, bg ...string) *RGBStyle` Create from hexadecimal color string
+ Create a style from an hexadecimal color string:
+
+- `color.HEXStyle(fg string, bg ...string) *RGBStyle`
 
 ```go
 s := HEXStyle("11aa23", "eee")
@@ -257,13 +260,13 @@ s.Println("message")
 s.Printf("format %s", "message")
 ```
 
-## Refer
+## See also
 
-- `issue9/term` https://github.com/issue9/term
-- `beego/bee` https://github.com/beego/bee
-- `inhere/console` https://github/inhere/php-console
+- [`issue9/term`](https://github.com/issue9/term)
+- [`beego/bee`](https://github.com/beego/bee)
+- [`inhere/console`](https://github.com/inhere/php-console)
 - [ANSI escape code](https://en.wikipedia.org/wiki/ANSI_escape_code)
 
 ## License
 
-**MIT**
+[MIT](/LICENSE)
