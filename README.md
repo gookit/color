@@ -229,7 +229,7 @@ c.Printf("format %s", "message")
 - `color.HEX(hex string, isBg ...bool) RGBColor`
 
 ```go
-c := HEX("ccc") // 也可以写为: "cccccc" "#cccccc"
+c := HEX("ccc") // can also: "cccccc" "#cccccc"
 c.Println("message")
 c.Printf("format %s", "message")
 
