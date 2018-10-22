@@ -135,6 +135,8 @@ func TestPrint(t *testing.T) {
 func TestWrapTag(t *testing.T) {
 	at := assert.New(t)
 	at.Equal("<info>text</>", WrapTag("text", "info"))
+	at.Equal("", WrapTag("", "info"))
+	at.Equal("text", WrapTag("text", ""))
 }
 
 func TestApplyTag(t *testing.T) {

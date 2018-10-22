@@ -289,8 +289,12 @@ func ApplyTag(tag string, a ...interface{}) string {
 }
 
 // WrapTag wrap a tag for a string "<tag>content</>"
-func WrapTag(str string, tag string) string {
-	return fmt.Sprintf("<%s>%s</>", tag, str)
+func WrapTag(s string, tag string) string {
+	if s == "" || tag == "" {
+		return s
+	}
+
+	return fmt.Sprintf("<%s>%s</>", tag, s)
 }
 
 // GetColorTags get all internal color tags
