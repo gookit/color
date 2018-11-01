@@ -5,9 +5,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/gookit/color/badge.svg?branch=master)](https://coveralls.io/github/gookit/color?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gookit/color)](https://goreportcard.com/report/github.com/gookit/color)
 
-golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用的API方法，兼容Windows系统
+Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用的API方法，兼容Windows系统
 
-**[EN Readme](README.md)**
+> **[EN README](README.md)**
 
 基本颜色预览：
 
@@ -59,10 +59,10 @@ func main() {
 	green := color.FgGreen.Render
 	fmt.Printf("%s line %s library\n", red("Command"), green("color"))
 
-	// custom color
+	// 自定义颜色
 	color.New(color.FgWhite, color.BgBlack).Println("custom color style")
 
-	// can also:
+	// 也可以:
 	color.Style{color.FgCyan, color.OpBold}.Println("custom color style")
 	
 	// internal style:
@@ -70,7 +70,7 @@ func main() {
 	color.Warn.Println("message")
 	color.Error.Println("message")
 	
-	// use style tag
+	// 使用颜色标签
 	color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
 
 	// apply a style tag
@@ -102,7 +102,7 @@ color.BgRed.Printf("Simple to use %s\n", "color")
 style := color.New(color.FgWhite, color.BgBlack, color.OpBold)
 style.Println("custom color style")
 
-// can also:
+// 也可以:
 color.Style{color.FgCyan, color.OpBold}.Println("custom color style")
 ```
 

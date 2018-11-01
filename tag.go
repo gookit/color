@@ -157,13 +157,13 @@ func Sprintf(format string, a ...interface{}) string {
 }
 
 // String alias of the ReplaceTag
-func String(str string) string {
-	return ReplaceTag(str)
+func String(s string) string {
+	return ReplaceTag(s)
 }
 
 // Text alias of the ReplaceTag
-func Text(str string) string {
-	return ReplaceTag(str)
+func Text(s string) string {
+	return ReplaceTag(s)
 }
 
 /*************************************************************
@@ -262,12 +262,12 @@ func ParseCodeFromAttr(attr string) (code string) {
 }
 
 // ClearTag clear all tag for a string
-func ClearTag(str string) string {
-	if !strings.Contains(str, "<") {
-		return str
+func ClearTag(s string) string {
+	if !strings.Contains(s, "<") {
+		return s
 	}
 
-	return stripRegex.ReplaceAllString(str, "")
+	return stripRegex.ReplaceAllString(s, "")
 }
 
 /*************************************************************
