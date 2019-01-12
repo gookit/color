@@ -173,7 +173,7 @@ func Text(s string) string {
 // ReplaceTag parse string, replace color tag and return rendered string
 func ReplaceTag(str string) string {
 	// not contains color tag
-	if !strings.Contains(str, "<") {
+	if !strings.Contains(str, "</>") {
 		return str
 	}
 
@@ -263,7 +263,7 @@ func ParseCodeFromAttr(attr string) (code string) {
 
 // ClearTag clear all tag for a string
 func ClearTag(s string) string {
-	if !strings.Contains(s, "<") {
+	if !strings.Contains(s, "</>") {
 		return s
 	}
 
