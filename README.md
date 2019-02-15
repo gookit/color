@@ -260,6 +260,10 @@ s.Println("message")
 s.Printf("format %s", "message")
 ```
 
+## CLI application package
+
+**[gookit/gcli](https://github.com/gookit/gcli)**
+
 ## See also
 
 - [`issue9/term`](https://github.com/issue9/term)
