@@ -281,6 +281,10 @@ s.Println("message")
 s.Printf("format %s", "message")
 ```
 
+## CLI 应用包
+
+**[gookit/gcli](https://github.com/gookit/gcli)** 快速的构建CLI命令应用
+
 ## 参考项目
 
 - `issue9/term` https://github.com/issue9/term
