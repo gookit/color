@@ -260,9 +260,14 @@ s.Println("message")
 s.Printf("format %s", "message")
 ```
 
-## CLI application package
+## Gookit packages
 
-**[gookit/gcli](https://github.com/gookit/gcli)**
+- [gookit/ini](https://github.com/gookit/ini) Go config management, use INI files
+- [gookit/rux](https://github.com/gookit/rux) Simple and fast request router for golang HTTP 
+- [gookit/gcli](https://github.com/gookit/gcli) build CLI application, tool library, running CLI commands
+- [gookit/event](https://github.com/gookit/event) Lightweight event manager and dispatcher implements by Go
+- [gookit/config](https://github.com/gookit/config) Go config management. support JSON, YAML, TOML, INI, HCL, ENV and Flags
+- [gookit/validate](https://github.com/gookit/validate) Use for data validation and filtering. support Map, Struct, Form data
 
 ## See also
 
