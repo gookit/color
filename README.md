@@ -267,6 +267,7 @@ s.Printf("format %s", "message")
 - [gookit/gcli](https://github.com/gookit/gcli) build CLI application, tool library, running CLI commands
 - [gookit/event](https://github.com/gookit/event) Lightweight event manager and dispatcher implements by Go
 - [gookit/config](https://github.com/gookit/config) Go config management. support JSON, YAML, TOML, INI, HCL, ENV and Flags
+- [gookit/color](https://github.com/gookit/color) A command-line color library with true color support, universal API methods and Windows support.
 - [gookit/validate](https://github.com/gookit/validate) Use for data validation and filtering. support Map, Struct, Form data
 
 ## See also
