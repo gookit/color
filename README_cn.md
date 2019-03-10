@@ -285,6 +285,20 @@ s.Printf("format %s", "message")
 
 **[gookit/gcli](https://github.com/gookit/gcli)** 快速的构建CLI命令应用
 
+## Gookit 工具包
+
+- [gookit/ini](https://github.com/gookit/ini) INI配置读取管理，支持多文件加载，数据覆盖合并, 解析ENV变量, 解析变量引用
+- [gookit/rux](https://github.com/gookit/rux) Simple and fast request router for golang HTTP 
+- [gookit/gcli](https://github.com/gookit/gcli) Go的命令行应用，工具库，运行CLI命令，支持命令行色彩，用户交互，进度显示，数据格式化显示
+- [gookit/event](https://github.com/gookit/event) Go实现的轻量级的事件管理、调度程序库, 支持设置监听器的优先级, 支持对一组事件进行监听
+- [gookit/cache](https://github.com/gookit/cache) 通用的缓存使用包装库，通过包装各种常用的驱动，来提供统一的使用API
+- [gookit/config](https://github.com/gookit/config) Go应用配置管理，支持多种格式（JSON, YAML, TOML, INI, HCL, ENV, Flags），多文件加载，远程文件加载，数据合并
+- [gookit/color](https://github.com/gookit/color) CLI 控制台颜色渲染工具库, 拥有简洁的使用API，支持16色，256色，RGB色彩渲染输出
+- [gookit/filter](https://github.com/gookit/filter) 提供对Golang数据的过滤，净化，转换
+- [gookit/validate](https://github.com/gookit/validate) Go通用的数据验证与过滤库，使用简单，内置大部分常用验证、过滤器
+- [gookit/goutil](https://github.com/gookit/goutil) Go 的一些工具函数，格式化，特殊处理，常用信息获取等
+- 更多请查看 https://github.com/gookit
+
 ## 参考项目
 
 - `issue9/term` https://github.com/issue9/term
