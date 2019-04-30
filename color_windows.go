@@ -120,7 +120,7 @@ func init() {
 	procGetConsoleScreenBufferInfo = kernel32.NewProc("GetConsoleScreenBufferInfo")
 
 	// fetch console screen buffer info
-	getConsoleScreenBufferInfo(uintptr(syscall.Stdout), &defScreenInfo)
+	// err := getConsoleScreenBufferInfo(uintptr(syscall.Stdout), &defScreenInfo)
 }
 
 // initWinColorsMap init colors to win-colors mapping
@@ -185,12 +185,12 @@ func initWinColorsMap() {
 
 // winPrint
 func winPrint(str string, colors ...Color) {
-	_,_ = winInternalPrint(str, convertColorsToWinAttr(colors), false)
+	_, _ = winInternalPrint(str, convertColorsToWinAttr(colors), false)
 }
 
 // winPrintln
 func winPrintln(str string, colors ...Color) {
-	_,_ = winInternalPrint(str, convertColorsToWinAttr(colors), true)
+	_, _ = winInternalPrint(str, convertColorsToWinAttr(colors), true)
 }
 
 // winInternalPrint
@@ -205,7 +205,7 @@ func winInternalPrint(str string, attribute uint16, newline bool) (int, error) {
 	}
 
 	// fmt.Print("attribute val: ", attribute, "\n")
-	_,_ = setConsoleTextAttr(uintptr(syscall.Stdout), attribute)
+	_, _ = setConsoleTextAttr(uintptr(syscall.Stdout), attribute)
 
 	if newline {
 		fmt.Println(str)
@@ -270,7 +270,13 @@ func getWinColor(color Color) uint16 {
 // setConsoleTextAttr
 // ret != 0 is OK.
 func setConsoleTextAttr(consoleOutput uintptr, winAttr uint16) (n int, err error) {
+	// err is type of syscall.Errno
 	ret, _, err := procSetTextAttribute.Call(consoleOutput, uintptr(winAttr))
+
+	// if success, err.Error() is equals "The operation completed successfully."
+	if err != nil && err.Error() == "The operation completed successfully." {
+		err = nil // set as nil
+	}
 
 	return int(ret), err
 }

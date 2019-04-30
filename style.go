@@ -26,7 +26,7 @@ func (s Style) Save(name string) {
 }
 
 // Render render text
-// usage:
+// Usage:
 //  color.New(color.FgGreen).Render("text")
 //  color.New(color.FgGreen, color.BgBlack, color.OpBold).Render("text")
 func (s Style) Render(a ...interface{}) string {
@@ -160,7 +160,7 @@ var (
 )
 
 // Themes internal defined themes.
-// usage:
+// Usage:
 // 	color.Themes["info"].Println("message")
 var Themes = map[string]*Theme{
 	"info":  Info,
@@ -195,7 +195,7 @@ func GetTheme(name string) *Theme {
  *************************************************************/
 
 // Styles internal defined styles, like bootstrap styles.
-// usage:
+// Usage:
 // 	color.Styles["info"].Println("message")
 var Styles = map[string]Style{
 	"info":  {OpReset, FgGreen},

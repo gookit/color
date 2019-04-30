@@ -60,6 +60,11 @@ func IsSupport256Color() bool {
 	return strings.Contains(os.Getenv("TERM"), "256color")
 }
 
+// its Win system. linux windows darwin
+// func isWindows() bool {
+// 	return runtime.GOOS == "windows"
+// }
+
 func stringToArr(str, sep string) (arr []string) {
 	str = strings.TrimSpace(str)
 	if str == "" {

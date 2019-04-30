@@ -149,8 +149,8 @@ type PrinterFace interface {
 
 // Printer a generic color message printer.
 // Usage:
-//	p := &Printer{"32;45;3"}
-//	p.Print("message")
+// 	p := &Printer{"32;45;3"}
+// 	p.Print("message")
 type Printer struct {
 	// ColorCode color code string. eg "32;45;3"
 	ColorCode string

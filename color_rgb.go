@@ -227,7 +227,7 @@ func NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle {
 // HEXStyle create a RGBStyle from HEX color string.
 // Usage:
 // 	s := HEXStyle("aabbcc", "eee")
-//	s.Print("message")
+// 	s.Print("message")
 func HEXStyle(fg string, bg ...string) *RGBStyle {
 	s := &RGBStyle{}
 	if len(bg) > 0 {
@@ -240,7 +240,7 @@ func HEXStyle(fg string, bg ...string) *RGBStyle {
 // RGBStyleFromString create a RGBStyle from color value string.
 // Usage:
 // 	s := RGBStyleFromString("170,187,204", "70,87,4")
-//	s.Print("message")
+// 	s.Print("message")
 func RGBStyleFromString(fg string, bg ...string) *RGBStyle {
 	s := &RGBStyle{}
 	if len(bg) > 0 {

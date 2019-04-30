@@ -37,7 +37,7 @@ var (
  *************************************************************/
 
 // Some internal defined color tags
-// usage: <tag>content text</>
+// Usage: <tag>content text</>
 // @notice 加 0 在前面是为了防止之前的影响到现在的设置
 var colorTags = map[string]string{
 	// basic tags,

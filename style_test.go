@@ -35,32 +35,43 @@ func TestStyle(t *testing.T) {
 	rewriteStdout()
 	Info.Print("MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[0;32mMSG\x1b[0m", str)
+	if isLikeInCmd {
+		at.Equal("MSG", str)
+	} else {
+		at.Equal("\x1b[0;32mMSG\x1b[0m", str)
+	}
 
 	// Style.Printf
 	rewriteStdout()
 	Info.Printf("A %s", "MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[0;32mA MSG\x1b[0m", str)
+	if isLikeInCmd {
+		at.Equal("A MSG", str)
+	} else {
+		at.Equal("\x1b[0;32mA MSG\x1b[0m", str)
+	}
 
 	// Style.Println
 	rewriteStdout()
 	Info.Println("MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[0;32mMSG\x1b[0m\n", str)
+	if isLikeInCmd {
+		at.Equal("MSG\n", str)
+	} else {
+		at.Equal("\x1b[0;32mMSG\x1b[0m\n", str)
+	}
 
 	s = GetStyle("err")
 	at.False(s.IsEmpty())
 
-	old := isLikeInCmd
-	isLikeInCmd = true
-	rewriteStdout()
-	s.Print("msg")
-	s.Printf("m%s", "sg")
-	s.Println("msg")
-	str = restoreStdout()
-	at.Equal("", str)
-	isLikeInCmd = old
+	if isLikeInCmd {
+		rewriteStdout()
+		s.Print("msg")
+		s.Printf("m%s", "sg")
+		s.Println("msg")
+		str = restoreStdout()
+		at.Equal("msgmsgmsg\n", str)
+	}
 
 	// add new
 	s = GetStyle("new0")
@@ -90,19 +101,31 @@ func TestThemes(t *testing.T) {
 	rewriteStdout()
 	Info.Tips("MSG")
 	str := restoreStdout()
-	at.Equal("\x1b[0;32mINFO: \x1b[0mMSG\n", str)
+	if isLikeInCmd {
+		at.Equal("INFO: MSG\n", str)
+	} else {
+		at.Equal("\x1b[0;32mINFO: \x1b[0mMSG\n", str)
+	}
 
 	// Theme.Prompt
 	rewriteStdout()
 	Info.Prompt("MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[0;32mINFO: MSG\x1b[0m\n", str)
+	if isLikeInCmd {
+		at.Equal("INFO: MSG\n", str)
+	} else {
+		at.Equal("\x1b[0;32mINFO: MSG\x1b[0m\n", str)
+	}
 
 	// Theme.Block
 	rewriteStdout()
 	Info.Block("MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[0;32mINFO:\n MSG\x1b[0m\n", str)
+	if isLikeInCmd {
+		at.Equal("INFO:\n MSG\n", str)
+	} else {
+		at.Equal("\x1b[0;32mINFO:\n MSG\x1b[0m\n", str)
+	}
 
 	theme := GetTheme("info")
 	at.NotNil(theme)

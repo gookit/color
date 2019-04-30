@@ -183,19 +183,31 @@ func TestTag_Print(t *testing.T) {
 	rewriteStdout()
 	info.Print("msg")
 	s = restoreStdout()
-	at.Equal("\x1b[0;32mmsg\x1b[0m", s)
+	if isLikeInCmd {
+		at.Equal("msg", s)
+	} else {
+		at.Equal("\x1b[0;32mmsg\x1b[0m", s)
+	}
 
 	// Tag.Println
 	rewriteStdout()
 	info.Println("msg")
 	s = restoreStdout()
-	at.Equal("\x1b[0;32mmsg\x1b[0m\n", s)
+	if isLikeInCmd {
+		at.Equal("msg\n", s)
+	} else {
+		at.Equal("\x1b[0;32mmsg\x1b[0m\n", s)
+	}
 
 	// Tag.Printf
 	rewriteStdout()
 	info.Printf("m%s", "sg")
 	s = restoreStdout()
-	at.Equal("\x1b[0;32mmsg\x1b[0m", s)
+	if isLikeInCmd {
+		at.Equal("msg", s)
+	} else {
+		at.Equal("\x1b[0;32mmsg\x1b[0m", s)
+	}
 
 	mga := Tag("mga")
 

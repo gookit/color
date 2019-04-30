@@ -55,6 +55,7 @@ func Example() {
 func TestSet(t *testing.T) {
 	at := assert.New(t)
 
+	// disable color
 	old := Enable
 	Disable()
 	num, err := Set(FgGreen)
@@ -68,30 +69,42 @@ func TestSet(t *testing.T) {
 
 	// set
 	rewriteStdout()
-	Set(FgGreen)
+	num, err = Set(FgGreen)
 	str := restoreStdout()
-	at.Equal("\x1b[32m", str)
+	at.NoError(err)
+	if isLikeInCmd {
+		at.Equal("", str)
+	} else {
+		at.Equal("\x1b[32m", str)
+	}
+	_, _ = Reset()
 
 	// unset
 	rewriteStdout()
-	Reset()
+	_, err = Reset()
 	str = restoreStdout()
-	at.Equal("\x1b[0m", str)
+	at.NoError(err)
+	if isLikeInCmd {
+		at.Equal("", str)
+	} else {
+		at.Equal("\x1b[0m", str)
+	}
 
-	old = isLikeInCmd
-	isLikeInCmd = true
-	// set
-	rewriteStdout()
-	Set(FgGreen)
-	str = restoreStdout()
-	at.Equal("", str)
+	if isLikeInCmd {
+		// set
+		rewriteStdout()
+		_, err = Set(FgGreen)
+		str = restoreStdout()
+		at.NoError(err)
+		at.Equal("", str)
 
-	// unset
-	rewriteStdout()
-	Reset()
-	str = restoreStdout()
-	at.Equal("", str)
-	isLikeInCmd = old
+		// unset
+		rewriteStdout()
+		_, err = Reset()
+		str = restoreStdout()
+		at.NoError(err)
+		at.Equal("", str)
+	}
 }
 
 func TestRenderCode(t *testing.T) {
@@ -202,29 +215,40 @@ func TestColor16(t *testing.T) {
 	rewriteStdout()
 	FgGray.Print("MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[90mMSG\x1b[0m", str)
+	if isLikeInCmd {
+		at.Equal("MSG", str)
+	} else {
+		at.Equal("\x1b[90mMSG\x1b[0m", str)
+	}
 
 	// Color.Printf
 	rewriteStdout()
 	BgGray.Printf("A %s", "MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[100mA MSG\x1b[0m", str)
+	if isLikeInCmd {
+		at.Equal("A MSG", str)
+	} else {
+		at.Equal("\x1b[100mA MSG\x1b[0m", str)
+	}
 
 	// Color.Println
 	rewriteStdout()
 	LightMagenta.Println("MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[95mMSG\x1b[0m\n", str)
+	if isLikeInCmd {
+		at.Equal("MSG\n", str)
+	} else {
+		at.Equal("\x1b[95mMSG\x1b[0m\n", str)
+	}
 
-	old := isLikeInCmd
-	isLikeInCmd = true
-	rewriteStdout()
-	LightCyan.Print("msg")
-	LightRed.Printf("m%s", "sg")
-	LightGreen.Println("msg")
-	str = restoreStdout()
-	at.Equal("", str)
-	isLikeInCmd = old
+	if isLikeInCmd {
+		rewriteStdout()
+		LightCyan.Print("msg")
+		LightRed.Printf("m%s", "sg")
+		LightGreen.Println("msg")
+		str = restoreStdout()
+		at.Equal("msgmsgmsg\n", str)
+	}
 
 	// Color.Darken
 	blue := LightBlue.Darken()
@@ -520,22 +544,49 @@ func TestOther(t *testing.T) {
 	at.True(IsConsole(os.Stdout))
 	at.False(IsConsole(&bytes.Buffer{}))
 
+	// IsMSys
+	oldVal := os.Getenv("MSYSTEM")
+	at.NoError(os.Setenv("MSYSTEM", "MINGW64"))
+	at.True(IsMSys())
+	at.NoError(os.Unsetenv("MSYSTEM"))
 	at.False(IsMSys())
-	os.Unsetenv("TERM")
+	_ = os.Setenv("MSYSTEM", oldVal)
+
+	// TERM
+	oldVal = os.Getenv("TERM")
+	_ = os.Unsetenv("TERM")
 	at.False(IsSupport256Color())
 
-	at.False(IsSupportColor())
-	os.Setenv("TERM", "xterm-vt220")
+	at.NoError(os.Setenv("TERM", "xterm-vt220"))
 	at.True(IsSupportColor())
-	os.Unsetenv("TERM")
+	// revert
+	if oldVal != "" {
+		at.NoError(os.Setenv("TERM", oldVal))
+	} else {
+		at.NoError(os.Unsetenv("TERM"))
+	}
 
-	os.Setenv("ConEmuANSI", "ON")
+	// ConEmuANSI
+	oldVal = os.Getenv("ConEmuANSI")
+	at.NoError(os.Setenv("ConEmuANSI", "ON"))
 	at.True(IsSupportColor())
-	os.Unsetenv("ConEmuANSI")
+	// revert
+	if oldVal != "" {
+		at.NoError(os.Setenv("ConEmuANSI", oldVal))
+	} else {
+		at.NoError(os.Unsetenv("ConEmuANSI"))
+	}
 
-	os.Setenv("ANSICON", "189x2000 (189x43)")
+	// ANSICON
+	oldVal = os.Getenv("ANSICON")
+	at.NoError(os.Setenv("ANSICON", "189x2000 (189x43)"))
 	at.True(IsSupportColor())
-	os.Unsetenv("ANSICON")
+	// revert
+	if oldVal != "" {
+		at.NoError(os.Setenv("ANSICON", oldVal))
+	} else {
+		at.NoError(os.Unsetenv("ANSICON"))
+	}
 }
 
 /*************************************************************
@@ -556,7 +607,7 @@ func resetColorRender() {
 
 var oldStdout, newReader *os.File
 
-// usage:
+// Usage:
 // rewriteStdout()
 // fmt.Println("Hello, playground")
 // msg := restoreStdout()
@@ -574,7 +625,7 @@ func restoreStdout() string {
 
 	// Notice: must close writer before read data
 	// close now writer
-	os.Stdout.Close()
+	_ = os.Stdout.Close()
 	// restore
 	os.Stdout = oldStdout
 	oldStdout = nil
@@ -583,7 +634,7 @@ func restoreStdout() string {
 	out, _ := ioutil.ReadAll(newReader)
 
 	// close reader
-	newReader.Close()
+	_ = newReader.Close()
 	newReader = nil
 
 	return string(out)

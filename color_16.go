@@ -117,7 +117,7 @@ func (c Color) Text(message string) string {
 }
 
 // Render messages by color setting
-// usage:
+// Usage:
 // 		green := color.FgGreen.Render
 // 		fmt.Println(green("message"))
 func (c Color) Render(a ...interface{}) string {
@@ -153,7 +153,7 @@ func (c Color) Print(args ...interface{}) {
 }
 
 // Printf format and print messages.
-// usage:
+// Usage:
 // 		color.Cyan.Printf("string %s", "arg0")
 func (c Color) Printf(format string, a ...interface{}) {
 	msg := fmt.Sprintf(format, a...)
@@ -166,8 +166,8 @@ func (c Color) Printf(format string, a ...interface{}) {
 
 // Light current color. eg: 36(FgCyan) -> 96(FgLightCyan).
 // Usage:
-//	lightCyan := Cyan.Light()
-//	lightCyan.Print("message")
+// 	lightCyan := Cyan.Light()
+// 	lightCyan.Print("message")
 func (c Color) Light() Color {
 	val := int(c)
 	if val >= 30 && val <= 47 {
@@ -180,8 +180,8 @@ func (c Color) Light() Color {
 
 // Darken current color. eg. 96(FgLightCyan) -> 36(FgCyan)
 // Usage:
-//	cyan := LightCyan.Darken()
-//	cyan.Print("message")
+// 	cyan := LightCyan.Darken()
+// 	cyan.Print("message")
 func (c Color) Darken() Color {
 	val := int(c)
 	if val >= 90 && val <= 107 {
