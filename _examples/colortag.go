@@ -7,7 +7,7 @@ import (
 )
 
 // go run ./_examples/colortag.go
-func main()  {
+func main() {
 	i := 0
 	fmt.Print("All color tags:\n\n")
 

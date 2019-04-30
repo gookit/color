@@ -1,6 +1,5 @@
 package main
 
-
 // Logger console logger
 type Logger struct {
 	style  string

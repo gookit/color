@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/gookit/color"
 	"fmt"
+	"github.com/gookit/color"
 )
 
 // go run ./_examples/basiccolor.go

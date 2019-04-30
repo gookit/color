@@ -6,7 +6,7 @@ import (
 )
 
 // go run ./_examples/theme_style.go
-func main()  {
+func main() {
 	fmt.Println("Built in themes(styles):")
 	fmt.Println("------------------ basic style ------------------")
 	for name, s := range color.Themes {

@@ -20,8 +20,8 @@ const (
 	FgGreen
 	FgYellow
 	FgBlue
-	FgMagenta // 品红
-	FgCyan    // 青色
+	FgMagenta  // 品红
+	FgCyan     // 青色
 	FgWhite
 	// FgDefault revert default FG
 	FgDefault Color = 39
@@ -46,7 +46,7 @@ const (
 	BgBlack Color = iota + 40
 	BgRed
 	BgGreen
-	BgYellow // BgBrown like yellow
+	BgYellow  // BgBrown like yellow
 	BgBlue
 	BgMagenta
 	BgCyan
