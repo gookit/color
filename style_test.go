@@ -1,8 +1,9 @@
 package color
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestStyle(t *testing.T) {

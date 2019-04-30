@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/gookit/color"
 	"strings"
+
+	"github.com/gookit/color"
 )
 
 // go run ./_examples/colortag.go

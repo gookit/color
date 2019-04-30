@@ -185,12 +185,12 @@ func initWinColorsMap() {
 
 // winPrint
 func winPrint(str string, colors ...Color) {
-	winInternalPrint(str, convertColorsToWinAttr(colors), false)
+	_,_ = winInternalPrint(str, convertColorsToWinAttr(colors), false)
 }
 
 // winPrintln
 func winPrintln(str string, colors ...Color) {
-	winInternalPrint(str, convertColorsToWinAttr(colors), true)
+	_,_ = winInternalPrint(str, convertColorsToWinAttr(colors), true)
 }
 
 // winInternalPrint
@@ -205,7 +205,7 @@ func winInternalPrint(str string, attribute uint16, newline bool) (int, error) {
 	}
 
 	// fmt.Print("attribute val: ", attribute, "\n")
-	setConsoleTextAttr(uintptr(syscall.Stdout), attribute)
+	_,_ = setConsoleTextAttr(uintptr(syscall.Stdout), attribute)
 
 	if newline {
 		fmt.Println(str)
