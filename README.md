@@ -46,8 +46,11 @@ import (
 )
 
 func main() {
-	// simple usage
+	// quick use like fmt.Print*
+	color.Red.Println("Simple to use color")
+	color.Green.Print("Simple to use color")
 	color.Cyan.Printf("Simple to use %s\n", "color")
+	color.Yellow.Printf("Simple to use %s\n", "color")
 
 	// use like func
 	red := color.FgRed.Render
