@@ -11,8 +11,11 @@ import (
 )
 
 func Example() {
-	// simple usage
+	// quick use like fmt.Print*
+	Red.Println("Simple to use color")
+	Green.Print("Simple to use color")
 	Cyan.Printf("Simple to use %s\n", "color")
+	Yellow.Printf("Simple to use %s\n", "color")
 
 	// use like func
 	red := FgRed.Render
