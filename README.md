@@ -16,19 +16,19 @@ Basic color preview:
 
 ## Features
 
-- Simple to use, zero dependencies
-- Supports rich color output: 16-color, 256-color, true color (24-bit)
-  - 16-color output is the most commonly used and most widely supported, working on any Windows version
-  - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
-- Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
-- Supports HTML tag-style color rendering, such as `<green>message</>`
-- Basic colors: `Bold`, `Black`, `White`, `Gray`, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`
-- Additional styles: `Info`, `Note`, `Light`, `Error`, `Danger`, `Notice`, `Success`, `Comment`, `Primary`, `Warning`, `Question`, `Secondary`
+  - Simple to use, zero dependencies
+  - Supports rich color output: 16-color, 256-color, true color (24-bit)
+    - 16-color output is the most commonly used and most widely supported, working on any Windows version
+    - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
+  - Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
+  - Supports HTML tag-style color rendering, such as `<green>message</>`
+  - Basic colors: `Bold`, `Black`, `White`, `Gray`, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`
+  - Additional styles: `Info`, `Note`, `Light`, `Error`, `Danger`, `Notice`, `Success`, `Comment`, `Primary`, `Warning`, `Question`, `Secondary`
 
 ## GoDoc
 
-- [godoc for gopkg](https://godoc.org/gopkg.in/gookit/color.v1)
-- [godoc for github](https://godoc.org/github.com/gookit/color)
+  - [godoc for gopkg](https://godoc.org/gopkg.in/gookit/color.v1)
+  - [godoc for github](https://godoc.org/github.com/gookit/color)
 
 ## Quick start
 
@@ -97,16 +97,16 @@ Run demo: `go run ./_examples/demo.go`
 
 Supported on any Windows version.
 
-- `color.Bold`
-- `color.Black`
-- `color.White`
-- `color.Gray`
-- `color.Red`
-- `color.Green`
-- `color.Yellow`
-- `color.Blue`
-- `color.Magenta`
-- `color.Cyan`
+  - `color.Bold`
+  - `color.Black`
+  - `color.White`
+  - `color.Gray`
+  - `color.Red`
+  - `color.Green`
+  - `color.Yellow`
+  - `color.Blue`
+  - `color.Magenta`
+  - `color.Cyan`
 
 ```go
 color.Bold.Println("bold message")
@@ -121,18 +121,18 @@ Run demo: `go run ./_examples/basiccolor.go`
 
 Supported on any Windows version.
 
-- `color.Info`
-- `color.Note`
-- `color.Light`
-- `color.Error`
-- `color.Danger`
-- `color.Notice`
-- `color.Success`
-- `color.Comment`
-- `color.Primary`
-- `color.Warning`
-- `color.Question`
-- `color.Secondary`
+  - `color.Info`
+  - `color.Note`
+  - `color.Light`
+  - `color.Error`
+  - `color.Danger`
+  - `color.Notice`
+  - `color.Success`
+  - `color.Comment`
+  - `color.Primary`
+  - `color.Warning`
+  - `color.Question`
+  - `color.Secondary`
 
 ```go
 // print message
@@ -216,7 +216,7 @@ Run demo: `go run ./_examples/color256.go`
 
 ### Set the foreground or background color
 
-- `color.RGB(r, g, b uint8, isBg ...bool) RGBColor`
+  - `color.RGB(r, g, b uint8, isBg ...bool) RGBColor`
 
 ```go
 c := color.RGB(30,144,255) // fg color
@@ -230,7 +230,7 @@ c.Printf("format %s", "message")
 
  Create a style from an hexadecimal color string:
 
-- `color.HEX(hex string, isBg ...bool) RGBColor`
+  - `color.HEX(hex string, isBg ...bool) RGBColor`
 
 ```go
 c := HEX("ccc") // can also: "cccccc" "#cccccc"
@@ -246,7 +246,7 @@ c.Printf("format %s", "message")
 
 Can be used to set the foreground and background colors at the same time.
 
-- `color.NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle`
+  - `color.NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle`
 
 ```go
 s := NewRGBStyle(RGB(20, 144, 234), RGB(234, 78, 23))
@@ -256,7 +256,7 @@ s.Printf("format %s", "message")
 
  Create a style from an hexadecimal color string:
 
-- `color.HEXStyle(fg string, bg ...string) *RGBStyle`
+  - `color.HEXStyle(fg string, bg ...string) *RGBStyle`
 
 ```go
 s := HEXStyle("11aa23", "eee")
@@ -266,24 +266,24 @@ s.Printf("format %s", "message")
 
 ## Gookit packages
 
-- [gookit/ini](https://github.com/gookit/ini) Go config management, use INI files
-- [gookit/rux](https://github.com/gookit/rux) Simple and fast request router for golang HTTP 
-- [gookit/gcli](https://github.com/gookit/gcli) build CLI application, tool library, running CLI commands
-- [gookit/event](https://github.com/gookit/event) Lightweight event manager and dispatcher implements by Go
-- [gookit/cache](https://github.com/gookit/cache) Generic cache use and cache manager for golang. support File, Memory, Redis, Memcached.
-- [gookit/config](https://github.com/gookit/config) Go config management. support JSON, YAML, TOML, INI, HCL, ENV and Flags
-- [gookit/color](https://github.com/gookit/color) A command-line color library with true color support, universal API methods and Windows support
-- [gookit/filter](https://github.com/gookit/filter) Provide filtering, sanitizing, and conversion of golang data
-- [gookit/validate](https://github.com/gookit/validate) Use for data validation and filtering. support Map, Struct, Form data
-- [gookit/goutil](https://github.com/gookit/goutil) Some utils for the Go: string, array/slice, map, format, cli, env, filesystem, test and more
-- More please see https://github.com/gookit
+  - [gookit/ini](https://github.com/gookit/ini) Go config management, use INI files
+  - [gookit/rux](https://github.com/gookit/rux) Simple and fast request router for golang HTTP 
+  - [gookit/gcli](https://github.com/gookit/gcli) build CLI application, tool library, running CLI commands
+  - [gookit/event](https://github.com/gookit/event) Lightweight event manager and dispatcher implements by Go
+  - [gookit/cache](https://github.com/gookit/cache) Generic cache use and cache manager for golang. support File, Memory, Redis, Memcached.
+  - [gookit/config](https://github.com/gookit/config) Go config management. support JSON, YAML, TOML, INI, HCL, ENV and Flags
+  - [gookit/color](https://github.com/gookit/color) A command-line color library with true color support, universal API methods and Windows support
+  - [gookit/filter](https://github.com/gookit/filter) Provide filtering, sanitizing, and conversion of golang data
+  - [gookit/validate](https://github.com/gookit/validate) Use for data validation and filtering. support Map, Struct, Form data
+  - [gookit/goutil](https://github.com/gookit/goutil) Some utils for the Go: string, array/slice, map, format, cli, env, filesystem, test and more
+  - More please see https://github.com/gookit
 
 ## See also
 
-- [`issue9/term`](https://github.com/issue9/term)
-- [`beego/bee`](https://github.com/beego/bee)
-- [`inhere/console`](https://github.com/inhere/php-console)
-- [ANSI escape code](https://en.wikipedia.org/wiki/ANSI_escape_code)
+  - [`issue9/term`](https://github.com/issue9/term)
+  - [`beego/bee`](https://github.com/beego/bee)
+  - [`inhere/console`](https://github.com/inhere/php-console)
+  - [ANSI escape code](https://en.wikipedia.org/wiki/ANSI_escape_code)
 
 ## License
 
