@@ -302,7 +302,7 @@ func IsTerminal(fd int) bool {
 // from package: golang.org/x/sys/windows
 type (
 	short int16
-	word uint16
+	word  uint16
 
 	// coord cursor position coordinates
 	coord struct {

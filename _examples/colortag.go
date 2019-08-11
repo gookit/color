@@ -12,7 +12,7 @@ func main() {
 	i := 0
 	fmt.Print("All color tags:\n\n")
 
-	for tag, _ := range color.GetColorTags() {
+	for tag := range color.GetColorTags() {
 		if strings.Contains(tag, "_") {
 			continue
 		}
