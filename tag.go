@@ -128,10 +128,7 @@ func Println(a ...interface{}) {
 
 // Fprint print rendered messages to writer
 func Fprint(w io.Writer, a ...interface{}) {
-	_, err := fmt.Fprint(w, Render(a...))
-	if err != nil {
-		panic(err)
-	}
+	_, _ = fmt.Fprint(w, Render(a...))
 }
 
 // Fprintf print format and rendered messages to writer
