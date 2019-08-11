@@ -8,7 +8,7 @@
 
 A command-line color library with true color support, universal API methods and Windows support.
 
-> **[中文说明](README_cn.md)**
+> **[中文说明](README.zh-CN.md)**
 
 Basic color preview:
 
@@ -43,6 +43,7 @@ package main
 
 import (
 	"fmt"
+	
 	"github.com/gookit/color"
 )
 
