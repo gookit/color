@@ -9,7 +9,7 @@ import (
 
 // output colored text like use html tag. (not support windows cmd)
 const (
-	// Regex to match color tags
+	// MatchExpr regex to match color tags
 	// golang 不支持反向引用.  即不支持使用 \1 引用第一个匹配 ([a-z=;]+)
 	// MatchExpr = `<([a-z=;]+)>(.*?)<\/\1>`
 	// 所以调整一下 统一使用 `</>` 来结束标签，例如 "<info>some text</>"
@@ -17,10 +17,10 @@ const (
 	// (?s:...) s - 让 "." 匹配换行
 	MatchExpr = `<([a-zA-Z_=,;]+)>(?s:(.*?))<\/>`
 
-	// Regex to match color attributes
+	// AttrExpr regex to match color attributes
 	AttrExpr = `(fg|bg|op)[\s]*=[\s]*([a-zA-Z,]+);?`
 
-	// Regex used for removing color tags
+	// StripExpr regex used for removing color tags
 	// StripExpr = `<[\/]?[a-zA-Z=;]+>`
 	// 随着上面的做一些调整
 	StripExpr = `<[\/]?[a-zA-Z_=,;]*>`
@@ -128,7 +128,10 @@ func Println(a ...interface{}) {
 
 // Fprint print rendered messages to writer
 func Fprint(w io.Writer, a ...interface{}) {
-	fmt.Fprint(w, Render(a...))
+	_, err := fmt.Fprint(w, Render(a...))
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Fprintf print format and rendered messages to writer
