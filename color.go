@@ -96,7 +96,17 @@ func Disable() {
 // Usage:
 // 	msg := RenderCode("3;32;45", "some", "message")
 func RenderCode(code string, args ...interface{}) string {
-	message := fmt.Sprint(args...)
+	var message string
+	if ln := len(args); ln == 0 {
+		return ""
+	} else if ln == 1 {
+		message = fmt.Sprint(args[0])
+	} else {
+		message = fmt.Sprintln(args...)
+		// clear last "\n"
+		message = message[:len(message)-1]
+	}
+
 	if len(code) == 0 {
 		return message
 	}

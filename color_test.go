@@ -59,29 +59,29 @@ func Example() {
  *************************************************************/
 
 func TestSet(t *testing.T) {
-	at := assert.New(t)
+	is := assert.New(t)
 
 	// disable color
 	old := Enable
 	Disable()
 	num, err := Set(FgGreen)
-	at.Nil(err)
-	at.Equal(0, num)
+	is.Nil(err)
+	is.Equal(0, num)
 
 	num, err = Reset()
-	at.Nil(err)
-	at.Equal(0, num)
+	is.Nil(err)
+	is.Equal(0, num)
 	Enable = old
 
 	// set
 	rewriteStdout()
 	num, err = Set(FgGreen)
 	str := restoreStdout()
-	at.NoError(err)
+	is.NoError(err)
 	if isLikeInCmd {
-		at.Equal("", str)
+		is.Equal("", str)
 	} else {
-		at.Equal("\x1b[32m", str)
+		is.Equal("\x1b[32m", str)
 	}
 	_, _ = Reset()
 
@@ -89,11 +89,11 @@ func TestSet(t *testing.T) {
 	rewriteStdout()
 	_, err = Reset()
 	str = restoreStdout()
-	at.NoError(err)
+	is.NoError(err)
 	if isLikeInCmd {
-		at.Equal("", str)
+		is.Equal("", str)
 	} else {
-		at.Equal("\x1b[0m", str)
+		is.Equal("\x1b[0m", str)
 	}
 
 	if isLikeInCmd {
@@ -101,15 +101,15 @@ func TestSet(t *testing.T) {
 		rewriteStdout()
 		_, err = Set(FgGreen)
 		str = restoreStdout()
-		at.NoError(err)
-		at.Equal("", str)
+		is.NoError(err)
+		is.Equal("", str)
 
 		// unset
 		rewriteStdout()
 		_, err = Reset()
 		str = restoreStdout()
-		at.NoError(err)
-		at.Equal("", str)
+		is.NoError(err)
+		is.Equal("", str)
 	}
 }
 
@@ -118,32 +118,38 @@ func TestRenderCode(t *testing.T) {
 	forceOpenColorRender()
 	defer resetColorRender()
 
-	at := assert.New(t)
+	is := assert.New(t)
 
-	str := RenderCode("36;1", "Te", "xt")
-	at.Equal("\x1b[36;1mText\x1b[0m", str)
+	str := RenderCode("36;1", "Hi", "babe")
+	is.Equal("\x1b[36;1mHi babe\x1b[0m", str)
+
+	str = RenderCode("36;1", "Ab")
+	is.Equal("\x1b[36;1mAb\x1b[0m", str)
+
+	str = RenderCode("36;1")
+	is.Equal("", str)
 
 	Disable()
 	str = RenderCode("36;1", "Te", "xt")
-	at.Equal("Text", str)
+	is.Equal("Te xt", str)
 	Enable = true
 
 	// RenderString
 	str = RenderString("36;1", "Text")
-	at.Equal("\x1b[36;1mText\x1b[0m", str)
+	is.Equal("\x1b[36;1mText\x1b[0m", str)
 	str = RenderString("", "Text")
-	at.Equal("Text", str)
+	is.Equal("Text", str)
 	str = RenderString("36;1", "")
-	at.Equal("", str)
+	is.Equal("", str)
 
 	Disable()
 	str = RenderString("36;1", "Text")
-	at.Equal("Text", str)
+	is.Equal("Text", str)
 	Enable = true
 
 	Disable()
 	str = RenderString("36;1", "Text")
-	at.Equal("Text", str)
+	is.Equal("Text", str)
 	Enable = true
 }
 
@@ -545,54 +551,42 @@ func TestRGBStyle(t *testing.T) {
 }
 
 func TestOther(t *testing.T) {
-	at := assert.New(t)
+	is := assert.New(t)
 
-	at.True(IsConsole(os.Stdout))
-	at.False(IsConsole(&bytes.Buffer{}))
+	is.True(IsConsole(os.Stdout))
+	is.False(IsConsole(&bytes.Buffer{}))
 
 	// IsMSys
 	oldVal := os.Getenv("MSYSTEM")
-	at.NoError(os.Setenv("MSYSTEM", "MINGW64"))
-	at.True(IsMSys())
-	at.NoError(os.Unsetenv("MSYSTEM"))
-	at.False(IsMSys())
+	is.NoError(os.Setenv("MSYSTEM", "MINGW64"))
+	is.True(IsMSys())
+	is.NoError(os.Unsetenv("MSYSTEM"))
+	is.False(IsMSys())
 	_ = os.Setenv("MSYSTEM", oldVal)
 
 	// TERM
 	oldVal = os.Getenv("TERM")
 	_ = os.Unsetenv("TERM")
-	at.False(IsSupport256Color())
+	is.False(IsSupport256Color())
 
-	at.NoError(os.Setenv("TERM", "xterm-vt220"))
-	at.True(IsSupportColor())
+	is.NoError(os.Setenv("TERM", "xterm-vt220"))
+	is.True(IsSupportColor())
 	// revert
 	if oldVal != "" {
-		at.NoError(os.Setenv("TERM", oldVal))
+		is.NoError(os.Setenv("TERM", oldVal))
 	} else {
-		at.NoError(os.Unsetenv("TERM"))
+		is.NoError(os.Unsetenv("TERM"))
 	}
 
 	// ConEmuANSI
-	oldVal = os.Getenv("ConEmuANSI")
-	at.NoError(os.Setenv("ConEmuANSI", "ON"))
-	at.True(IsSupportColor())
-	// revert
-	if oldVal != "" {
-		at.NoError(os.Setenv("ConEmuANSI", oldVal))
-	} else {
-		at.NoError(os.Unsetenv("ConEmuANSI"))
-	}
+	mockEnvValue("ConEmuANSI", "ON", func(_ string) {
+		is.True(IsSupportColor())
+	})
 
 	// ANSICON
-	oldVal = os.Getenv("ANSICON")
-	at.NoError(os.Setenv("ANSICON", "189x2000 (189x43)"))
-	at.True(IsSupportColor())
-	// revert
-	if oldVal != "" {
-		at.NoError(os.Setenv("ANSICON", oldVal))
-	} else {
-		at.NoError(os.Unsetenv("ANSICON"))
-	}
+	mockEnvValue("ANSICON", "189x2000 (189x43)", func(_ string) {
+		is.True(IsSupportColor())
+	})
 }
 
 /*************************************************************
@@ -644,4 +638,25 @@ func restoreStdout() string {
 	newReader = nil
 
 	return string(out)
+}
+
+// mockEnvValue will store old env value, set new val. will restore old value on end.
+func mockEnvValue(key, val string, fn func(nv string)) {
+	old := os.Getenv(key)
+	err := os.Setenv(key, val)
+	if err != nil {
+		panic(err)
+	}
+
+	fn(os.Getenv(key))
+
+	// if old is empty, unset key.
+	if old == "" {
+		err = os.Unsetenv(key)
+	} else {
+		err = os.Setenv(key, old)
+	}
+	if err != nil {
+		panic(err)
+	}
 }

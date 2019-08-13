@@ -1,4 +1,4 @@
-package main
+package ref
 
 // Logger console logger
 type Logger struct {

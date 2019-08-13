@@ -9,15 +9,20 @@ import (
  * 16 color Style
  *************************************************************/
 
-// Style a 16 color style
-// can add: fg color, bg color, color options
+// Style a 16 color style. can add: fg color, bg color, color options
+//
 // Example:
-// 	color.Style(color.FgGreen).Print("message")
+// 	color.Style{color.FgGreen}.Print("message")
 type Style []Color
 
 // New create a custom style
+//
+// Usage:
+//	color.New(color.FgGreen).Print("message")
+//	equals to:
+//	color.Style{color.FgGreen}.Print("message")
 func New(colors ...Color) Style {
-	return Style(colors)
+	return colors
 }
 
 // Save to styles map
@@ -111,13 +116,13 @@ func (t *Theme) Tips(format string, a ...interface{}) {
 
 // Prompt use name as title, and apply style for message
 func (t *Theme) Prompt(format string, a ...interface{}) {
-	title := strings.ToUpper(t.Name) + ": "
+	title := strings.ToUpper(t.Name) + ":"
 	t.Println(title, fmt.Sprintf(format, a...))
 }
 
 // Block like Prompt, but will wrap a empty line
 func (t *Theme) Block(format string, a ...interface{}) {
-	title := strings.ToUpper(t.Name) + ":\n "
+	title := strings.ToUpper(t.Name) + ":\n"
 
 	t.Println(title, fmt.Sprintf(format, a...))
 }
@@ -145,6 +150,8 @@ var (
 	Error = &Theme{"error", Style{FgLightWhite, BgRed}}
 	// Danger color style
 	Danger = &Theme{"danger", Style{OpBold, FgRed}}
+	// Debug color style
+	Debug = &Theme{"debug", Style{OpReset, FgCyan}}
 	// Notice color style
 	Notice = &Theme{"notice", Style{OpBold, FgCyan}}
 	// Comment color style
@@ -168,6 +175,7 @@ var Themes = map[string]*Theme{
 	"light": Light,
 	"error": Error,
 
+	"debug":   Debug,
 	"danger":  Danger,
 	"notice":  Notice,
 	"success": Success,

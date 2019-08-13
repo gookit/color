@@ -103,13 +103,15 @@ color.FgCyan.Printf("Simple to use %s\n", "color")
 // 仅设置背景色
 color.BgRed.Printf("Simple to use %s\n", "color")
 
-// 完全自定义 前景色 背景色 选项
+// 完全自定义: 前景色 背景色 选项
 style := color.New(color.FgWhite, color.BgBlack, color.OpBold)
 style.Println("custom color style")
 
 // 也可以:
 color.Style{color.FgCyan, color.OpBold}.Println("custom color style")
 ```
+
+直接设置控制台属性：
 
 ```go
 // 设置console颜色
@@ -122,9 +124,9 @@ fmt.Print("message")
 color.Reset()
 ```
 
-## 使用内置风格
+> 当然，color已经内置丰富的色彩风格支持
 
-### 基础颜色方法
+## 基础颜色方法
 
 > 支持在windows `cmd.exe` 使用
 
@@ -144,11 +146,11 @@ color.Bold.Println("bold message")
 color.Yellow.Println("yellow message")
 ```
 
-> 运行 demo: `go run ./_examples/basiccolor.go`
+> 运行demo: `go run ./_examples/basiccolor.go`
 
 ![basic-color](_examples/images/basic-color.png)
 
-### 扩展风格方法 
+## 扩展风格方法 
 
 > 支持在windows `cmd.exe` 使用
 
@@ -165,14 +167,50 @@ color.Yellow.Println("yellow message")
   - `color.Question`
   - `color.Secondary`
 
+### 基础风格
+
 ```go
+// print message
 color.Info.Println("Info message")
 color.Success.Println("Success message")
 ```
 
-> 运行 demo: `go run ./_examples/theme_style.go`
+Run demo: `go run ./_examples/theme_basic.go`
 
-![theme-style](_examples/images/theme-style.jpg)
+![theme-basic](_examples/images/theme-basic.jpg)
+
+### 简约提示风格
+
+```go
+color.Info.Tips("tips style message")
+color.Warn.Tips("tips style message")
+```
+
+Run demo: `go run ./_examples/theme_tips.go`
+
+![theme-tips](_examples/images/theme-tips.jpg)
+
+### 着重提示风格
+
+```go
+color.Info.Prompt("prompt style message")
+color.Warn.Prompt("prompt style message")
+```
+
+Run demo: `go run ./_examples/theme_prompt.go`
+
+![theme-prompt](_examples/images/theme-prompt.jpg)
+
+### 强调提示风格
+
+```go
+color.Info.Block("prompt style message")
+color.Warn.Block("prompt style message")
+```
+
+Run demo: `go run ./_examples/theme_block.go`
+
+![theme-block](_examples/images/theme-block.jpg)
 
 ### 使用颜色标签
 

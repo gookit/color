@@ -92,9 +92,36 @@ Run demo: `go run ./_examples/demo.go`
 
 ![colored-out](_examples/images/color-demo.jpg)
 
-## Detailed usage
+## Custom Build Color
 
-### Basic color
+```go
+// Only use foreground color
+color.FgCyan.Printf("Simple to use %s\n", "color")
+// Only use background color
+color.BgRed.Printf("Simple to use %s\n", "color")
+
+// Full custom: foreground, background, option
+myStyle := color.New(color.FgWhite, color.BgBlack, color.OpBold)
+myStyle.Println("custom color style")
+
+// can also:
+color.Style{color.FgCyan, color.OpBold}.Println("custom color style")
+```
+
+custom set console settings:
+
+```go
+// set console color
+color.Set(color.FgCyan)
+
+// print message
+fmt.Print("message")
+
+// reset console settings
+color.Reset()
+```
+
+## Basic Color
 
 Supported on any Windows version.
 
@@ -118,7 +145,7 @@ Run demo: `go run ./_examples/basiccolor.go`
 
 ![basic-color](_examples/images/basic-color.png)
 
-### Additional styles
+## Additional styles
 
 Supported on any Windows version.
 
@@ -127,6 +154,7 @@ Supported on any Windows version.
   - `color.Light`
   - `color.Error`
   - `color.Danger`
+  - `color.Debug`
   - `color.Notice`
   - `color.Success`
   - `color.Comment`
@@ -135,25 +163,52 @@ Supported on any Windows version.
   - `color.Question`
   - `color.Secondary`
 
+### Basic Style
+
 ```go
 // print message
-color.Info.Print("Info message")
-color.Success.Print("Success message")
+color.Info.Println("Info message")
+color.Success.Println("Success message")
+```
 
-// prompt message
-color.Info.Prompt("prompt style message")
-color.Warn.Prompt("prompt style message")
+Run demo: `go run ./_examples/theme_basic.go`
 
-// tips message
+![theme-basic](_examples/images/theme-basic.jpg)
+
+### Tips Style
+
+```go
 color.Info.Tips("tips style message")
 color.Warn.Tips("tips style message")
 ```
 
-Run demo: `go run ./_examples/theme_style.go`
+Run demo: `go run ./_examples/theme_tips.go`
 
-![theme-style](_examples/images/theme-style.jpg)
+![theme-tips](_examples/images/theme-tips.jpg)
 
-### HTML-like tag usage
+### Prompt Style
+
+```go
+color.Info.Prompt("prompt style message")
+color.Warn.Prompt("prompt style message")
+```
+
+Run demo: `go run ./_examples/theme_prompt.go`
+
+![theme-prompt](_examples/images/theme-prompt.jpg)
+
+### Block Style
+
+```go
+color.Info.Block("block style message")
+color.Warn.Block("block style message")
+```
+
+Run demo: `go run ./_examples/theme_block.go`
+
+![theme-block](_examples/images/theme-block.jpg)
+
+## HTML-like tag usage
 
 Not supported on Windows (tags will be stripped).
 

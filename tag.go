@@ -191,14 +191,14 @@ func ReplaceTag(str string) string {
 
 		// custom color in tag: "<fg=white;bg=blue;op=bold>content</>"
 		if code := ParseCodeFromAttr(tag); len(code) > 0 {
-			now := RenderCode(code, content)
+			now := RenderString(code, content)
 			str = strings.Replace(str, full, now, 1)
 			continue
 		}
 
 		// use defined tag: "<tag>content</>"
 		if code := GetTagCode(tag); len(code) > 0 {
-			now := RenderCode(code, content)
+			now := RenderString(code, content)
 			// old := WrapTag(content, tag) is equals to var 'full'
 			str = strings.Replace(str, full, now, 1)
 		}

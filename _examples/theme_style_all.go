@@ -6,12 +6,12 @@ import (
 	"github.com/gookit/color"
 )
 
-// go run ./_examples/theme_style.go
+// go run ./_examples/theme_style_all.go
 func main() {
-	fmt.Println("Built in themes(styles):")
-	fmt.Println("------------------ basic style ------------------")
+	fmt.Println("Built In Themes(styles):")
+	fmt.Println("------------------ BASIC STYLE ------------------")
 	for name, s := range color.Themes {
-		s.Print(" ", name, " ")
+		s.Println(name, "message ")
 	}
 
 	fmt.Println("\n------------------ tips style ------------------")
