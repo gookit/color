@@ -123,7 +123,6 @@ func RenderCode(code string, args ...interface{}) string {
 // Usage:
 // 	msg := RenderString("3;32;45", "a message")
 func RenderString(code string, str string) string {
-	// some check
 	if len(code) == 0 || str == "" {
 		return str
 	}
