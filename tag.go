@@ -141,12 +141,23 @@ func Fprintln(w io.Writer, a ...interface{}) (int, error) {
 	return fmt.Fprintln(w, Render(a...))
 }
 
-// Render return rendered string
-func Render(a ...interface{}) string {
-	return ReplaceTag(fmt.Sprint(a...))
+// Render parse color tags, return rendered string
+func Render(a ...interface{}) (str string) {
+	if ln := len(a); ln == 0 {
+		return ""
+	} else if ln == 1 {
+		str = fmt.Sprint(a...)
+	} else {
+		// multi args, add space for each arg
+		str = fmt.Sprintln(a...)
+		// clear last "\n"
+		str = str[:len(str)-1]
+	}
+
+	return ReplaceTag(str)
 }
 
-// Sprint return rendered string
+// Sprint parse color tags, return rendered string
 func Sprint(args ...interface{}) string {
 	return Render(args...)
 }

@@ -37,10 +37,9 @@ const ResetSet = "\x1b[0m"
 // CodeExpr regex to clear color codes eg "\033[1;36mText\x1b[0m"
 const CodeExpr = `\033\[[\d;?]+m`
 
-// Enable switch color display
-var Enable = true
-
 var (
+	// Enable switch color display
+	Enable = true
 	// mark current env, It's like in `cmd.exe`
 	// if not in windows, is's always is False.
 	isLikeInCmd bool
