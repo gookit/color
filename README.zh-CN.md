@@ -92,7 +92,7 @@ func main() {
 }
 ```
 
-> 运行 demo: `go run ./_examples/app.go`
+> 运行 demo: `go run ./_examples/demo.go`
 
 ![colored-out](_examples/images/color-demo.jpg)
 
