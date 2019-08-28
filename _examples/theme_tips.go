@@ -14,4 +14,6 @@ func main() {
 	for name, s := range color.Themes {
 		s.Tips("%s tips message", name)
 	}
+
+	color.Info.Render()
 }

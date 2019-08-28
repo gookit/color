@@ -38,6 +38,15 @@ func (s Style) Render(a ...interface{}) string {
 	return RenderCode(s.String(), a...)
 }
 
+// Renderln render text line.
+// like Println, will add spaces for each argument
+// Usage:
+//  color.New(color.FgGreen).Renderln("text", "more")
+//  color.New(color.FgGreen, color.BgBlack, color.OpBold).Render("text", "more")
+func (s Style) Renderln(a ...interface{}) string {
+	return RenderWithSpaces(s.String(), a...)
+}
+
 // Sprint is alias of the 'Render'
 func (s Style) Sprint(a ...interface{}) string {
 	return RenderCode(s.String(), a...)

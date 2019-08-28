@@ -215,7 +215,7 @@ Run demo: `go run ./_examples/theme_block.go`
 
 ### 使用颜色标签
 
-> **不** 支持在windows `cmd.exe` 使用，但不影响使用，会自动去除颜色标签
+> **支持** 在windows `cmd.exe` `PowerShell` 使用
 
 使用内置的颜色标签，可以非常方便简单的构建自己需要的任何格式
 

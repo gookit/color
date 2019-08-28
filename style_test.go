@@ -28,6 +28,14 @@ func TestStyle(t *testing.T) {
 	str = Question.Render("msg")
 	is.Contains(str, FgMagenta.String())
 
+	str = Question.Render("msg", "More")
+	is.Contains(str, FgMagenta.String())
+	is.Contains(str, "msgMore")
+
+	str = Question.Renderln("msg", "More")
+	is.Contains(str, FgMagenta.String())
+	is.Contains(str, "msg More")
+
 	str = Secondary.Sprintf("m%s", "sg")
 	is.Contains(str, FgDarkGray.String())
 

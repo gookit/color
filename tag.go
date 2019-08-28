@@ -113,17 +113,39 @@ var colorTags = map[string]string{
 
 // Print messages
 func Print(a ...interface{}) {
-	fmt.Print(Render(a...))
+	if isLikeInCmd {
+		EnableCmdColorRender(func() {
+			fmt.Print(Render(a...))
+		})
+	} else {
+		fmt.Print(Render(a...))
+	}
 }
 
 // Printf format and print messages
 func Printf(format string, a ...interface{}) {
-	fmt.Print(ReplaceTag(fmt.Sprintf(format, a...)))
+	str := fmt.Sprintf(format, a...)
+
+	if isLikeInCmd {
+		EnableCmdColorRender(func() {
+			fmt.Print(ReplaceTag(str))
+		})
+	} else {
+		fmt.Print(ReplaceTag(str))
+	}
 }
 
 // Println messages with new line
 func Println(a ...interface{}) {
-	fmt.Println(Render(a...))
+	str := formatArgsForPrintln(a)
+
+	if isLikeInCmd {
+		EnableCmdColorRender(func() {
+			fmt.Println(ReplaceTag(str))
+		})
+	} else {
+		fmt.Println(ReplaceTag(str))
+	}
 }
 
 // Fprint print rendered messages to writer
@@ -141,17 +163,15 @@ func Fprintln(w io.Writer, a ...interface{}) (int, error) {
 	return fmt.Fprintln(w, Render(a...))
 }
 
-// Render parse color tags, return rendered string
+// Render parse color tags, return rendered string.
+// Usage:
+//	text := Render("<info>hello</> <cyan>world</>!")
+//	fmt.Println(text)
 func Render(a ...interface{}) (str string) {
 	if ln := len(a); ln == 0 {
 		return ""
-	} else if ln == 1 {
-		str = fmt.Sprint(a...)
 	} else {
-		// multi args, add space for each arg
-		str = fmt.Sprintln(a...)
-		// clear last "\n"
-		str = str[:len(str)-1]
+		str = fmt.Sprint(a...)
 	}
 
 	return ReplaceTag(str)

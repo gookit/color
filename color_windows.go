@@ -83,7 +83,7 @@ var winColorsMap map[Color]uint16
 var (
 	// for cmd.exe
 	// echo %ESC%[1;33;40m Yellow on black %ESC%[0m
-	escChar = ""
+	// escChar = ""
 	// isMSys bool
 	kernel32 *syscall.LazyDLL
 

@@ -22,7 +22,7 @@ Basic color preview:
     - 16-color output is the most commonly used and most widely supported, working on any Windows version
     - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
   - Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
-  - Supports HTML tag-style color rendering, such as `<green>message</>`
+  - Supports HTML tag-style color rendering, such as `<green>message</>`. Support working on windows `cmd` `powerShell`
   - Basic colors: `Bold`, `Black`, `White`, `Gray`, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`
   - Additional styles: `Info`, `Note`, `Light`, `Error`, `Danger`, `Notice`, `Success`, `Comment`, `Primary`, `Warning`, `Question`, `Secondary`
 
@@ -211,7 +211,7 @@ Run demo: `go run ./_examples/theme_block.go`
 
 ## HTML-like tag usage
 
-Not supported on Windows (tags will be stripped).
+**Supported** on Windows `cmd.exe` `PowerShell` .
 
 ```go
 // use style tag

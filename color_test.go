@@ -115,7 +115,7 @@ func TestSet(t *testing.T) {
 
 func TestRenderCode(t *testing.T) {
 	// force open color render for testing
-	forceOpenColorRender()
+	oldVal = ForceOpenColor()
 	defer resetColorRender()
 
 	is := assert.New(t)

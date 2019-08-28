@@ -128,7 +128,8 @@ func (c Color) Render(a ...interface{}) string {
 	return RenderCode(c.String(), a...)
 }
 
-// Renderln messages by color setting
+// Renderln messages by color setting.
+// like Println, will add spaces for each argument
 // Usage:
 // 		green := color.FgGreen.Renderln
 // 		fmt.Println(green("message"))

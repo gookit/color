@@ -87,6 +87,14 @@ func Disable() {
 	Enable = false
 }
 
+// ForceOpenColor force open color render
+func ForceOpenColor() bool {
+	oldVal := isSupportColor
+	isSupportColor = true
+
+	return oldVal
+}
+
 /*************************************************************
  * render color code
  *************************************************************/
