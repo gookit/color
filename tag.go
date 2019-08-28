@@ -160,7 +160,9 @@ func Fprintf(w io.Writer, format string, a ...interface{}) (int, error) {
 
 // Fprintln print rendered messages line to writer
 func Fprintln(w io.Writer, a ...interface{}) (int, error) {
-	return fmt.Fprintln(w, Render(a...))
+	str := formatArgsForPrintln(a)
+
+	return fmt.Fprintln(w, ReplaceTag(str))
 }
 
 // Render parse color tags, return rendered string.
