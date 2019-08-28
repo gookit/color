@@ -70,10 +70,15 @@ func (s Style) Printf(format string, a ...interface{}) {
 // Println render and print text line
 func (s Style) Println(a ...interface{}) {
 	if isLikeInCmd {
-		winPrintln(fmt.Sprint(a...), s...)
+		winPrintln(formatArgsForPrintln(a), s...)
 	} else {
-		fmt.Println(RenderCode(s.String(), a...))
+		fmt.Println(RenderString(s.String(), formatArgsForPrintln(a)))
 	}
+}
+
+// Code convert to code string. returns like "32;45;3"
+func (s Style) Code() string {
+	return s.String()
 }
 
 // String convert to code string. returns like "32;45;3"

@@ -1,6 +1,7 @@
 package color
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -78,5 +79,19 @@ func stringToArr(str, sep string) (arr []string) {
 		}
 	}
 
+	return
+}
+
+// if use Println, will add spaces for each arg
+func formatArgsForPrintln(args []interface{}) (message string) {
+	if ln := len(args); ln == 0 {
+		return ""
+	} else if ln == 1 {
+		message = fmt.Sprint(args[0])
+	} else {
+		message = fmt.Sprintln(args...)
+		// clear last "\n"
+		message = message[:len(message)-1]
+	}
 	return
 }

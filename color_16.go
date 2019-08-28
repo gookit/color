@@ -128,6 +128,14 @@ func (c Color) Render(a ...interface{}) string {
 	return RenderCode(c.String(), a...)
 }
 
+// Renderln messages by color setting
+// Usage:
+// 		green := color.FgGreen.Renderln
+// 		fmt.Println(green("message"))
+func (c Color) Renderln(a ...interface{}) string {
+	return RenderWithSpaces(c.String(), a...)
+}
+
 // Sprint render messages by color setting. is alias of the Render()
 func (c Color) Sprint(a ...interface{}) string {
 	return RenderCode(c.String(), a...)
@@ -293,8 +301,8 @@ func colors2code(colors ...Color) string {
 // Println messages with new line
 func (c Color) Println(a ...interface{}) {
 	if isLikeInCmd {
-		winPrintln(fmt.Sprint(a...), c)
+		winPrintln(formatArgsForPrintln(a), c)
 	} else {
-		fmt.Println(RenderCode(c.String(), a...))
+		fmt.Println(RenderString(c.String(), formatArgsForPrintln(a)))
 	}
 }

@@ -117,7 +117,7 @@ func (c RGBColor) Printf(format string, a ...interface{}) {
 
 // Println print message with newline
 func (c RGBColor) Println(a ...interface{}) {
-	fmt.Println(RenderCode(c.String(), a...))
+	fmt.Println(RenderString(c.String(), formatArgsForPrintln(a)))
 }
 
 // Sprint returns rendered message
@@ -127,12 +127,17 @@ func (c RGBColor) Sprint(a ...interface{}) string {
 
 // Sprintf returns format and rendered message
 func (c RGBColor) Sprintf(format string, a ...interface{}) string {
-	return RenderString(c.String(), fmt.Sprintf(format, a...))
+	return RenderString(c.Code(), fmt.Sprintf(format, a...))
 }
 
 // Values to RGB values
 func (c RGBColor) Values() []int {
 	return []int{int(c[0]), int(c[1]), int(c[2])}
+}
+
+// String to color code string
+func (c RGBColor) Code() string {
+	return c.String()
 }
 
 // String to color code string
@@ -281,7 +286,7 @@ func (s *RGBStyle) Printf(format string, a ...interface{}) {
 
 // Println print message with newline
 func (s *RGBStyle) Println(a ...interface{}) {
-	fmt.Println(RenderCode(s.String(), a...))
+	fmt.Println(RenderString(s.String(), formatArgsForPrintln(a)))
 }
 
 // Sprint returns rendered message
@@ -291,7 +296,12 @@ func (s *RGBStyle) Sprint(a ...interface{}) string {
 
 // Sprintf returns format and rendered message
 func (s *RGBStyle) Sprintf(format string, a ...interface{}) string {
-	return RenderString(s.String(), fmt.Sprintf(format, a...))
+	return RenderString(s.Code(), fmt.Sprintf(format, a...))
+}
+
+// Code convert to color code string
+func (s *RGBStyle) Code() string {
+	return s.String()
 }
 
 // String convert to color code string

@@ -324,6 +324,8 @@ func IsDefinedTag(name string) bool {
  *************************************************************/
 
 // Tag value is a defined style name
+// Usage:
+// 	Tag("info").Println("message")
 type Tag string
 
 // Print messages
@@ -354,7 +356,7 @@ func (tg Tag) Println(a ...interface{}) {
 	if stl := GetStyle(name); !stl.IsEmpty() {
 		stl.Println(a...)
 	} else {
-		fmt.Println(RenderCode(GetTagCode(name), a...))
+		fmt.Println(RenderString(GetTagCode(name), formatArgsForPrintln(a)))
 	}
 }
 

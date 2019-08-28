@@ -98,14 +98,26 @@ func RenderCode(code string, args ...interface{}) string {
 	var message string
 	if ln := len(args); ln == 0 {
 		return ""
-	} else if ln == 1 {
-		message = fmt.Sprint(args[0])
 	} else {
-		message = fmt.Sprintln(args...)
-		// clear last "\n"
-		message = message[:len(message)-1]
+		message = fmt.Sprint(args...)
 	}
 
+	if len(code) == 0 {
+		return message
+	}
+
+	// disabled OR not support color
+	if !Enable || !isSupportColor {
+		return ClearCode(message)
+	}
+
+	return fmt.Sprintf(FullColorTpl, code, message)
+}
+
+// RenderWithSpaces Render code with spaces.
+// If the number of args is > 1, a space will be added between the args
+func RenderWithSpaces(code string, args ...interface{}) string {
+	message := formatArgsForPrintln(args)
 	if len(code) == 0 {
 		return message
 	}
@@ -197,7 +209,7 @@ func (p *Printer) Printf(format string, a ...interface{}) {
 
 // Println rendering colored messages with newline
 func (p *Printer) Println(a ...interface{}) {
-	fmt.Println(RenderCode(p.String(), a...))
+	fmt.Println(RenderString(p.ColorCode, formatArgsForPrintln(a)))
 }
 
 // IsEmpty color code

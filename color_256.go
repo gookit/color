@@ -78,7 +78,7 @@ func (c Color256) Printf(format string, a ...interface{}) {
 
 // Println print message with newline
 func (c Color256) Println(a ...interface{}) {
-	fmt.Println(RenderCode(c.String(), a...))
+	fmt.Println(RenderString(c.String(), formatArgsForPrintln(a)))
 }
 
 // Sprint returns rendered message
@@ -182,17 +182,22 @@ func (s *Style256) Printf(format string, a ...interface{}) {
 
 // Println print message with newline
 func (s *Style256) Println(a ...interface{}) {
-	fmt.Println(RenderCode(s.String(), a...))
+	fmt.Println(RenderString(s.String(), formatArgsForPrintln(a)))
 }
 
 // Sprint returns rendered message
 func (s *Style256) Sprint(a ...interface{}) string {
-	return RenderCode(s.String(), a...)
+	return RenderCode(s.Code(), a...)
 }
 
 // Sprintf returns format and rendered message
 func (s *Style256) Sprintf(format string, a ...interface{}) string {
-	return RenderString(s.String(), fmt.Sprintf(format, a...))
+	return RenderString(s.Code(), fmt.Sprintf(format, a...))
+}
+
+// Code convert to color code string
+func (s *Style256) Code() string {
+	return s.String()
 }
 
 // String convert to color code string

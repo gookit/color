@@ -120,8 +120,11 @@ func TestRenderCode(t *testing.T) {
 
 	is := assert.New(t)
 
-	str := RenderCode("36;1", "Hi", "babe")
-	is.Equal("\x1b[36;1mHi babe\x1b[0m", str)
+	str := RenderCode("36;1", "Hi,", "babe")
+	is.Equal("\x1b[36;1mHi,babe\x1b[0m", str)
+
+	str = RenderWithSpaces("36;1", "Hi,", "babe")
+	is.Equal("\x1b[36;1mHi, babe\x1b[0m", str)
 
 	str = RenderCode("36;1", "Ab")
 	is.Equal("\x1b[36;1mAb\x1b[0m", str)
@@ -131,6 +134,9 @@ func TestRenderCode(t *testing.T) {
 
 	Disable()
 	str = RenderCode("36;1", "Te", "xt")
+	is.Equal("Text", str)
+
+	str = RenderWithSpaces("36;1", "Te", "xt")
 	is.Equal("Te xt", str)
 	Enable = true
 
@@ -295,82 +301,82 @@ func TestColor256(t *testing.T) {
 	forceOpenColorRender()
 	defer resetColorRender()
 
-	at := assert.New(t)
+	is := assert.New(t)
 
 	// empty
 	c := Color256{1: 99}
-	at.True(c.IsEmpty())
-	at.Equal("", c.String())
+	is.True(c.IsEmpty())
+	is.Equal("", c.String())
 
 	// fg
 	c = Bit8(132)
-	at.False(c.IsEmpty())
-	at.Equal(uint8(132), c.Value())
-	at.Equal("38;5;132", c.String())
+	is.False(c.IsEmpty())
+	is.Equal(uint8(132), c.Value())
+	is.Equal("38;5;132", c.String())
 
 	// Color256.Sprint
 	str := c.Sprint("msg")
-	at.Equal("\x1b[38;5;132mmsg\x1b[0m", str)
+	is.Equal("\x1b[38;5;132mmsg\x1b[0m", str)
 	// Color256.Sprintf
 	str = c.Sprintf("msg")
-	at.Equal("\x1b[38;5;132mmsg\x1b[0m", str)
+	is.Equal("\x1b[38;5;132mmsg\x1b[0m", str)
 
 	// bg
 	c = Bit8(132, true)
-	at.False(c.IsEmpty())
-	at.Equal("48;5;132", c.String())
+	is.False(c.IsEmpty())
+	is.Equal("48;5;132", c.String())
 
 	c = C256(132)
 	// Color256.Print
 	rewriteStdout()
 	c.Print("MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[38;5;132mMSG\x1b[0m", str)
+	is.Equal("\x1b[38;5;132mMSG\x1b[0m", str)
 
 	// Color256.Printf
 	rewriteStdout()
 	c.Printf("A %s", "MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[38;5;132mA MSG\x1b[0m", str)
+	is.Equal("\x1b[38;5;132mA MSG\x1b[0m", str)
 
 	// Color256.Println
 	rewriteStdout()
-	c.Println("MSG")
+	c.Println("MSG", "TEXT")
 	str = restoreStdout()
-	at.Equal("\x1b[38;5;132mMSG\x1b[0m\n", str)
+	is.Equal("\x1b[38;5;132mMSG TEXT\x1b[0m\n", str)
 }
 
 func TestStyle256(t *testing.T) {
 	forceOpenColorRender()
 	defer resetColorRender()
 
-	at := assert.New(t)
+	is := assert.New(t)
 	// empty
 	s := S256()
-	at.Equal("", s.String())
-	at.Equal("MSG", s.Sprint("MSG"))
+	is.Equal("", s.String())
+	is.Equal("MSG", s.Sprint("MSG"))
 
 	// only fg
 	s = S256(132)
-	at.Equal("38;5;132", s.String())
-	at.Equal("\x1b[38;5;132mMSG\x1b[0m", s.Sprint("MSG"))
-	at.Equal("\x1b[38;5;132mMSG\x1b[0m", s.Sprintf("%s", "MSG"))
+	is.Equal("38;5;132", s.String())
+	is.Equal("\x1b[38;5;132mMSG\x1b[0m", s.Sprint("MSG"))
+	is.Equal("\x1b[38;5;132mMSG\x1b[0m", s.Sprintf("%s", "MSG"))
 
 	// only bg
 	s = S256(132)
-	at.Equal("38;5;132", s.String())
-	at.Equal("\x1b[38;5;132mMSG\x1b[0m", s.Sprint("MSG"))
+	is.Equal("38;5;132", s.String())
+	is.Equal("\x1b[38;5;132mMSG\x1b[0m", s.Sprint("MSG"))
 
 	// fg and bg
 	s = S256(132, 23)
-	at.Equal("38;5;132;48;5;23", s.String())
-	at.Equal("\x1b[38;5;132;48;5;23mMSG\x1b[0m", s.Sprint("MSG"))
+	is.Equal("38;5;132;48;5;23", s.String())
+	is.Equal("\x1b[38;5;132;48;5;23mMSG\x1b[0m", s.Sprint("MSG"))
 	s = S256().Set(132, 23)
-	at.Equal("38;5;132;48;5;23", s.String())
-	at.Equal("\x1b[38;5;132;48;5;23mMSG\x1b[0m", s.Sprint("MSG"))
+	is.Equal("38;5;132;48;5;23", s.String())
+	is.Equal("\x1b[38;5;132;48;5;23mMSG\x1b[0m", s.Sprint("MSG"))
 	s = S256().SetFg(132).SetBg(23)
-	at.Equal("38;5;132;48;5;23", s.String())
-	at.Equal("\x1b[38;5;132;48;5;23mMSG\x1b[0m", s.Sprint("MSG"))
+	is.Equal("38;5;132;48;5;23", s.String())
+	is.Equal("\x1b[38;5;132;48;5;23mMSG\x1b[0m", s.Sprint("MSG"))
 
 	s = S256(132)
 
@@ -378,19 +384,19 @@ func TestStyle256(t *testing.T) {
 	rewriteStdout()
 	s.Print("MSG")
 	str := restoreStdout()
-	at.Equal("\x1b[38;5;132mMSG\x1b[0m", str)
+	is.Equal("\x1b[38;5;132mMSG\x1b[0m", str)
 
 	// Color256.Printf
 	rewriteStdout()
 	s.Printf("A %s", "MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[38;5;132mA MSG\x1b[0m", str)
+	is.Equal("\x1b[38;5;132mA MSG\x1b[0m", str)
 
 	// Color256.Println
 	rewriteStdout()
 	s.Println("MSG")
 	str = restoreStdout()
-	at.Equal("\x1b[38;5;132mMSG\x1b[0m\n", str)
+	is.Equal("\x1b[38;5;132mMSG\x1b[0m\n", str)
 }
 
 /*************************************************************
