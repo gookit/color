@@ -30,6 +30,7 @@ const (
 // 	err = EnableVirtualTerminalProcessing(syscall.Stdout, false)
 func EnableVirtualTerminalProcessing(stream syscall.Handle, enable bool) error {
 	var mode uint32
+	// Check if it is currently in the terminal
 	err := syscall.GetConsoleMode(syscall.Stdout, &mode)
 	if err != nil {
 		return err
@@ -52,8 +53,11 @@ func EnableVirtualTerminalProcessing(stream syscall.Handle, enable bool) error {
 // EnableCmdColorRender enable cmd color render.
 func EnableCmdColorRender(fn func()) {
 	err := EnableVirtualTerminalProcessing(syscall.Stdout, true)
+	// if is not in terminal, will clear color tag.
 	if err != nil {
-		panic(err)
+		// panic(err)
+		fn()
+		return
 	}
 
 	// force open color render

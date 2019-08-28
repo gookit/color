@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"runtime"
+	"syscall"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -73,10 +75,38 @@ func TestSet(t *testing.T) {
 	is.Equal(0, num)
 	Enable = old
 
+	if runtime.GOOS == "windows" {
+		return
+	}
+
+	// set
+	testSetFunc(t)
+}
+
+func TestSet_OnWindows(t *testing.T) {
+	if runtime.GOOS != "windows" {
+		return
+	}
+
+	// set
+	fd := uintptr(syscall.Stdout)
+
+	// if run test by goland, will return false
+	if IsTerminal(int(fd)) {
+		testSetFunc(t)
+	}
+}
+
+func testSetFunc(t *testing.T) {
+	is := assert.New(t)
+
+	fmt.Println("------------------------")
 	// set
 	rewriteStdout()
-	num, err = Set(FgGreen)
+	num, err := Set(FgGreen)
 	str := restoreStdout()
+
+	is.Equal(1, num)
 	is.NoError(err)
 	if isLikeInCmd {
 		is.Equal("", str)
