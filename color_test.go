@@ -100,13 +100,12 @@ func TestSet_OnWindows(t *testing.T) {
 func testSetFunc(t *testing.T) {
 	is := assert.New(t)
 
-	fmt.Println("------------------------")
 	// set
 	rewriteStdout()
 	num, err := Set(FgGreen)
 	str := restoreStdout()
 
-	is.Equal(1, num)
+	is.True(num > 0)
 	is.NoError(err)
 	if isLikeInCmd {
 		is.Equal("", str)

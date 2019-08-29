@@ -200,7 +200,6 @@ func winInternalPrint(str string, attribute uint16, newline bool) (int, error) {
 		if newline {
 			return fmt.Println(str)
 		}
-
 		return fmt.Print(str)
 	}
 
