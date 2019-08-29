@@ -85,7 +85,7 @@ func stringToArr(str, sep string) (arr []string) {
 // if use Println, will add spaces for each arg
 func formatArgsForPrintln(args []interface{}) (message string) {
 	if ln := len(args); ln == 0 {
-		return ""
+		message = ""
 	} else if ln == 1 {
 		message = fmt.Sprint(args[0])
 	} else {
