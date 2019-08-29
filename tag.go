@@ -10,7 +10,7 @@ import (
 // output colored text like use html tag. (not support windows cmd)
 const (
 	// MatchExpr regex to match color tags
-	// golang 不支持反向引用.  即不支持使用 \1 引用第一个匹配 ([a-z=;]+)
+	// Notice: golang 不支持反向引用.  即不支持使用 \1 引用第一个匹配 ([a-z=;]+)
 	// MatchExpr = `<([a-z=;]+)>(.*?)<\/\1>`
 	// 所以调整一下 统一使用 `</>` 来结束标签，例如 "<info>some text</>"
 	// 支持自定义颜色属性的tag "<fg=white;bg=blue;op=bold>content</>"
@@ -114,7 +114,7 @@ var colorTags = map[string]string{
 // Print messages
 func Print(a ...interface{}) {
 	if isLikeInCmd {
-		EnableCmdColorRender(func() {
+		renderColorCodeOnCmd(func() {
 			fmt.Print(Render(a...))
 		})
 	} else {
@@ -127,7 +127,7 @@ func Printf(format string, a ...interface{}) {
 	str := fmt.Sprintf(format, a...)
 
 	if isLikeInCmd {
-		EnableCmdColorRender(func() {
+		renderColorCodeOnCmd(func() {
 			fmt.Print(ReplaceTag(str))
 		})
 	} else {
@@ -140,7 +140,7 @@ func Println(a ...interface{}) {
 	str := formatArgsForPrintln(a)
 
 	if isLikeInCmd {
-		EnableCmdColorRender(func() {
+		renderColorCodeOnCmd(func() {
 			fmt.Println(ReplaceTag(str))
 		})
 	} else {
@@ -169,14 +169,12 @@ func Fprintln(w io.Writer, a ...interface{}) (int, error) {
 // Usage:
 //	text := Render("<info>hello</> <cyan>world</>!")
 //	fmt.Println(text)
-func Render(a ...interface{}) (str string) {
-	if ln := len(a); ln == 0 {
+func Render(a ...interface{}) string {
+	if len(a) == 0 {
 		return ""
-	} else {
-		str = fmt.Sprint(a...)
 	}
 
-	return ReplaceTag(str)
+	return ReplaceTag(fmt.Sprint(a...))
 }
 
 // Sprint parse color tags, return rendered string

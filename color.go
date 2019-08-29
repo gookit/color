@@ -106,10 +106,9 @@ func RenderCode(code string, args ...interface{}) string {
 	var message string
 	if ln := len(args); ln == 0 {
 		return ""
-	} else {
-		message = fmt.Sprint(args...)
 	}
 
+	message = fmt.Sprint(args...)
 	if len(code) == 0 {
 		return message
 	}

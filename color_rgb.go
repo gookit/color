@@ -135,7 +135,7 @@ func (c RGBColor) Values() []int {
 	return []int{int(c[0]), int(c[1]), int(c[2])}
 }
 
-// String to color code string
+// Code to color code string
 func (c RGBColor) Code() string {
 	return c.String()
 }

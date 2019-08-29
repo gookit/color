@@ -50,8 +50,8 @@ func EnableVirtualTerminalProcessing(stream syscall.Handle, enable bool) error {
 	return nil
 }
 
-// EnableCmdColorRender enable cmd color render.
-func EnableCmdColorRender(fn func()) {
+// renderColorCodeOnCmd enable cmd color render.
+func renderColorCodeOnCmd(fn func()) {
 	err := EnableVirtualTerminalProcessing(syscall.Stdout, true)
 	// if is not in terminal, will clear color tag.
 	if err != nil {

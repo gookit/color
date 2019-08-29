@@ -1,7 +1,7 @@
+// +build !windows
+
 // The method in the file has no effect
 // Only for compatibility with non-Windows systems
-
-// +build !windows
 
 package color
 
@@ -15,3 +15,4 @@ func winReset() (n int, err error) {
 
 func winPrint(_ string, _ ...Color)   {}
 func winPrintln(_ string, _ ...Color) {}
+func renderColorCodeOnCmd(_ func())   {}
