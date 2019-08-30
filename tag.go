@@ -125,7 +125,6 @@ func Print(a ...interface{}) {
 // Printf format and print messages
 func Printf(format string, a ...interface{}) {
 	str := fmt.Sprintf(format, a...)
-
 	if isLikeInCmd {
 		renderColorCodeOnCmd(func() {
 			fmt.Print(ReplaceTag(str))
@@ -138,7 +137,6 @@ func Printf(format string, a ...interface{}) {
 // Println messages with new line
 func Println(a ...interface{}) {
 	str := formatArgsForPrintln(a)
-
 	if isLikeInCmd {
 		renderColorCodeOnCmd(func() {
 			fmt.Println(ReplaceTag(str))
@@ -161,7 +159,6 @@ func Fprintf(w io.Writer, format string, a ...interface{}) (int, error) {
 // Fprintln print rendered messages line to writer
 func Fprintln(w io.Writer, a ...interface{}) (int, error) {
 	str := formatArgsForPrintln(a)
-
 	return fmt.Fprintln(w, ReplaceTag(str))
 }
 

@@ -152,6 +152,9 @@ func TestRenderCode(t *testing.T) {
 	str := RenderCode("36;1", "Hi,", "babe")
 	is.Equal("\x1b[36;1mHi,babe\x1b[0m", str)
 
+	str = RenderWithSpaces("", "Hi,", "babe")
+	is.Equal("Hi, babe", str)
+
 	str = RenderWithSpaces("36;1", "Hi,", "babe")
 	is.Equal("\x1b[36;1mHi, babe\x1b[0m", str)
 
@@ -254,6 +257,10 @@ func TestColor16(t *testing.T) {
 	at.Equal("\x1b[93mtext\x1b[0m", r)
 	r = LightWhite.Sprint("text")
 	at.Equal("\x1b[97mtext\x1b[0m", r)
+	r = White.Render("test", "spaces")
+	at.Equal("\x1b[37mtestspaces\x1b[0m", r)
+	r = Black.Renderln("test", "spaces")
+	at.Equal("\x1b[30mtest spaces\x1b[0m", r)
 
 	str := Red.Sprintf("A %s", "MSG")
 	at.Equal("\x1b[31mA MSG\x1b[0m", str)

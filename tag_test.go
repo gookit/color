@@ -56,6 +56,9 @@ def <info>info text
 	r = ReplaceTag(s)
 	is.NotContains(r, "<")
 	is.NotContains(r, ">")
+
+	s = Render()
+	is.Equal("", s)
 }
 
 func TestParseCodeFromAttr(t *testing.T) {
