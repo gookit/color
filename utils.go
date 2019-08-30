@@ -66,6 +66,22 @@ func IsSupport256Color() bool {
 // 	return runtime.GOOS == "windows"
 // }
 
+func doPrint(str, code string, colors ...Color)  {
+	if isLikeInCmd {
+		winPrint(str, colors...)
+	} else {
+		fmt.Print(RenderString(code, str))
+	}
+}
+
+func doPrintln(str, code string, colors ...Color)  {
+	if isLikeInCmd {
+		winPrintln(str, colors...)
+	} else {
+		fmt.Println(RenderString(code, str))
+	}
+}
+
 func stringToArr(str, sep string) (arr []string) {
 	str = strings.TrimSpace(str)
 	if str == "" {

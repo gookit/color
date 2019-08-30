@@ -18,6 +18,7 @@ func TestStyle(t *testing.T) {
 	is.True(s.IsEmpty())
 	is.Equal("", s.String())
 
+	is.Equal("97;40", Light.Code())
 	is.Equal("97;40", Light.String())
 	str := Light.Render("msg")
 	is.Contains(str, "97")

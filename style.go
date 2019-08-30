@@ -59,30 +59,19 @@ func (s Style) Sprintf(format string, a ...interface{}) string {
 
 // Print render and Print text
 func (s Style) Print(a ...interface{}) {
-	if isLikeInCmd {
-		winPrint(fmt.Sprint(a...), s...)
-	} else {
-		fmt.Print(RenderCode(s.String(), a...))
-	}
+	str := fmt.Sprint(a...)
+	doPrint(str, s.String(), s...)
 }
 
 // Printf render and print text
 func (s Style) Printf(format string, a ...interface{}) {
-	message := fmt.Sprintf(format, a...)
-	if isLikeInCmd {
-		winPrint(message, s...)
-	} else {
-		fmt.Print(RenderString(s.String(), message))
-	}
+	str := fmt.Sprintf(format, a...)
+	doPrint(str, s.String(), s...)
 }
 
 // Println render and print text line
 func (s Style) Println(a ...interface{}) {
-	if isLikeInCmd {
-		winPrintln(formatArgsForPrintln(a), s...)
-	} else {
-		fmt.Println(RenderString(s.String(), formatArgsForPrintln(a)))
-	}
+	doPrintln(formatArgsForPrintln(a), s.String(), s...)
 }
 
 // Code convert to code string. returns like "32;45;3"
