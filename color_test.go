@@ -288,6 +288,11 @@ func TestColor16(t *testing.T) {
 		at.Equal("\x1b[95mMSG\x1b[0m\n", str)
 	}
 
+	rewriteStdout()
+	LightMagenta.Println()
+	str = restoreStdout()
+	at.Equal("\n", str)
+
 	if isLikeInCmd {
 		rewriteStdout()
 		LightCyan.Print("msg")
@@ -599,19 +604,11 @@ func TestOther(t *testing.T) {
 	is.False(IsMSys())
 	_ = os.Setenv("MSYSTEM", oldVal)
 
-	// TERM
+	// IsSupport256Color
 	oldVal = os.Getenv("TERM")
 	_ = os.Unsetenv("TERM")
+	is.False(IsSupportColor())
 	is.False(IsSupport256Color())
-
-	is.NoError(os.Setenv("TERM", "xterm-vt220"))
-	is.True(IsSupportColor())
-	// revert
-	if oldVal != "" {
-		is.NoError(os.Setenv("TERM", oldVal))
-	} else {
-		is.NoError(os.Unsetenv("TERM"))
-	}
 
 	// ConEmuANSI
 	mockEnvValue("ConEmuANSI", "ON", func(_ string) {
@@ -622,6 +619,15 @@ func TestOther(t *testing.T) {
 	mockEnvValue("ANSICON", "189x2000 (189x43)", func(_ string) {
 		is.True(IsSupportColor())
 	})
+
+	is.NoError(os.Setenv("TERM", "xterm-vt220"))
+	is.True(IsSupportColor())
+	// revert
+	if oldVal != "" {
+		is.NoError(os.Setenv("TERM", oldVal))
+	} else {
+		is.NoError(os.Unsetenv("TERM"))
+	}
 }
 
 /*************************************************************

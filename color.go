@@ -12,6 +12,8 @@ package color
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"regexp"
 )
 
@@ -40,6 +42,8 @@ const CodeExpr = `\033\[[\d;?]+m`
 var (
 	// Enable switch color display
 	Enable = true
+	// Output TODO the default io.Writer message print
+	Output io.Writer = os.Stdout
 	// mark current env, It's like in `cmd.exe`
 	// if not in windows, is's always is False.
 	isLikeInCmd bool
