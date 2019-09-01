@@ -253,12 +253,12 @@ func initWinColorsMap() {
 
 // winPrint
 func winPrint(str string, colors ...Color) {
-	_, _ = winInternalPrint(str, convertColorsToWinAttr(colors), false)
+	_, _ = winInternalPrint(str, colorsToWinAttr(colors), false)
 }
 
 // winPrintln
 func winPrintln(str string, colors ...Color) {
-	_, _ = winInternalPrint(str, convertColorsToWinAttr(colors), true)
+	_, _ = winInternalPrint(str, colorsToWinAttr(colors), true)
 }
 
 // winInternalPrint
@@ -287,19 +287,14 @@ func winInternalPrint(str string, attribute uint16, newline bool) (int, error) {
 	return winReset()
 }
 
-// func winRender(str string, colors ...Color) string {
-// 	setConsoleTextAttr(uintptr(syscall.Stdout), convertColorsToWinAttr(colors))
-//
-// 	return str
-// }
-
 // winSet set console color attributes
 func winSet(colors ...Color) (int, error) {
-	if !Enable { // not enable
+	// not enable
+	if !Enable {
 		return 0, nil
 	}
 
-	return setConsoleTextAttr(uintptr(syscall.Stdout), convertColorsToWinAttr(colors))
+	return setConsoleTextAttr(uintptr(syscall.Stdout), colorsToWinAttr(colors))
 }
 
 // winReset reset color settings to default
@@ -312,8 +307,8 @@ func winReset() (int, error) {
 	return setConsoleTextAttr(uintptr(syscall.Stdout), winDefSetting)
 }
 
-// convertColorsToWinAttr convert generic colors to win-colors attribute
-func convertColorsToWinAttr(colors []Color) uint16 {
+// colorsToWinAttr convert generic colors to win-colors attribute
+func colorsToWinAttr(colors []Color) uint16 {
 	var setting uint16
 	for _, c := range colors {
 		// check exists

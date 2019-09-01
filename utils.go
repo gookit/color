@@ -66,7 +66,7 @@ func IsSupport256Color() bool {
 // 	return runtime.GOOS == "windows"
 // }
 
-func doPrint(str, code string, colors ...Color)  {
+func doPrint(code string, colors []Color, str string)  {
 	if isLikeInCmd {
 		winPrint(str, colors...)
 	} else {
@@ -74,7 +74,8 @@ func doPrint(str, code string, colors ...Color)  {
 	}
 }
 
-func doPrintln(str, code string, colors ...Color)  {
+func doPrintln(code string, colors []Color, args []interface{})  {
+	str := formatArgsForPrintln(args)
 	if isLikeInCmd {
 		winPrintln(str, colors...)
 	} else {

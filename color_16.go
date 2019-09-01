@@ -157,21 +157,19 @@ func (c Color) Sprintf(format string, args ...interface{}) string {
 // 		green := color.FgGreen.Print
 // 		green("message")
 func (c Color) Print(args ...interface{}) {
-	str := fmt.Sprint(args...)
-	doPrint(str, c.Code(), c)
+	doPrint(c.Code(), []Color{c}, fmt.Sprint(args...))
 }
 
 // Printf format and print messages.
 // Usage:
 // 		color.Cyan.Printf("string %s", "arg0")
 func (c Color) Printf(format string, a ...interface{}) {
-	str := fmt.Sprintf(format, a...)
-	doPrint(str, c.Code(), c)
+	doPrint(c.Code(), []Color{c}, fmt.Sprintf(format, a...))
 }
 
 // Println messages with new line
 func (c Color) Println(a ...interface{}) {
-	doPrintln(formatArgsForPrintln(a), c.String(), c)
+	doPrintln(c.String(), []Color{c}, a)
 }
 
 // Light current color. eg: 36(FgCyan) -> 96(FgLightCyan).

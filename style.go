@@ -52,26 +52,24 @@ func (s Style) Sprint(a ...interface{}) string {
 	return RenderCode(s.String(), a...)
 }
 
-// Sprintf is alias of the 'Render'
+// Sprintf format and render message.
 func (s Style) Sprintf(format string, a ...interface{}) string {
 	return RenderString(s.String(), fmt.Sprintf(format, a...))
 }
 
 // Print render and Print text
 func (s Style) Print(a ...interface{}) {
-	str := fmt.Sprint(a...)
-	doPrint(str, s.String(), s...)
+	doPrint(s.String(), s, fmt.Sprint(a...))
 }
 
 // Printf render and print text
 func (s Style) Printf(format string, a ...interface{}) {
-	str := fmt.Sprintf(format, a...)
-	doPrint(str, s.String(), s...)
+	doPrint(s.Code(), s, fmt.Sprintf(format, a...))
 }
 
 // Println render and print text line
 func (s Style) Println(a ...interface{}) {
-	doPrintln(formatArgsForPrintln(a), s.String(), s...)
+	doPrintln(s.String(), s, a)
 }
 
 // Code convert to code string. returns like "32;45;3"
@@ -113,7 +111,8 @@ func (t *Theme) Save() {
 
 // Tips use name as title, only apply style for name
 func (t *Theme) Tips(format string, a ...interface{}) {
-	t.Print(strings.ToUpper(t.Name) + ": ") // only apply style for name
+	// only apply style for name
+	t.Print(strings.ToUpper(t.Name) + ": ")
 	Printf(format+"\n", a...)
 }
 
