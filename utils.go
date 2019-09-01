@@ -66,20 +66,41 @@ func IsSupport256Color() bool {
 // 	return runtime.GOOS == "windows"
 // }
 
-func doPrint(code string, colors []Color, str string)  {
+func doPrint(code string, colors []Color, str string) {
 	if isLikeInCmd {
 		winPrint(str, colors...)
 	} else {
-		fmt.Print(RenderString(code, str))
+		_, _ = fmt.Fprint(output, RenderString(code, str))
 	}
 }
 
-func doPrintln(code string, colors []Color, args []interface{})  {
+func doPrintln(code string, colors []Color, args []interface{}) {
 	str := formatArgsForPrintln(args)
 	if isLikeInCmd {
 		winPrintln(str, colors...)
 	} else {
-		fmt.Println(RenderString(code, str))
+		_, _ = fmt.Fprintln(output, RenderString(code, str))
+	}
+}
+
+func doPrintV2(code, str string) {
+	if isLikeInCmd {
+		renderColorCodeOnCmd(func() {
+			_, _ = fmt.Fprint(output, RenderString(code, str))
+		})
+	} else {
+		_, _ = fmt.Fprint(output, RenderString(code, str))
+	}
+}
+
+func doPrintlnV2(code string, args []interface{}) {
+	str := formatArgsForPrintln(args)
+	if isLikeInCmd {
+		renderColorCodeOnCmd(func() {
+			_, _ = fmt.Fprintln(output, RenderString(code, str))
+		})
+	} else {
+		_, _ = fmt.Fprintln(output, RenderString(code, str))
 	}
 }
 

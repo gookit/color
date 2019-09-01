@@ -42,8 +42,8 @@ const CodeExpr = `\033\[[\d;?]+m`
 var (
 	// Enable switch color display
 	Enable = true
-	// Output TODO the default io.Writer message print
-	Output io.Writer = os.Stdout
+	// output the default io.Writer message print
+	output io.Writer = os.Stdout
 	// mark current env, It's like in `cmd.exe`
 	// if not in windows, is's always is False.
 	isLikeInCmd bool
@@ -89,6 +89,16 @@ func Reset() (int, error) {
 // Disable disable color output
 func Disable() {
 	Enable = false
+}
+
+// SetOutput set default colored text output
+func SetOutput(w io.Writer) {
+	output = w
+}
+
+// ResetOutput reset output
+func ResetOutput() {
+	output = os.Stdout
 }
 
 // ForceOpenColor force open color render
@@ -210,17 +220,17 @@ func (p *Printer) Sprintf(format string, a ...interface{}) string {
 
 // Print rendering colored messages
 func (p *Printer) Print(a ...interface{}) {
-	fmt.Print(RenderCode(p.String(), a...))
+	doPrintV2(p.String(), fmt.Sprint(a...))
 }
 
 // Printf format and rendering colored messages
 func (p *Printer) Printf(format string, a ...interface{}) {
-	fmt.Print(RenderString(p.String(), fmt.Sprintf(format, a...)))
+	doPrintV2(p.String(), fmt.Sprintf(format, a...))
 }
 
 // Println rendering colored messages with newline
 func (p *Printer) Println(a ...interface{}) {
-	fmt.Println(RenderString(p.ColorCode, formatArgsForPrintln(a)))
+	doPrintlnV2(p.ColorCode, a)
 }
 
 // IsEmpty color code

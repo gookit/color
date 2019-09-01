@@ -266,18 +266,17 @@ func winPrintln(str string, colors ...Color) {
 func winInternalPrint(str string, attribute uint16, newline bool) (int, error) {
 	if !Enable { // not enable
 		if newline {
-			return fmt.Println(str)
+			return fmt.Fprintln(output, str)
 		}
-		return fmt.Print(str)
+		return fmt.Fprint(output, str)
 	}
 
 	// fmt.Print("attribute val: ", attribute, "\n")
 	_, _ = setConsoleTextAttr(uintptr(syscall.Stdout), attribute)
-
 	if newline {
-		fmt.Println(str)
+		_, _ = fmt.Fprintln(output, str)
 	} else {
-		fmt.Print(str)
+		_, _ = fmt.Fprint(output, str)
 	}
 
 	// handle, _, _ = procSetTextAttribute.Call(uintptr(syscall.Stdout), winDefSetting)

@@ -8,7 +8,7 @@ import (
 
 func TestStyle(t *testing.T) {
 	// force open color render for testing
-	forceOpenColorRender()
+	buf := forceOpenColorRender()
 	defer resetColorRender()
 
 	is := assert.New(t)
@@ -41,54 +41,54 @@ func TestStyle(t *testing.T) {
 	is.Contains(str, FgDarkGray.String())
 
 	// Style.Print
-	rewriteStdout()
 	Info.Print("MSG")
-	str = restoreStdout()
+	str = buf.String()
 	if isLikeInCmd {
 		is.Equal("MSG", str)
 	} else {
 		is.Equal("\x1b[0;32mMSG\x1b[0m", str)
 	}
+	buf.Reset()
 
 	// Style.Printf
-	rewriteStdout()
 	Info.Printf("A %s", "MSG")
-	str = restoreStdout()
+	str = buf.String()
 	if isLikeInCmd {
 		is.Equal("A MSG", str)
 	} else {
 		is.Equal("\x1b[0;32mA MSG\x1b[0m", str)
 	}
+	buf.Reset()
 
 	// Style.Println
-	rewriteStdout()
 	Info.Println("MSG")
-	str = restoreStdout()
+	str = buf.String()
 	if isLikeInCmd {
 		is.Equal("MSG\n", str)
 	} else {
 		is.Equal("\x1b[0;32mMSG\x1b[0m\n", str)
 	}
+	buf.Reset()
 
-	rewriteStdout()
 	Info.Println("MSG", "OK")
-	str = restoreStdout()
+	str = buf.String()
 	if isLikeInCmd {
 		is.Equal("MSG OK\n", str)
 	} else {
 		is.Equal("\x1b[0;32mMSG OK\x1b[0m\n", str)
 	}
+	buf.Reset()
 
 	s = GetStyle("err")
 	is.False(s.IsEmpty())
 
 	if isLikeInCmd {
-		rewriteStdout()
 		s.Print("msg")
 		s.Printf("m%s", "sg")
 		s.Println("msg")
-		str = restoreStdout()
+		str = buf.String()
 		is.Equal("msgmsgmsg\n", str)
+		buf.Reset()
 	}
 
 	// add new
@@ -110,15 +110,15 @@ func TestStyle(t *testing.T) {
 
 func TestThemes(t *testing.T) {
 	// force open color render for testing
-	forceOpenColorRender()
+	buf := forceOpenColorRender()
 	defer resetColorRender()
 
 	is := assert.New(t)
 
 	// Theme.Tips
-	rewriteStdout()
 	Info.Tips("MSG")
-	str := restoreStdout()
+	str := buf.String()
+	buf.Reset()
 	if isLikeInCmd {
 		is.Equal("INFO: MSG\n", str)
 	} else {
@@ -126,9 +126,9 @@ func TestThemes(t *testing.T) {
 	}
 
 	// Theme.Prompt
-	rewriteStdout()
 	Info.Prompt("MSG")
-	str = restoreStdout()
+	str = buf.String()
+	buf.Reset()
 	if isLikeInCmd {
 		is.Equal("INFO: MSG\n", str)
 	} else {
@@ -136,9 +136,9 @@ func TestThemes(t *testing.T) {
 	}
 
 	// Theme.Block
-	rewriteStdout()
 	Info.Block("MSG")
-	str = restoreStdout()
+	str = buf.String()
+	buf.Reset()
 	if isLikeInCmd {
 		is.Equal("INFO:\n MSG\n", str)
 	} else {

@@ -111,55 +111,57 @@ var colorTags = map[string]string{
  * print methods(will auto parse color tags)
  *************************************************************/
 
-// Print messages
+// Print render color tag and print messages
 func Print(a ...interface{}) {
-	if isLikeInCmd {
-		renderColorCodeOnCmd(func() {
-			fmt.Print(Render(a...))
-		})
-	} else {
-		fmt.Print(Render(a...))
-	}
+	Fprint(output, a...)
 }
 
 // Printf format and print messages
 func Printf(format string, a ...interface{}) {
-	str := fmt.Sprintf(format, a...)
-	if isLikeInCmd {
-		renderColorCodeOnCmd(func() {
-			fmt.Print(ReplaceTag(str))
-		})
-	} else {
-		fmt.Print(ReplaceTag(str))
-	}
+	Fprintf(output, format, a...)
 }
 
 // Println messages with new line
 func Println(a ...interface{}) {
-	str := formatArgsForPrintln(a)
-	if isLikeInCmd {
-		renderColorCodeOnCmd(func() {
-			fmt.Println(ReplaceTag(str))
-		})
-	} else {
-		fmt.Println(ReplaceTag(str))
-	}
+	Fprintln(output, a...)
 }
 
 // Fprint print rendered messages to writer
+// Notice: will ignore print error
 func Fprint(w io.Writer, a ...interface{}) {
-	_, _ = fmt.Fprint(w, Render(a...))
+	if isLikeInCmd {
+		renderColorCodeOnCmd(func() {
+			_, _ = fmt.Fprint(w, Render(a...))
+		})
+	} else {
+		_, _ = fmt.Fprint(w, Render(a...))
+	}
 }
 
-// Fprintf print format and rendered messages to writer
-func Fprintf(w io.Writer, format string, a ...interface{}) (int, error) {
-	return fmt.Fprint(w, ReplaceTag(fmt.Sprintf(format, a...)))
+// Fprintf print format and rendered messages to writer.
+// Notice: will ignore print error
+func Fprintf(w io.Writer, format string, a ...interface{}) {
+	str := fmt.Sprintf(format, a...)
+	if isLikeInCmd {
+		renderColorCodeOnCmd(func() {
+			_, _ = fmt.Fprint(w, ReplaceTag(str))
+		})
+	} else {
+		_, _ = fmt.Fprint(w, ReplaceTag(str))
+	}
 }
 
 // Fprintln print rendered messages line to writer
-func Fprintln(w io.Writer, a ...interface{}) (int, error) {
+// Notice: will ignore print error
+func Fprintln(w io.Writer, a ...interface{}) {
 	str := formatArgsForPrintln(a)
-	return fmt.Fprintln(w, ReplaceTag(str))
+	if isLikeInCmd {
+		renderColorCodeOnCmd(func() {
+			_, _ = fmt.Fprintln(w, ReplaceTag(str))
+		})
+	} else {
+		_, _ = fmt.Fprintln(w, ReplaceTag(str))
+	}
 }
 
 // Render parse color tags, return rendered string.
@@ -348,22 +350,24 @@ type Tag string
 // Print messages
 func (tg Tag) Print(a ...interface{}) {
 	name := string(tg)
-	if stl := GetStyle(name); !stl.IsEmpty() {
-		stl.Print(a...)
-		return
-	}
+	str := fmt.Sprint(a...)
 
-	fmt.Print(RenderCode(GetTagCode(name), a...))
+	if stl := GetStyle(name); !stl.IsEmpty() {
+		stl.Print(str)
+	} else {
+		doPrintV2(GetTagCode(name), str)
+	}
 }
 
 // Printf format and print messages
-func (tg Tag) Printf(format string, args ...interface{}) {
+func (tg Tag) Printf(format string, a ...interface{}) {
 	name := string(tg)
-	msg := fmt.Sprintf(format, args...)
+	str := fmt.Sprintf(format, a...)
+
 	if stl := GetStyle(name); !stl.IsEmpty() {
-		stl.Print(msg)
+		stl.Print(str)
 	} else {
-		fmt.Print(RenderString(GetTagCode(name), msg))
+		doPrintV2(GetTagCode(name), str)
 	}
 }
 
@@ -373,7 +377,7 @@ func (tg Tag) Println(a ...interface{}) {
 	if stl := GetStyle(name); !stl.IsEmpty() {
 		stl.Println(a...)
 	} else {
-		fmt.Println(RenderString(GetTagCode(name), formatArgsForPrintln(a)))
+		doPrintlnV2(GetTagCode(name), a)
 	}
 }
 
@@ -389,6 +393,8 @@ func (tg Tag) Sprint(a ...interface{}) string {
 
 // Sprintf format and render messages
 func (tg Tag) Sprintf(format string, a ...interface{}) string {
-	name := string(tg)
-	return RenderString(GetTagCode(name), fmt.Sprintf(format, a...))
+	tag := string(tg)
+	str := fmt.Sprintf(format, a...)
+
+	return RenderString(GetTagCode(tag), str)
 }

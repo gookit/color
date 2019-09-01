@@ -1,7 +1,6 @@
 package color
 
 import (
-	"bytes"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -82,7 +81,7 @@ func TestParseCodeFromAttr(t *testing.T) {
 
 func TestPrint(t *testing.T) {
 	// force open color render for testing
-	forceOpenColorRender()
+	buf := forceOpenColorRender()
 	defer resetColorRender()
 	is := assert.New(t)
 
@@ -101,29 +100,23 @@ func TestPrint(t *testing.T) {
 	is.Equal("\x1b[0;31mMSG\x1b[0m", s)
 
 	// Print
-	rewriteStdout()
 	Print("<red>MSG</>")
-	s = restoreStdout()
-	is.Equal("\x1b[0;31mMSG\x1b[0m", s)
+	is.Equal("\x1b[0;31mMSG\x1b[0m", buf.String())
+	buf.Reset()
 
 	// Printf
-	rewriteStdout()
 	Printf("<red>%s</>", "MSG")
-	s = restoreStdout()
-	is.Equal("\x1b[0;31mMSG\x1b[0m", s)
+	is.Equal("\x1b[0;31mMSG\x1b[0m", buf.String())
+	buf.Reset()
 
 	// Println
-	rewriteStdout()
 	Println("<red>MSG</>")
-	s = restoreStdout()
-	is.Equal("\x1b[0;31mMSG\x1b[0m\n", s)
+	is.Equal("\x1b[0;31mMSG\x1b[0m\n", buf.String())
+	buf.Reset()
 
-	rewriteStdout()
 	Println("<red>hello</>", "world")
-	s = restoreStdout()
-	is.Equal("\x1b[0;31mhello\x1b[0m world\n", s)
-
-	buf := new(bytes.Buffer)
+	is.Equal("\x1b[0;31mhello\x1b[0m world\n", buf.String())
+	buf.Reset()
 
 	// Fprint
 	Fprint(buf, "<red>MSG</>")
@@ -131,18 +124,15 @@ func TestPrint(t *testing.T) {
 	buf.Reset()
 
 	// Fprintln
-	_, err := Fprintln(buf, "<red>MSG</>")
+	Fprintln(buf, "<red>MSG</>")
 	is.Equal("\x1b[0;31mMSG\x1b[0m\n", buf.String())
-	is.NoError(err)
 	buf.Reset()
-	_, err = Fprintln(buf, "<red>hello</>", "world")
+	Fprintln(buf, "<red>hello</>", "world")
 	is.Equal("\x1b[0;31mhello\x1b[0m world\n", buf.String())
-	is.NoError(err)
 	buf.Reset()
 
 	// Fprintf
-	_, err = Fprintf(buf, "<red>%s</>", "MSG")
-	is.NoError(err)
+	Fprintf(buf, "<red>%s</>", "MSG")
 	is.Equal("\x1b[0;31mMSG\x1b[0m", buf.String())
 	buf.Reset()
 }
@@ -181,7 +171,7 @@ def <info>info text
 }
 
 func TestTag_Print(t *testing.T) {
-	forceOpenColorRender()
+	buf := forceOpenColorRender()
 	defer resetColorRender()
 	is := assert.New(t)
 
@@ -194,9 +184,9 @@ func TestTag_Print(t *testing.T) {
 	info := Tag("info")
 
 	// Tag.Print
-	rewriteStdout()
 	info.Print("msg")
-	s = restoreStdout()
+	s = buf.String()
+	buf.Reset()
 	if isLikeInCmd {
 		is.Equal("msg", s)
 	} else {
@@ -204,9 +194,9 @@ func TestTag_Print(t *testing.T) {
 	}
 
 	// Tag.Println
-	rewriteStdout()
 	info.Println("msg")
-	s = restoreStdout()
+	s = buf.String()
+	buf.Reset()
 	if isLikeInCmd {
 		is.Equal("msg\n", s)
 	} else {
@@ -214,9 +204,9 @@ func TestTag_Print(t *testing.T) {
 	}
 
 	// Tag.Printf
-	rewriteStdout()
 	info.Printf("m%s", "sg")
-	s = restoreStdout()
+	s = buf.String()
+	buf.Reset()
 	if isLikeInCmd {
 		is.Equal("msg", s)
 	} else {
@@ -226,20 +216,20 @@ func TestTag_Print(t *testing.T) {
 	mga := Tag("mga")
 
 	// Tag.Print
-	rewriteStdout()
 	mga.Print("msg")
-	s = restoreStdout()
+	s = buf.String()
+	buf.Reset()
 	is.Equal("\x1b[0;35mmsg\x1b[0m", s)
 
 	// Tag.Println
-	rewriteStdout()
-	mga.Println("msg")
-	s = restoreStdout()
-	is.Equal("\x1b[0;35mmsg\x1b[0m\n", s)
+	mga.Println("msg", "more")
+	s = buf.String()
+	buf.Reset()
+	is.Equal("\x1b[0;35mmsg more\x1b[0m\n", s)
 
 	// Tag.Printf
-	rewriteStdout()
 	mga.Printf("m%s", "sg")
-	s = restoreStdout()
+	s = buf.String()
+	buf.Reset()
 	is.Equal("\x1b[0;35mmsg\x1b[0m", s)
 }

@@ -206,7 +206,7 @@ func TestClearCode(t *testing.T) {
  *************************************************************/
 
 func TestPrinter(t *testing.T) {
-	forceOpenColorRender()
+	buf := forceOpenColorRender()
 	defer resetColorRender()
 	at := assert.New(t)
 
@@ -223,21 +223,21 @@ func TestPrinter(t *testing.T) {
 	at.Equal("48;5;132", p.String())
 
 	// Color256.Print
-	rewriteStdout()
 	p.Print("MSG")
-	str = restoreStdout()
+	str = buf.String()
+	buf.Reset()
 	at.Equal("\x1b[48;5;132mMSG\x1b[0m", str)
 
 	// Color256.Printf
-	rewriteStdout()
 	p.Printf("A %s", "MSG")
-	str = restoreStdout()
+	str = buf.String()
+	buf.Reset()
 	at.Equal("\x1b[48;5;132mA MSG\x1b[0m", str)
 
 	// Color256.Println
-	rewriteStdout()
 	p.Println("MSG")
-	str = restoreStdout()
+	str = buf.String()
+	buf.Reset()
 	at.Equal("\x1b[48;5;132mMSG\x1b[0m\n", str)
 }
 
@@ -246,7 +246,7 @@ func TestPrinter(t *testing.T) {
  *************************************************************/
 
 func TestColor16(t *testing.T) {
-	forceOpenColorRender()
+	buf := forceOpenColorRender()
 	defer resetColorRender()
 	at := assert.New(t)
 
@@ -266,47 +266,47 @@ func TestColor16(t *testing.T) {
 	at.Equal("\x1b[31mA MSG\x1b[0m", str)
 
 	// Color.Print
-	rewriteStdout()
 	FgGray.Print("MSG")
-	str = restoreStdout()
+	str = buf.String()
 	if isLikeInCmd {
 		at.Equal("MSG", str)
 	} else {
 		at.Equal("\x1b[90mMSG\x1b[0m", str)
 	}
+	buf.Reset()
 
 	// Color.Printf
-	rewriteStdout()
 	BgGray.Printf("A %s", "MSG")
-	str = restoreStdout()
+	str = buf.String()
 	if isLikeInCmd {
 		at.Equal("A MSG", str)
 	} else {
 		at.Equal("\x1b[100mA MSG\x1b[0m", str)
 	}
+	buf.Reset()
 
 	// Color.Println
-	rewriteStdout()
 	LightMagenta.Println("MSG")
-	str = restoreStdout()
+	str = buf.String()
 	if isLikeInCmd {
 		at.Equal("MSG\n", str)
 	} else {
 		at.Equal("\x1b[95mMSG\x1b[0m\n", str)
 	}
+	buf.Reset()
 
-	rewriteStdout()
 	LightMagenta.Println()
-	str = restoreStdout()
+	str = buf.String()
 	at.Equal("\n", str)
+	buf.Reset()
 
 	if isLikeInCmd {
-		rewriteStdout()
 		LightCyan.Print("msg")
 		LightRed.Printf("m%s", "sg")
 		LightGreen.Println("msg")
-		str = restoreStdout()
+		str = buf.String()
 		at.Equal("msgmsgmsg\n", str)
+		buf.Reset()
 	}
 
 	// Color.Darken
@@ -644,13 +644,21 @@ func TestOther(t *testing.T) {
 var oldVal bool
 
 // force open color render for testing
-func forceOpenColorRender() {
+func forceOpenColorRender() *bytes.Buffer {
 	oldVal = isSupportColor
 	isSupportColor = true
+
+	// set output for test
+	buf := new(bytes.Buffer)
+	SetOutput(buf)
+
+	return buf
 }
 
 func resetColorRender() {
 	isSupportColor = oldVal
+	// reset
+	ResetOutput()
 }
 
 var oldStdout, newReader *os.File
