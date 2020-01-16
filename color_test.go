@@ -637,6 +637,11 @@ func TestOther(t *testing.T) {
 		is.True(IsSupportColor())
 	})
 
+	// TERM
+	mockEnvValue("TERM", "rxvt-unicode-256color", func(_ string) {
+		is.True(IsSupportColor())
+	})
+
 	is.NoError(os.Setenv("TERM", "xterm-vt220"))
 	is.True(IsSupportColor())
 	// revert
