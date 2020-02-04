@@ -12,11 +12,13 @@ import (
 // 	"TERM=xterm-vt220"
 // 	"TERM=xterm-256color"
 // 	"TERM=screen-256color"
+// 	"TERM=tmux-256color"
 // 	"TERM=rxvt-unicode-256color"
 // Don't support color:
 // 	"TERM=cygwin"
 var specialColorTerms = map[string]bool{
 	"screen-256color":       true,
+	"tmux-256color":         true,
 	"rxvt-unicode-256color": true,
 }
 
@@ -74,6 +76,7 @@ func IsSupportColor() bool {
 func IsSupport256Color() bool {
 	// "TERM=xterm-256color"
 	// "TERM=screen-256color"
+	// "TERM=tmux-256color"
 	// "TERM=rxvt-unicode-256color"
 	return strings.Contains(os.Getenv("TERM"), "256color")
 }

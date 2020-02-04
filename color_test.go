@@ -638,6 +638,11 @@ func TestOther(t *testing.T) {
 	})
 
 	// TERM
+	mockEnvValue("TERM", "tmux-256color", func(_ string) {
+		is.True(IsSupportColor())
+	})
+
+	// TERM
 	mockEnvValue("TERM", "rxvt-unicode-256color", func(_ string) {
 		is.True(IsSupportColor())
 	})
