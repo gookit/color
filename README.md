@@ -1,7 +1,7 @@
 # CLI Color
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/51b28c5f7ffe4cc2b0f12ecf25ed247f)](https://app.codacy.com/app/inhere/color)
-[![GoDoc](https://godoc.org/github.com/gookit/color?status.svg)](https://godoc.org/github.com/gookit/color)
+[![GoDoc](https://godoc.org/github.com/gookit/color?status.svg)](https://pkg.go.dev/github.com/gookit/color?tab=overview)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/gookit/color)](https://github.com/gookit/color)
 [![Build Status](https://travis-ci.org/gookit/color.svg?branch=master)](https://travis-ci.org/gookit/color)
 [![Coverage Status](https://coveralls.io/repos/github/gookit/color/badge.svg?branch=master)](https://coveralls.io/github/gookit/color?branch=master)
@@ -28,8 +28,8 @@ Basic color preview:
 
 ## GoDoc
 
-  - [godoc for gopkg](https://godoc.org/gopkg.in/gookit/color.v1)
-  - [godoc for github](https://godoc.org/github.com/gookit/color)
+  - [godoc for gopkg](https://pkg.go.dev/gopkg.in/gookit/color.v1)
+  - [godoc for github](https://pkg.go.dev/github.com/gookit/color)
 
 ## Quick start
 
@@ -51,7 +51,7 @@ import (
 func main() {
 	// quick use like fmt.Print*
 	color.Red.Println("Simple to use color")
-	color.Green.Print("Simple to use color")
+	color.Green.Print("Simple to use color\n")
 	color.Cyan.Printf("Simple to use %s\n", "color")
 	color.Yellow.Printf("Simple to use %s\n", "color")
 
