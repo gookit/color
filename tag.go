@@ -5,6 +5,7 @@ import (
 	"io"
 	"regexp"
 	"strings"
+	"log"
 )
 
 // output colored text like use html tag. (not support windows cmd)
@@ -162,6 +163,18 @@ func Fprintln(w io.Writer, a ...interface{}) {
 	} else {
 		_, _ = fmt.Fprintln(w, ReplaceTag(str))
 	}
+}
+
+// Print colored messages to a log.Logger.
+// Notice: should be goroutine safe
+func Lprint(l *log.Logger, a ...interface{}) {
+    if isLikeInCmd {
+        renderColorCodeOnCmd(func() {
+            l.Print(Render(a...))
+        })
+    } else {
+        l.Print(Render(a...))
+    }
 }
 
 // Render parse color tags, return rendered string.
