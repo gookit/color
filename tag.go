@@ -165,7 +165,7 @@ func Fprintln(w io.Writer, a ...interface{}) {
 	}
 }
 
-// Print colored messages to a log.Logger.
+// Lprint passes colored messages to a log.Logger for printing.
 // Notice: should be goroutine safe
 func Lprint(l *log.Logger, a ...interface{}) {
     if isLikeInCmd {
