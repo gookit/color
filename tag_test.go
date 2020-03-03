@@ -2,7 +2,7 @@ package color
 
 import (
 	"testing"
-
+	"log"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -31,7 +31,7 @@ func TestReplaceTag(t *testing.T) {
 	is.NotContains(r, ">")
 
 	// sample 3
-	s = `abc <err>err-text</> 
+	s = `abc <err>err-text</>
 def <info>info text
 </>`
 	r = ReplaceTag(s)
@@ -135,6 +135,12 @@ func TestPrint(t *testing.T) {
 	Fprintf(buf, "<red>%s</>", "MSG")
 	is.Equal("\x1b[0;31mMSG\x1b[0m", buf.String())
 	buf.Reset()
+
+	// Lprint
+	logger := log.New(buf, "", 0)
+	Lprint(logger, "<red>MSG</>\n")
+	is.Equal("\x1b[0;31mMSG\x1b[0m\n", buf.String())
+	buf.Reset()
 }
 
 func TestWrapTag(t *testing.T) {
@@ -157,7 +163,7 @@ func TestClearTag(t *testing.T) {
 	is.Equal("text", ClearTag("<err>text</>"))
 	is.Equal("abc error def info text", ClearTag("abc <err>error</> def <info>info text</>"))
 
-	str := `abc <err>err-text</> 
+	str := `abc <err>err-text</>
 def <info>info text
 </>`
 	ret := ClearTag(str)
