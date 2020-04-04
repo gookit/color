@@ -71,17 +71,17 @@ func C256(val uint8, isBg ...bool) Color256 {
 
 // Print print message
 func (c Color256) Print(a ...interface{}) {
-	fmt.Print(RenderCode(c.String(), a...))
+	doPrintV2(c.String(), fmt.Sprint(a...))
 }
 
 // Printf format and print message
 func (c Color256) Printf(format string, a ...interface{}) {
-	fmt.Print(RenderString(c.String(), fmt.Sprintf(format, a...)))
+	doPrintV2(c.String(), fmt.Sprintf(format, a...))
 }
 
 // Println print message with newline
 func (c Color256) Println(a ...interface{}) {
-	fmt.Println(RenderString(c.String(), formatArgsForPrintln(a)))
+	doPrintlnV2(c.String(), a)
 }
 
 // Sprint returns rendered message
@@ -175,17 +175,17 @@ func (s *Style256) SetFg(fgVal uint8) *Style256 {
 
 // Print print message
 func (s *Style256) Print(a ...interface{}) {
-	fmt.Print(RenderCode(s.String(), a...))
+	doPrintV2(s.String(), fmt.Sprint(a...))
 }
 
 // Printf format and print message
 func (s *Style256) Printf(format string, a ...interface{}) {
-	fmt.Print(RenderString(s.String(), fmt.Sprintf(format, a...)))
+	doPrintV2(s.String(), fmt.Sprintf(format, a...))
 }
 
 // Println print message with newline
 func (s *Style256) Println(a ...interface{}) {
-	fmt.Println(RenderString(s.String(), formatArgsForPrintln(a)))
+	doPrintlnV2(s.String(), a)
 }
 
 // Sprint returns rendered message
