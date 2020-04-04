@@ -15,12 +15,17 @@ Basic color preview:
 
 ![basic-color](_examples/images/basic-color.png)
 
+Now, it's works on windows CMD and PowerShell:
+
+![color-on-cmd-pwsh](_examples/images/color-on-cmd-pwsh.jpg)
+
 ## Features
 
   - Simple to use, zero dependencies
-  - Supports rich color output: 16-color, 256-color, true color (24-bit)
+  - Supports rich color output: 16-color, 256-color, true color (24-bit, RGB)
     - 16-color output is the most commonly used and most widely supported, working on any Windows version
-    - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
+    - ~~See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support~~
+    - Since `v1.2.4` **the 256-color, true color (24-bit) support windows CMD and PowerShell**
   - Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
   - Supports HTML tag-style color rendering, such as `<green>message</>`. Support working on windows `cmd` `powerShell`
   - Basic colors: `Bold`, `Black`, `White`, `Gray`, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`
