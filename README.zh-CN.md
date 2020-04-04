@@ -247,6 +247,8 @@ color.Tag("info").Println("info style text")
 
 ## 256色使用
 
+> 256色彩在 `v1.2.4` 后支持Windows CMD,PowerShell 环境
+
 ### 使用前景或后景色
  
   - `color.C256(val uint8, isBg ...bool) Color256`
@@ -278,6 +280,20 @@ s.Printf("format %s", "message")
 ![color-tags](_examples/images/256-color.jpg)
 
 ## RGB色彩使用
+
+> RGB色彩在 `v1.2.4` 后支持Windows CMD,PowerShell 环境
+
+代码示例：
+
+```go
+color.RGB(30, 144, 255).Println("message. use RGB number")
+
+color.HEX("#1976D2").Println("blue-darken")
+color.HEX("#D50000", true).Println("red-accent. use HEX style")
+
+color.RGBStyleFromString("213,0,0").Println("red-accent. use RGB number")
+color.HEXStyle("eee", "D50000").Println("deep-purple color")
+```
 
 ### 使用前景或后景色 
 
