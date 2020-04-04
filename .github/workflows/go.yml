@@ -15,6 +15,7 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Use Go ${{ matrix.go_version }}
+      timeout-minutes: 3
       uses: actions/setup-go@v1
       with:
         go-version: ${{ matrix.go_version }}
