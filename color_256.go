@@ -41,12 +41,15 @@ const (
 //
 // 颜色值使用10进制和16进制都可 0x98 = 152
 //
-// 颜色有两位uint8组成,
+// 颜色有两位uint8组成:
 // 	0: color value
 // 	1: color type, Fg=0 Bg=1
 // 	>1: unset value
+// example:
 // 	fg color: [152, 0]
 //  bg color: [152, 1]
+//
+// NOTICE: now support 256 color on windows CMD, PowerShell
 type Color256 [2]uint8
 
 // Bit8 create a color256
