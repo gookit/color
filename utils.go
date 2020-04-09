@@ -3,6 +3,7 @@ package color
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strings"
 )
@@ -141,6 +142,18 @@ func Fprintln(w io.Writer, a ...interface{}) {
 		})
 	} else {
 		_, _ = fmt.Fprintln(w, ReplaceTag(str))
+	}
+}
+
+// Lprint passes colored messages to a log.Logger for printing.
+// Notice: should be goroutine safe
+func Lprint(l *log.Logger, a ...interface{}) {
+	if isLikeInCmd {
+		renderColorCodeOnCmd(func() {
+			l.Print(Render(a...))
+		})
+	} else {
+		l.Print(Render(a...))
 	}
 }
 

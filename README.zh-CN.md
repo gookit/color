@@ -15,12 +15,17 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
 
 ![basic-color](_examples/images/basic-color.png)
 
+现在，支持windows CMD和PowerShell中工作：
+
+![color-on-cmd-pwsh](_examples/images/color-on-cmd-pwsh.jpg)
+
 ## 功能特色
 
   - 使用简单方便，无其他依赖
-  - 支持丰富的颜色输出, 16色(4bit)，256色(8bit)，RGB色彩(24bit)
+  - 支持丰富的颜色输出, 16色(4bit)，256色(8bit)，RGB色彩(24bit, RGB)
     - 16色(4bit)是最常用和支持最广的，支持Windows `cmd.exe`
-    - 另外两种支持 `linux` `mac` 和 Windows下的 `ConEmu` `git-bash` `mintty` 等部分终端
+    - ~~另外两种支持 `linux` `mac` 和 Windows下的 `ConEmu` `git-bash` `mintty` 等部分终端~~
+    - 自 `v1.2.4` 起 **256色(8bit)，RGB色彩(24bit)均支持windows CMD和PowerShell终端**
   - 通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
   - 同时支持html标签式的颜色渲染. eg: `<green>message</>`
   - 基础色彩: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
@@ -247,6 +252,8 @@ color.Tag("info").Println("info style text")
 
 ## 256色使用
 
+> 256色彩在 `v1.2.4` 后支持Windows CMD,PowerShell 环境
+
 ### 使用前景或后景色
  
   - `color.C256(val uint8, isBg ...bool) Color256`
@@ -278,6 +285,20 @@ s.Printf("format %s", "message")
 ![color-tags](_examples/images/256-color.jpg)
 
 ## RGB色彩使用
+
+> RGB色彩在 `v1.2.4` 后支持Windows CMD,PowerShell 环境
+
+代码示例：
+
+```go
+color.RGB(30, 144, 255).Println("message. use RGB number")
+
+color.HEX("#1976D2").Println("blue-darken")
+color.HEX("#D50000", true).Println("red-accent. use HEX style")
+
+color.RGBStyleFromString("213,0,0").Println("red-accent. use RGB number")
+color.HEXStyle("eee", "D50000").Println("deep-purple color")
+```
 
 ### 使用前景或后景色 
 

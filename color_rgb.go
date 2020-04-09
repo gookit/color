@@ -47,6 +47,8 @@ const (
 // 	// 3th: Fg=0, Bg=1, >1: unset value
 // 	RGBColor{30,144,255, 0}
 // 	RGBColor{30,144,255, 1}
+//
+// NOTICE: now support RGB color on windows CMD, PowerShell
 type RGBColor [4]uint8
 
 // create a empty RGBColor
@@ -107,17 +109,17 @@ func RGBFromString(rgb string, isBg ...bool) RGBColor {
 
 // Print print message
 func (c RGBColor) Print(a ...interface{}) {
-	fmt.Print(RenderCode(c.String(), a...))
+	doPrintV2(c.String(), fmt.Sprint(a...))
 }
 
 // Printf format and print message
 func (c RGBColor) Printf(format string, a ...interface{}) {
-	fmt.Print(RenderString(c.String(), fmt.Sprintf(format, a...)))
+	doPrintV2(c.String(), fmt.Sprintf(format, a...))
 }
 
 // Println print message with newline
 func (c RGBColor) Println(a ...interface{}) {
-	fmt.Println(RenderString(c.String(), formatArgsForPrintln(a)))
+	doPrintlnV2(c.String(), a)
 }
 
 // Sprint returns rendered message
@@ -239,7 +241,11 @@ func HEXStyle(fg string, bg ...string) *RGBStyle {
 		s.SetBg(HEX(bg[0]))
 	}
 
-	return s.SetFg(HEX(fg))
+	if len(fg) > 0 {
+		s.SetFg(HEX(fg))
+	}
+
+	return s
 }
 
 // RGBStyleFromString create a RGBStyle from color value string.
@@ -276,17 +282,17 @@ func (s *RGBStyle) SetBg(bg RGBColor) *RGBStyle {
 
 // Print print message
 func (s *RGBStyle) Print(a ...interface{}) {
-	fmt.Print(RenderCode(s.String(), a...))
+	doPrintV2(s.String(), fmt.Sprint(a...))
 }
 
 // Printf format and print message
 func (s *RGBStyle) Printf(format string, a ...interface{}) {
-	fmt.Print(RenderString(s.String(), fmt.Sprintf(format, a...)))
+	doPrintV2(s.String(), fmt.Sprintf(format, a...))
 }
 
 // Println print message with newline
 func (s *RGBStyle) Println(a ...interface{}) {
-	fmt.Println(RenderString(s.String(), formatArgsForPrintln(a)))
+	doPrintlnV2(s.String(), a)
 }
 
 // Sprint returns rendered message

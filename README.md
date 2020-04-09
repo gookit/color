@@ -15,12 +15,17 @@ Basic color preview:
 
 ![basic-color](_examples/images/basic-color.png)
 
+Now, it's works on windows CMD and PowerShell:
+
+![color-on-cmd-pwsh](_examples/images/color-on-cmd-pwsh.jpg)
+
 ## Features
 
   - Simple to use, zero dependencies
-  - Supports rich color output: 16-color, 256-color, true color (24-bit)
+  - Supports rich color output: 16-color, 256-color, true color (24-bit, RGB)
     - 16-color output is the most commonly used and most widely supported, working on any Windows version
-    - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
+    - ~~See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support~~
+    - Since `v1.2.4` **the 256-color, true color (24-bit) support windows CMD and PowerShell**
   - Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
   - Supports HTML tag-style color rendering, such as `<green>message</>`. Support working on windows `cmd` `powerShell`
   - Basic colors: `Bold`, `Black`, `White`, `Gray`, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`
@@ -239,6 +244,8 @@ Run demo: `go run ./_examples/colortag.go`
 
 ## 256-color usage
 
+> 256 colors support Windows CMD, PowerShell environment after `v1.2.4`
+
 ### Set the foreground or background color
 
 - `color.C256(val uint8, isBg ...bool) Color256`
@@ -270,6 +277,20 @@ Run demo: `go run ./_examples/color256.go`
 ![color-tags](_examples/images/256-color.jpg)
 
 ## Use RGB color
+
+> RGB colors support Windows CMD, PowerShell environment after `v1.2.4`
+
+example:
+
+```go
+color.RGB(30, 144, 255).Println("message. use RGB number")
+
+color.HEX("#1976D2").Println("blue-darken")
+color.HEX("#D50000", true).Println("red-accent. use HEX style")
+
+color.RGBStyleFromString("213,0,0").Println("red-accent. use RGB number")
+color.HEXStyle("eee", "D50000").Println("deep-purple color")
+```
 
 ### Set the foreground or background color
 
