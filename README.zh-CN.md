@@ -15,7 +15,7 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
 
 ![basic-color](_examples/images/basic-color.png)
 
-现在，支持windows CMD和PowerShell中工作：
+现在，256色和RGB色彩也已经支持windows CMD和PowerShell中工作：
 
 ![color-on-cmd-pwsh](_examples/images/color-on-cmd-pwsh.jpg)
 
@@ -24,8 +24,8 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
   - 使用简单方便，无其他依赖
   - 支持丰富的颜色输出, 16色(4bit)，256色(8bit)，RGB色彩(24bit, RGB)
     - 16色(4bit)是最常用和支持最广的，支持Windows `cmd.exe`
-    - ~~另外两种支持 `linux` `mac` 和 Windows下的 `ConEmu` `git-bash` `mintty` 等部分终端~~
     - 自 `v1.2.4` 起 **256色(8bit)，RGB色彩(24bit)均支持windows CMD和PowerShell终端**
+    - 请查看 [this gist](https://gist.github.com/XVilka/8346728) 了解支持RGB色彩的终端
   - 通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
   - 同时支持html标签式的颜色渲染. eg: `<green>message</>`
   - 基础色彩: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
