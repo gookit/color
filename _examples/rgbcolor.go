@@ -10,5 +10,6 @@ func main() {
 	color.HEX("#D50000", true).Println("red-accent. use HEX style")
 
 	color.RGBStyleFromString("213,0,0").Println("red-accent. use RGB number")
+	// foreground: eee, background: D50000
 	color.HEXStyle("eee", "D50000").Println("deep-purple color")
 }
