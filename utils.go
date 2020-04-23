@@ -23,9 +23,9 @@ var specialColorTerms = map[string]bool{
 	"rxvt-unicode-256color": true,
 }
 
-// IsConsole 判断 w 是否为 stderr、stdout、stdin 三者之一
-func IsConsole(out io.Writer) bool {
-	o, ok := out.(*os.File)
+// IsConsole Determine whether w is one of stderr, stdout, stdin
+func IsConsole(w io.Writer) bool {
+	o, ok := w.(*os.File)
 	if !ok {
 		return false
 	}
@@ -33,7 +33,7 @@ func IsConsole(out io.Writer) bool {
 	return o == os.Stdout || o == os.Stderr || o == os.Stdin
 }
 
-// IsMSys msys(MINGW64) 环境，不一定支持颜色
+// IsMSys msys(MINGW64) environment, does not necessarily support color
 func IsMSys() bool {
 	// like "MSYSTEM=MINGW64"
 	if len(os.Getenv("MSYSTEM")) > 0 {
