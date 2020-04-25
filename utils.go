@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"syscall"
 )
 
 // Support color:
@@ -30,7 +31,10 @@ func IsConsole(w io.Writer) bool {
 		return false
 	}
 
-	return o == os.Stdout || o == os.Stderr || o == os.Stdin
+	fd := o.Fd()
+
+	// fix: cannot use 'o == os.Stdout' to compare
+	return fd == uintptr(syscall.Stdout) || fd == uintptr(syscall.Stdin) || fd == uintptr(syscall.Stderr)
 }
 
 // IsMSys msys(MINGW64) environment, does not necessarily support color

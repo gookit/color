@@ -597,11 +597,17 @@ func TestRGBStyle(t *testing.T) {
 	at.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m\n", str)
 }
 
-func TestOther(t *testing.T) {
+func TestUtilFuncs(t *testing.T) {
 	is := assert.New(t)
 
+	// IsConsole
+	is.True(IsConsole(os.Stdin))
 	is.True(IsConsole(os.Stdout))
+	is.True(IsConsole(os.Stderr))
 	is.False(IsConsole(&bytes.Buffer{}))
+	ff, err := os.OpenFile(".travis.yml", os.O_WRONLY, 0)
+	is.NoError(err)
+	is.False(IsConsole(ff))
 
 	// IsMSys
 	oldVal := os.Getenv("MSYSTEM")

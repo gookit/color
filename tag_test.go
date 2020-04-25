@@ -1,9 +1,9 @@
 package color
 
 import (
-	"testing"
-	"log"
 	"github.com/stretchr/testify/assert"
+	"log"
+	"testing"
 )
 
 func TestReplaceTag(t *testing.T) {
