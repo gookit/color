@@ -329,7 +329,7 @@ func (s *RGBStyle) IsEmpty() bool {
 	return s.fg[3] != 1 && s.bg[3] != 1
 }
 
-// C256 returns the closest approximate 265 (8 bit) color
+// C256 returns the closest approximate 256 (8 bit) color
 func (c RGBColor) C256() Color256 {
 	var isBg bool
 	if c[3] == 0 {
