@@ -44,7 +44,7 @@ const (
 //
 // Usage:
 // 	// 0, 1, 2 is R,G,B.
-// 	// 3th: Fg=0, Bg=1, >1: unset value
+// 	// 3rd: Fg=0, Bg=1, >1: unset value
 // 	RGBColor{30,144,255, 0}
 // 	RGBColor{30,144,255, 1}
 //
@@ -329,7 +329,13 @@ func (s *RGBStyle) IsEmpty() bool {
 	return s.fg[3] != 1 && s.bg[3] != 1
 }
 
-// RGBto256 value
-// func RGBto256(r, g, b uint8) {
-//
-// }
+// C256 returns the closest approximate 256 (8 bit) color
+func (c RGBColor) C256() Color256 {
+	var isBg bool
+	if c[3] == 0 {
+		isBg = false
+	} else if c[3] == 1 {
+		isBg = true
+	}
+	return C256(rgb2short(c[0], c[1], c[2]), isBg)
+}
