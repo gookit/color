@@ -43,7 +43,7 @@ func TestStyle(t *testing.T) {
 	// Style.Print
 	Info.Print("MSG")
 	str = buf.String()
-	if isLikeInCmd {
+	if IsLikeInCmd() {
 		is.Equal("MSG", str)
 	} else {
 		is.Equal("\x1b[0;32mMSG\x1b[0m", str)

@@ -181,7 +181,7 @@ color.Success.Println("Success message")
 
 Run demo: `go run ./_examples/theme_basic.go`
 
-![theme-basic](_examples/images/theme-basic.jpg)
+![theme-basic](_examples/images/theme-basic.png)
 
 ### Tips Style
 
@@ -192,7 +192,7 @@ color.Warn.Tips("tips style message")
 
 Run demo: `go run ./_examples/theme_tips.go`
 
-![theme-tips](_examples/images/theme-tips.jpg)
+![theme-tips](_examples/images/theme-tips.png)
 
 ### Prompt Style
 
@@ -203,7 +203,7 @@ color.Warn.Prompt("prompt style message")
 
 Run demo: `go run ./_examples/theme_prompt.go`
 
-![theme-prompt](_examples/images/theme-prompt.jpg)
+![theme-prompt](_examples/images/theme-prompt.png)
 
 ### Block Style
 
@@ -214,7 +214,7 @@ color.Warn.Block("block style message")
 
 Run demo: `go run ./_examples/theme_block.go`
 
-![theme-block](_examples/images/theme-block.jpg)
+![theme-block](_examples/images/theme-block.png)
 
 ## HTML-like tag usage
 
@@ -242,7 +242,7 @@ color.Tag("info").Println("info style text")
 
 Run demo: `go run ./_examples/colortag.go`
 
-![color-tags](_examples/images/color-tags.jpg)
+![color-tags](_examples/images/color-tags.png)
 
 ## 256-color usage
 
@@ -276,7 +276,7 @@ s.Printf("format %s", "message")
 
 Run demo: `go run ./_examples/color256.go`
 
-![color-tags](_examples/images/256-color.jpg)
+![color-tags](_examples/images/color-256.png)
 
 ## Use RGB color
 

@@ -249,3 +249,38 @@ func GetStyle(name string) Style {
 	// empty style
 	return New()
 }
+
+/*************************************************************
+ * quick use style print message
+ *************************************************************/
+
+// Infof print message with Info style
+func Infof(format string, a ...interface{}) {
+	Info.Printf(format, a...)
+}
+
+// Infoln print message with Info style
+func Infoln(a ...interface{}) {
+	Info.Println(a...)
+}
+
+// Errorf print message with Error style
+func Errorf(format string, a ...interface{}) {
+	Error.Printf(format, a...)
+}
+
+// Errorln print message with Error style
+func Errorln(a ...interface{}) {
+	Error.Println(a...)
+}
+
+// Warnf print message with Warn style
+func Warnf(format string, a ...interface{}) {
+	Warn.Printf(format, a...)
+}
+
+// Warnln print message with Warn style
+func Warnln(a ...interface{}) {
+	Warn.Println(a...)
+}
+

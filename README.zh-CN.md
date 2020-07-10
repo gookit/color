@@ -185,7 +185,7 @@ color.Success.Println("Success message")
 
 Run demo: `go run ./_examples/theme_basic.go`
 
-![theme-basic](_examples/images/theme-basic.jpg)
+![theme-basic](_examples/images/theme-basic.png)
 
 ### 简约提示风格
 
@@ -196,7 +196,7 @@ color.Warn.Tips("tips style message")
 
 Run demo: `go run ./_examples/theme_tips.go`
 
-![theme-tips](_examples/images/theme-tips.jpg)
+![theme-tips](_examples/images/theme-tips.png)
 
 ### 着重提示风格
 
@@ -207,7 +207,7 @@ color.Warn.Prompt("prompt style message")
 
 Run demo: `go run ./_examples/theme_prompt.go`
 
-![theme-prompt](_examples/images/theme-prompt.jpg)
+![theme-prompt](_examples/images/theme-prompt.png)
 
 ### 强调提示风格
 
@@ -218,7 +218,7 @@ color.Warn.Block("prompt style message")
 
 Run demo: `go run ./_examples/theme_block.go`
 
-![theme-block](_examples/images/theme-block.jpg)
+![theme-block](_examples/images/theme-block.png)
 
 ### 使用颜色标签
 
@@ -250,7 +250,7 @@ color.Tag("info").Println("info style text")
 
 > 运行 demo: `go run ./_examples/colortag.go`
 
-![color-tags](_examples/images/color-tags.jpg)
+![color-tags](_examples/images/color-tags.png)
 
 ## 256色使用
 
@@ -284,7 +284,7 @@ s.Printf("format %s", "message")
 
 > 运行 demo: `go run ./_examples/color256.go`
 
-![color-tags](_examples/images/256-color.jpg)
+![color-tags](_examples/images/color-256.png)
 
 ## RGB色彩使用
 

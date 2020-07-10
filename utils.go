@@ -3,8 +3,8 @@ package color
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
+	"strconv"
 	"strings"
 	"syscall"
 )
@@ -92,105 +92,68 @@ func IsSupportTrueColor() bool {
 	return strings.Contains(os.Getenv("COLORTERM"), "truecolor")
 }
 
-/*************************************************************
- * print methods(will auto parse color tags)
- *************************************************************/
+// Hex2rgb alias of the HexToRgb()
+func Hex2rgb(hex string) []int { return HexToRgb(hex) }
 
-// Print render color tag and print messages
-func Print(a ...interface{}) {
-	Fprint(output, a...)
-}
+// HexToRGB alias of the HexToRgb()
+func HexToRGB(hex string) []int { return HexToRgb(hex) }
 
-// Printf format and print messages
-func Printf(format string, a ...interface{}) {
-	Fprintf(output, format, a...)
-}
-
-// Println messages with new line
-func Println(a ...interface{}) {
-	Fprintln(output, a...)
-}
-
-// Fprint print rendered messages to writer
-// Notice: will ignore print error
-func Fprint(w io.Writer, a ...interface{}) {
-	if isLikeInCmd {
-		renderColorCodeOnCmd(func() {
-			_, _ = fmt.Fprint(w, Render(a...))
-		})
-	} else {
-		_, _ = fmt.Fprint(w, Render(a...))
-	}
-}
-
-// Fprintf print format and rendered messages to writer.
-// Notice: will ignore print error
-func Fprintf(w io.Writer, format string, a ...interface{}) {
-	str := fmt.Sprintf(format, a...)
-	if isLikeInCmd {
-		renderColorCodeOnCmd(func() {
-			_, _ = fmt.Fprint(w, ReplaceTag(str))
-		})
-	} else {
-		_, _ = fmt.Fprint(w, ReplaceTag(str))
-	}
-}
-
-// Fprintln print rendered messages line to writer
-// Notice: will ignore print error
-func Fprintln(w io.Writer, a ...interface{}) {
-	str := formatArgsForPrintln(a)
-	if isLikeInCmd {
-		renderColorCodeOnCmd(func() {
-			_, _ = fmt.Fprintln(w, ReplaceTag(str))
-		})
-	} else {
-		_, _ = fmt.Fprintln(w, ReplaceTag(str))
-	}
-}
-
-// Lprint passes colored messages to a log.Logger for printing.
-// Notice: should be goroutine safe
-func Lprint(l *log.Logger, a ...interface{}) {
-	if isLikeInCmd {
-		renderColorCodeOnCmd(func() {
-			l.Print(Render(a...))
-		})
-	} else {
-		l.Print(Render(a...))
-	}
-}
-
-// Render parse color tags, return rendered string.
+// HexToRgb hex color string to RGB numbers
 // Usage:
-//	text := Render("<info>hello</> <cyan>world</>!")
-//	fmt.Println(text)
-func Render(a ...interface{}) string {
-	if len(a) == 0 {
-		return ""
+// 	rgb := HexToRgb("ccc") // rgb: [204 204 204]
+// 	rgb := HexToRgb("aabbcc") // rgb: [170 187 204]
+// 	rgb := HexToRgb("#aabbcc") // rgb: [170 187 204]
+// 	rgb := HexToRgb("0xad99c0") // rgb: [170 187 204]
+func HexToRgb(hex string) (rgb []int) {
+	hex = strings.TrimSpace(hex)
+	if hex == "" {
+		return
 	}
 
-	return ReplaceTag(fmt.Sprint(a...))
+	// like from css. eg "#ccc" "#ad99c0"
+	if hex[0] == '#' {
+		hex = hex[1:]
+	}
+
+	hex = strings.ToLower(hex)
+	switch len(hex) {
+	case 3: // "ccc"
+		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
+	case 8: // "0xad99c0"
+		hex = strings.TrimPrefix(hex, "0x")
+	}
+
+	// recheck
+	if len(hex) != 6 {
+		return
+	}
+
+	// convert string to int64
+	if i64, err := strconv.ParseInt(hex, 16, 32); err == nil {
+		color := int(i64)
+		// parse int
+		rgb = make([]int, 3)
+		rgb[0] = color >> 16
+		rgb[1] = (color & 0x00FF00) >> 8
+		rgb[2] = color & 0x0000FF
+	}
+
+	return
 }
 
-// Sprint parse color tags, return rendered string
-func Sprint(args ...interface{}) string {
-	return Render(args...)
-}
+// Rgb2hex alias of the RgbToHex()
+func Rgb2hex(rgb []int) string { return RgbToHex(rgb) }
 
-// Sprintf format and return rendered string
-func Sprintf(format string, a ...interface{}) string {
-	return ReplaceTag(fmt.Sprintf(format, a...))
-}
+// RgbToHex convert RGB to hex code
+// Usage:
+//	hex := RgbToHex([]int{170, 187, 204}) // hex: "aabbcc"
+func RgbToHex(rgb []int) string {
+	hexNodes := make([]string, len(rgb))
+	for _, v := range rgb {
+		hexNodes = append(hexNodes, strconv.FormatInt(int64(v), 16))
+	}
 
-// String alias of the ReplaceTag
-func String(s string) string {
-	return ReplaceTag(s)
-}
-
-// Text alias of the ReplaceTag
-func Text(s string) string {
-	return ReplaceTag(s)
+	return strings.Join(hexNodes, "")
 }
 
 /*************************************************************

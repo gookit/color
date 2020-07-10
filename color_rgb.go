@@ -76,7 +76,7 @@ func RGB(r, g, b uint8, isBg ...bool) RGBColor {
 // 	c := HEX("0xaabbcc")
 // 	c.Print("message")
 func HEX(hex string, isBg ...bool) RGBColor {
-	if rgb := HexToRGB(hex); len(rgb) > 0 {
+	if rgb := HexToRgb(hex); len(rgb) > 0 {
 		return RGB(uint8(rgb[0]), uint8(rgb[1]), uint8(rgb[2]), isBg...)
 	}
 
@@ -162,47 +162,16 @@ func (c RGBColor) IsEmpty() bool {
 	return c[3] > 1
 }
 
-// HexToRGB hex color string to RGB numbers
-// Usage:
-// 	rgb := HexToRGB("ccc") // rgb: [204 204 204]
-// 	rgb := HexToRGB("aabbcc") // rgb: [170 187 204]
-// 	rgb := HexToRGB("#aabbcc") // rgb: [170 187 204]
-// 	rgb := HexToRGB("0xad99c0") // rgb: [170 187 204]
-func HexToRGB(hex string) (rgb []int) {
-	hex = strings.TrimSpace(hex)
-	if hex == "" {
-		return
+// C256 returns the closest approximate 256 (8 bit) color
+func (c RGBColor) C256() Color256 {
+	var isBg bool
+	if c[3] == 0 {
+		isBg = false
+	} else if c[3] == 1 {
+		isBg = true
 	}
 
-	// like from css. eg "#ccc" "#ad99c0"
-	if hex[0] == '#' {
-		hex = hex[1:]
-	}
-
-	hex = strings.ToLower(hex)
-	switch len(hex) {
-	case 3: // "ccc"
-		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
-	case 8: // "0xad99c0"
-		hex = strings.TrimPrefix(hex, "0x")
-	}
-
-	// recheck
-	if len(hex) != 6 {
-		return
-	}
-
-	// convert string to int64
-	if i64, err := strconv.ParseInt(hex, 16, 32); err == nil {
-		color := int(i64)
-		// parse int
-		rgb = make([]int, 3)
-		rgb[0] = color >> 16
-		rgb[1] = (color & 0x00FF00) >> 8
-		rgb[2] = color & 0x0000FF
-	}
-
-	return
+	return C256(rgb2short(c[0], c[1], c[2]), isBg)
 }
 
 /*************************************************************
@@ -327,15 +296,4 @@ func (s *RGBStyle) String() string {
 // IsEmpty style
 func (s *RGBStyle) IsEmpty() bool {
 	return s.fg[3] != 1 && s.bg[3] != 1
-}
-
-// C256 returns the closest approximate 256 (8 bit) color
-func (c RGBColor) C256() Color256 {
-	var isBg bool
-	if c[3] == 0 {
-		isBg = false
-	} else if c[3] == 1 {
-		isBg = true
-	}
-	return C256(rgb2short(c[0], c[1], c[2]), isBg)
 }

@@ -109,6 +109,11 @@ func ForceOpenColor() bool {
 	return oldVal
 }
 
+// IsLikeInCmd check result
+func IsLikeInCmd() bool  {
+	return isLikeInCmd
+}
+
 /*************************************************************
  * render color code
  *************************************************************/
