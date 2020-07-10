@@ -191,51 +191,33 @@ func TestTag_Print(t *testing.T) {
 
 	// Tag.Print
 	info.Print("msg")
-	s = buf.String()
+	is.Equal("\x1b[0;32mmsg\x1b[0m", buf.String())
 	buf.Reset()
-	if isLikeInCmd {
-		is.Equal("msg", s)
-	} else {
-		is.Equal("\x1b[0;32mmsg\x1b[0m", s)
-	}
 
 	// Tag.Println
 	info.Println("msg")
-	s = buf.String()
+	is.Equal("\x1b[0;32mmsg\x1b[0m\n", buf.String())
 	buf.Reset()
-	if isLikeInCmd {
-		is.Equal("msg\n", s)
-	} else {
-		is.Equal("\x1b[0;32mmsg\x1b[0m\n", s)
-	}
 
 	// Tag.Printf
 	info.Printf("m%s", "sg")
-	s = buf.String()
+	is.Equal("\x1b[0;32mmsg\x1b[0m", buf.String())
 	buf.Reset()
-	if isLikeInCmd {
-		is.Equal("msg", s)
-	} else {
-		is.Equal("\x1b[0;32mmsg\x1b[0m", s)
-	}
 
 	mga := Tag("mga")
 
 	// Tag.Print
 	mga.Print("msg")
-	s = buf.String()
+	is.Equal("\x1b[0;35mmsg\x1b[0m", buf.String())
 	buf.Reset()
-	is.Equal("\x1b[0;35mmsg\x1b[0m", s)
 
 	// Tag.Println
 	mga.Println("msg", "more")
-	s = buf.String()
+	is.Equal("\x1b[0;35mmsg more\x1b[0m\n", buf.String())
 	buf.Reset()
-	is.Equal("\x1b[0;35mmsg more\x1b[0m\n", s)
 
 	// Tag.Printf
 	mga.Printf("m%s", "sg")
-	s = buf.String()
+	is.Equal("\x1b[0;35mmsg\x1b[0m", buf.String())
 	buf.Reset()
-	is.Equal("\x1b[0;35mmsg\x1b[0m", s)
 }

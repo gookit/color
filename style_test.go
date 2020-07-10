@@ -66,8 +66,7 @@ func TestStyle(t *testing.T) {
 		s.Print("msg")
 		s.Printf("M%s", "sg")
 		s.Println("Msg")
-		str = buf.String()
-		is.Equal("msgMsgMsg\n", str)
+		is.Equal("\x1b[97;41mmsg\x1b[0m\x1b[97;41mMsg\x1b[0m\x1b[97;41mMsg\x1b[0m\n", buf.String())
 		buf.Reset()
 	}
 

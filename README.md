@@ -159,6 +159,7 @@ Supported on any Windows version.
 
   - `color.Info`
   - `color.Note`
+  - `color.Warn`
   - `color.Light`
   - `color.Error`
   - `color.Danger`
@@ -167,16 +168,24 @@ Supported on any Windows version.
   - `color.Success`
   - `color.Comment`
   - `color.Primary`
-  - `color.Warning`
   - `color.Question`
   - `color.Secondary`
 
 ### Basic Style
 
+print message use defined style:
+
 ```go
-// print message
 color.Info.Println("Info message")
-color.Success.Println("Success message")
+color.Note.Println("Note message")
+color.Notice.Println("Notice message")
+color.Error.Println("Error message")
+color.Danger.Println("Danger message")
+color.Warn.Println("Warn message")
+color.Debug.Println("Debug message")
+color.Primary.Println("Primary message")
+color.Question.Println("Question message")
+color.Secondary.Println("Secondary message")
 ```
 
 Run demo: `go run ./_examples/theme_basic.go`
@@ -186,8 +195,16 @@ Run demo: `go run ./_examples/theme_basic.go`
 ### Tips Style
 
 ```go
-color.Info.Tips("tips style message")
-color.Warn.Tips("tips style message")
+color.Info.Tips("Info tips message")
+color.Note.Tips("Note tips message")
+color.Notice.Tips("Notice tips message")
+color.Error.Tips("Error tips message")
+color.Danger.Tips("Danger tips message")
+color.Warn.Tips("Warn tips message")
+color.Debug.Tips("Debug tips message")
+color.Primary.Tips("Primary tips message")
+color.Question.Tips("Question tips message")
+color.Secondary.Tips("Secondary tips message")
 ```
 
 Run demo: `go run ./_examples/theme_tips.go`
@@ -197,8 +214,16 @@ Run demo: `go run ./_examples/theme_tips.go`
 ### Prompt Style
 
 ```go
-color.Info.Prompt("prompt style message")
-color.Warn.Prompt("prompt style message")
+color.Info.Prompt("Info prompt message")
+color.Note.Prompt("Note prompt message")
+color.Notice.Prompt("Notice prompt message")
+color.Error.Prompt("Error prompt message")
+color.Danger.Prompt("Danger prompt message")
+color.Warn.Prompt("Warn prompt message")
+color.Debug.Prompt("Debug prompt message")
+color.Primary.Prompt("Primary prompt message")
+color.Question.Prompt("Question prompt message")
+color.Secondary.Prompt("Secondary prompt message")
 ```
 
 Run demo: `go run ./_examples/theme_prompt.go`
@@ -208,8 +233,16 @@ Run demo: `go run ./_examples/theme_prompt.go`
 ### Block Style
 
 ```go
-color.Info.Block("block style message")
-color.Warn.Block("block style message")
+color.Info.Block("Info block message")
+color.Note.Block("Note block message")
+color.Notice.Block("Notice block message")
+color.Error.Block("Error block message")
+color.Danger.Block("Danger block message")
+color.Warn.Block("Warn block message")
+color.Debug.Block("Debug block message")
+color.Primary.Block("Primary block message")
+color.Question.Block("Question block message")
+color.Secondary.Block("Secondary block message")
 ```
 
 Run demo: `go run ./_examples/theme_block.go`
