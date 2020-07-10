@@ -42,41 +42,21 @@ func TestStyle(t *testing.T) {
 
 	// Style.Print
 	Info.Print("MSG")
-	str = buf.String()
-	if IsLikeInCmd() {
-		is.Equal("MSG", str)
-	} else {
-		is.Equal("\x1b[0;32mMSG\x1b[0m", str)
-	}
+	is.Equal("\x1b[0;32mMSG\x1b[0m", buf.String())
 	buf.Reset()
 
 	// Style.Printf
 	Info.Printf("A %s", "MSG")
-	str = buf.String()
-	if isLikeInCmd {
-		is.Equal("A MSG", str)
-	} else {
-		is.Equal("\x1b[0;32mA MSG\x1b[0m", str)
-	}
+	is.Equal("\x1b[0;32mA MSG\x1b[0m", buf.String())
 	buf.Reset()
 
 	// Style.Println
 	Info.Println("MSG")
-	str = buf.String()
-	if isLikeInCmd {
-		is.Equal("MSG\n", str)
-	} else {
-		is.Equal("\x1b[0;32mMSG\x1b[0m\n", str)
-	}
+	is.Equal("\x1b[0;32mMSG\x1b[0m\n", buf.String())
 	buf.Reset()
 
 	Info.Println("MSG", "OK")
-	str = buf.String()
-	if isLikeInCmd {
-		is.Equal("MSG OK\n", str)
-	} else {
-		is.Equal("\x1b[0;32mMSG OK\x1b[0m\n", str)
-	}
+	is.Equal("\x1b[0;32mMSG OK\x1b[0m\n", buf.String())
 	buf.Reset()
 
 	s = GetStyle("err")
@@ -84,10 +64,10 @@ func TestStyle(t *testing.T) {
 
 	if isLikeInCmd {
 		s.Print("msg")
-		s.Printf("m%s", "sg")
-		s.Println("msg")
+		s.Printf("M%s", "sg")
+		s.Println("Msg")
 		str = buf.String()
-		is.Equal("msgmsgmsg\n", str)
+		is.Equal("msgMsgMsg\n", str)
 		buf.Reset()
 	}
 
@@ -117,33 +97,18 @@ func TestThemes(t *testing.T) {
 
 	// Theme.Tips
 	Info.Tips("MSG")
-	str := buf.String()
+	is.Equal("\x1b[0;32mINFO: \x1b[0mMSG\n", buf.String())
 	buf.Reset()
-	if isLikeInCmd {
-		is.Equal("INFO: MSG\n", str)
-	} else {
-		is.Equal("\x1b[0;32mINFO: \x1b[0mMSG\n", str)
-	}
 
 	// Theme.Prompt
 	Info.Prompt("MSG")
-	str = buf.String()
+	is.Equal("\x1b[0;32mINFO: MSG\x1b[0m\n", buf.String())
 	buf.Reset()
-	if isLikeInCmd {
-		is.Equal("INFO: MSG\n", str)
-	} else {
-		is.Equal("\x1b[0;32mINFO: MSG\x1b[0m\n", str)
-	}
 
 	// Theme.Block
 	Info.Block("MSG")
-	str = buf.String()
+	is.Equal("\x1b[0;32mINFO:\n MSG\x1b[0m\n", buf.String())
 	buf.Reset()
-	if isLikeInCmd {
-		is.Equal("INFO:\n MSG\n", str)
-	} else {
-		is.Equal("\x1b[0;32mINFO:\n MSG\x1b[0m\n", str)
-	}
 
 	theme := GetTheme("info")
 	is.NotNil(theme)
@@ -170,4 +135,34 @@ func TestThemes(t *testing.T) {
 	delete(Themes, "new1")
 	theme = GetTheme("new1")
 	is.Nil(theme)
+}
+
+func TestStyleFunc(t *testing.T) {
+	// force open color render for testing
+	buf := forceOpenColorRender()
+	defer resetColorRender()
+
+	Infoln("color message")
+	assert.Equal(t, "\x1b[0;32mcolor message\x1b[0m\n", buf.String())
+	buf.Reset()
+
+	Infof("color %s", "message")
+	assert.Equal(t, "\x1b[0;32mcolor message\x1b[0m", buf.String())
+	buf.Reset()
+
+	Warnln("color message")
+	assert.Equal(t, "\x1b[1;33mcolor message\x1b[0m\n", buf.String())
+	buf.Reset()
+
+	Warnf("color %s", "message")
+	assert.Equal(t, "\x1b[1;33mcolor message\x1b[0m", buf.String())
+	buf.Reset()
+
+	Errorln("color message")
+	assert.Equal(t, "\x1b[97;41mcolor message\x1b[0m\n", buf.String())
+	buf.Reset()
+
+	Errorf("color %s", "message")
+	assert.Equal(t, "\x1b[97;41mcolor message\x1b[0m", buf.String())
+	buf.Reset()
 }

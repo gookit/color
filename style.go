@@ -59,17 +59,17 @@ func (s Style) Sprintf(format string, a ...interface{}) string {
 
 // Print render and Print text
 func (s Style) Print(a ...interface{}) {
-	doPrint(s.String(), s, fmt.Sprint(a...))
+	doPrintV2(s.String(), fmt.Sprint(a...))
 }
 
 // Printf render and print text
 func (s Style) Printf(format string, a ...interface{}) {
-	doPrint(s.Code(), s, fmt.Sprintf(format, a...))
+	doPrintV2(s.Code(), fmt.Sprintf(format, a...))
 }
 
 // Println render and print text line
 func (s Style) Println(a ...interface{}) {
-	doPrintln(s.String(), s, a)
+	doPrintlnV2(s.String(), a)
 }
 
 // Code convert to code string. returns like "32;45;3"

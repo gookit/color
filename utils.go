@@ -182,6 +182,7 @@ func doPrintln(code string, colors []Color, args []interface{}) {
 	}
 }
 
+// new implementation, support render full color code on pwsh.exe, cmd.exe
 func doPrintV2(code, str string) {
 	if isLikeInCmd {
 		renderColorCodeOnCmd(func() {
@@ -192,6 +193,7 @@ func doPrintV2(code, str string) {
 	}
 }
 
+// new implementation, support render full color code on pwsh.exe, cmd.exe
 func doPrintlnV2(code string, args []interface{}) {
 	str := formatArgsForPrintln(args)
 	if isLikeInCmd {
