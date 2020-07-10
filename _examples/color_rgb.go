@@ -1,20 +1,36 @@
 package main
 
-import "github.com/gookit/color"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/gookit/color"
+)
 
 // go run ./_examples/color_rgb.go
 func main() {
 	color.RGB(30, 144, 255).Println("message. use RGB number")
-
 	color.HEX("#1976D2").Println("blue-darken")
-	color.HEX("#D50000", true).Println("red-accent. use HEX style")
-
 	color.RGBStyleFromString("213,0,0").Println("red-accent. use RGB number")
 	// foreground: eee, background: D50000
 	color.HEXStyle("eee", "D50000").Println("deep-purple color")
+
+	color.Infoln("\n==== Chinese traditional colors ====\n")
+	index := 1
+	for _, txt := range chinaColors {
+		nodes := strings.Split(txt, " ")
+		color.HEXStyle("ccc", nodes[1]).Printf("%-16s", nodes[1])
+		if index%7 == 0 {
+			fmt.Println()
+		}
+
+		index++
+	}
+	fmt.Println()
 }
 
-var chinaColor = []string{
+// from http://tools.jb51.net/color/chinacolor
+var chinaColors = []string{
 	"蔚蓝 #70f3ff",
 	"蓝 #44cef6",
 	"碧蓝 #3eede7",

@@ -315,6 +315,12 @@ Run demo: `go run ./_examples/color256.go`
 
 > RGB colors support Windows CMD, PowerShell environment after `v1.2.4`
 
+**Preview:**
+
+Run demo: `Run demo: go run ./_examples/color_rgb.go`
+
+![color-rgb](_examples/images/color-rgb.png)
+
 example:
 
 ```go
@@ -355,7 +361,7 @@ c.Println("message")
 c.Printf("format %s", "message")
 ```
 
-### Use a RGB color style
+### Use an RGB color style
 
 Can be used to set the foreground and background colors at the same time.
 
