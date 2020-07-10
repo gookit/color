@@ -288,7 +288,13 @@ s.Printf("format %s", "message")
 
 ## RGB色彩使用
 
-> RGB色彩在 `v1.2.4` 后支持Windows CMD,PowerShell 环境
+> RGB色彩在 `v1.2.4` 后支持 Windows `CMD`, `PowerShell` 环境
+
+**效果预览:**
+
+> 运行 demo: `Run demo: go run ./_examples/color_rgb.go`
+
+![color-rgb](_examples/images/color-rgb.png)
 
 代码示例：
 

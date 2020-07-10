@@ -313,11 +313,11 @@ Run demo: `go run ./_examples/color256.go`
 
 ## Use RGB color
 
-> RGB colors support Windows CMD, PowerShell environment after `v1.2.4`
+> RGB colors support Windows `CMD`, `PowerShell` environment after `v1.2.4`
 
 **Preview:**
 
-Run demo: `Run demo: go run ./_examples/color_rgb.go`
+> Run demo: `Run demo: go run ./_examples/color_rgb.go`
 
 ![color-rgb](_examples/images/color-rgb.png)
 

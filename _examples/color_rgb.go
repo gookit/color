@@ -19,8 +19,8 @@ func main() {
 	index := 1
 	for _, txt := range chinaColors {
 		nodes := strings.Split(txt, " ")
-		color.HEXStyle("ccc", nodes[1]).Printf("%-16s", nodes[1])
-		if index%7 == 0 {
+		color.HEXStyle("ccc", nodes[1]).Printf("%-12s", nodes[1])
+		if index%9 == 0 {
 			fmt.Println()
 		}
 
