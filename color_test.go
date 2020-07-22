@@ -79,6 +79,8 @@ func TestSet(t *testing.T) {
 		return
 	}
 
+	is.False(IsLikeInCmd())
+
 	// set
 	testSetFunc(t)
 }

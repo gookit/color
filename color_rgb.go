@@ -12,8 +12,8 @@ import (
 // 	R 00-FF G 00-FF B 00-FF (16进制)
 //
 // Format:
-// 	ESC[ … 38;2;<r>;<g>;<b> … m // 选择RGB前景色
-// 	ESC[ … 48;2;<r>;<g>;<b> … m // 选择RGB背景色
+// 	ESC[ … 38;2;<r>;<g>;<b> … m // Select RGB foreground color
+// 	ESC[ … 48;2;<r>;<g>;<b> … m // Choose RGB background color
 //
 // links:
 // 	https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#24位
@@ -180,9 +180,11 @@ func (c RGBColor) C256() Color256 {
 
 // RGBStyle definition.
 //
-// 前/背景色
-// 都是由4位uint8组成, 前三位是色彩值；
-// 最后一位与RGBColor不一样的是，在这里表示是否设置了值 1 表示已设置 ^1 未设置
+// Foreground/Background color
+// All are composed of 4 digits uint8, the first three digits are the color value;
+// The last bit is different from RGBColor, here it indicates whether the value is set.
+// - 1  Has been set
+// - ^1 Not set
 type RGBStyle struct {
 	// Name of the style
 	Name string

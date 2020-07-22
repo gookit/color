@@ -352,11 +352,11 @@ c.Printf("format %s", "message")
   - `color.HEX(hex string, isBg ...bool) RGBColor`
 
 ```go
-c := HEX("ccc") // can also: "cccccc" "#cccccc"
+c := color.HEX("ccc") // can also: "cccccc" "#cccccc"
 c.Println("message")
 c.Printf("format %s", "message")
 
-c = HEX("aabbcc", true) // as bg color
+c = color.HEX("aabbcc", true) // as bg color
 c.Println("message")
 c.Printf("format %s", "message")
 ```
@@ -365,23 +365,36 @@ c.Printf("format %s", "message")
 
 Can be used to set the foreground and background colors at the same time.
 
-  - `color.NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle`
+- `color.NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle`
 
 ```go
-s := NewRGBStyle(RGB(20, 144, 234), RGB(234, 78, 23))
+s := color.NewRGBStyle(RGB(20, 144, 234), RGB(234, 78, 23))
 s.Println("message")
 s.Printf("format %s", "message")
 ```
 
  Create a style from an hexadecimal color string:
 
-  - `color.HEXStyle(fg string, bg ...string) *RGBStyle`
+- `color.HEXStyle(fg string, bg ...string) *RGBStyle`
 
 ```go
-s := HEXStyle("11aa23", "eee")
+s := color.HEXStyle("11aa23", "eee")
 s.Println("message")
 s.Printf("format %s", "message")
 ```
+
+## Func refer
+
+there are some useful functions reference
+
+- `Disable()` disable color render
+- `SetOutput(io.Writer)` custom set the colored text output writer
+- `ForceOpenColor()` force open color render
+- `ClearCode(str string) string` Use for clear color codes
+- `ClearTag(s string) string` clear all color html-tag for a string
+- `IsConsole(w io.Writer)` Determine whether w is one of stderr, stdout, stdin
+- `HexToRgb(hex string) (rgb []int)` Convert hex color string to RGB numbers
+- `RgbToHex(rgb []int) string` Convert RGB to hex code
 
 ## Gookit packages
 

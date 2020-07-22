@@ -283,4 +283,3 @@ func Warnf(format string, a ...interface{}) {
 func Warnln(a ...interface{}) {
 	Warn.Println(a...)
 }
-

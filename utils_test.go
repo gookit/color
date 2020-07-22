@@ -9,7 +9,7 @@ import (
 func TestHexToRgb(t *testing.T) {
 	tests := []struct {
 		given string
-		want []int
+		want  []int
 	}{
 		{"666", []int{102, 102, 102}},
 		{"ccc", []int{204, 204, 204}},
@@ -29,7 +29,7 @@ func TestHexToRgb(t *testing.T) {
 
 func TestRgbToHex(t *testing.T) {
 	tests := []struct {
-		want string
+		want  string
 		given []int
 	}{
 		{"666666", []int{102, 102, 102}},

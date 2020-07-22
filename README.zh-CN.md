@@ -325,11 +325,11 @@ c.Printf("format %s", "message")
   - `color.HEX(hex string, isBg ...bool) RGBColor` 从16进制颜色创建
 
 ```go
-c := HEX("ccc") // 也可以写为: "cccccc" "#cccccc"
+c := color.HEX("ccc") // 也可以写为: "cccccc" "#cccccc"
 c.Println("message")
 c.Printf("format %s", "message")
 
-c = HEX("aabbcc", true) // as bg color
+c = color.HEX("aabbcc", true) // as bg color
 c.Println("message")
 c.Printf("format %s", "message")
 ```
@@ -341,18 +341,31 @@ c.Printf("format %s", "message")
   - `color.NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle`
 
 ```go
-s := NewRGBStyle(RGB(20, 144, 234), RGB(234, 78, 23))
+s := color.NewRGBStyle(RGB(20, 144, 234), RGB(234, 78, 23))
 s.Println("message")
 s.Printf("format %s", "message")
 ```
 
-  - `color.HEXStyle(fg string, bg ...string) *RGBStyle` 从16进制颜色创建
+- `color.HEXStyle(fg string, bg ...string) *RGBStyle` 从16进制颜色创建
 
 ```go
-s := HEXStyle("11aa23", "eee")
+s := color.HEXStyle("11aa23", "eee")
 s.Println("message")
 s.Printf("format %s", "message")
 ```
+
+## 方法参考
+
+一些有用的工具方法参考
+
+- `Disable()` disable color render
+- `SetOutput(io.Writer)` custom set the colored text output writer
+- `ForceOpenColor()` force open color render
+- `ClearCode(str string) string` Use for clear color codes
+- `ClearTag(s string) string` clear all color html-tag for a string
+- `IsConsole(w io.Writer)` Determine whether w is one of stderr, stdout, stdin
+- `HexToRgb(hex string) (rgb []int)` Convert hex color string to RGB numbers
+- `RgbToHex(rgb []int) string` Convert RGB to hex code
 
 ## Gookit 工具包
 

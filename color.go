@@ -33,7 +33,7 @@ const (
 	FullColorTpl = "\x1b[%sm%s\x1b[0m"
 )
 
-// ResetSet 重置/正常 关闭所有属性。
+// ResetSet Close all properties.
 const ResetSet = "\x1b[0m"
 
 // CodeExpr regex to clear color codes eg "\033[1;36mText\x1b[0m"
@@ -110,7 +110,7 @@ func ForceOpenColor() bool {
 }
 
 // IsLikeInCmd check result
-func IsLikeInCmd() bool  {
+func IsLikeInCmd() bool {
 	return isLikeInCmd
 }
 
