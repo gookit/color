@@ -1,5 +1,8 @@
 name: action-tests
-on: [push]
+on:
+  push:
+    paths:
+      - '**.go'
 
 # https://github.com/actions
 jobs:
