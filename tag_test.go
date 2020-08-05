@@ -142,6 +142,13 @@ func TestPrint(t *testing.T) {
 	Lprint(logger, "<red>MSG</>\n")
 	is.Equal("\x1b[0;31mMSG\x1b[0m\n", buf.String())
 	buf.Reset()
+
+	NotRenderTag()
+	Fprintf(buf, "<red>%s</>", "MSG")
+	is.Equal("<red>MSG</>", buf.String())
+	buf.Reset()
+
+	ResetOptions()
 }
 
 func TestWrapTag(t *testing.T) {

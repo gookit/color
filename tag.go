@@ -112,8 +112,8 @@ var colorTags = map[string]string{
 
 // ReplaceTag parse string, replace color tag and return rendered string
 func ReplaceTag(str string) string {
-	// not contains color tag
-	if !strings.Contains(str, "</>") {
+	// disable handler TAG OR not contains color tag
+	if !RenderTag || !strings.Contains(str, "</>") {
 		return str
 	}
 

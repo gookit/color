@@ -40,8 +40,10 @@ const ResetSet = "\x1b[0m"
 const CodeExpr = `\033\[[\d;?]+m`
 
 var (
-	// Enable switch color display
+	// Enable switch color render and display
 	Enable = true
+	// RenderTag render HTML tag on call color.Xprint, color.PrintX
+	RenderTag = true
 	// output the default io.Writer message print
 	output io.Writer = os.Stdout
 	// mark current env, It's like in `cmd.exe`
@@ -91,6 +93,11 @@ func Disable() {
 	Enable = false
 }
 
+// NotRenderTag on call color.Xprint, color.PrintX
+func NotRenderTag() {
+	RenderTag = false
+}
+
 // SetOutput set default colored text output
 func SetOutput(w io.Writer) {
 	output = w
@@ -99,6 +106,18 @@ func SetOutput(w io.Writer) {
 // ResetOutput reset output
 func ResetOutput() {
 	output = os.Stdout
+}
+
+// ResetOptions reset all package option setting
+func ResetOptions() {
+	RenderTag = true
+	Enable = true
+	output = os.Stdout
+}
+
+// ForceColor force open color render
+func ForceColor() bool {
+	return ForceOpenColor()
 }
 
 // ForceOpenColor force open color render
