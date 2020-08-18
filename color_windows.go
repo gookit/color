@@ -157,7 +157,7 @@ func EnableVirtualTerminalProcessing(stream syscall.Handle, enable bool) error {
 		mode &^= EnableVirtualTerminalProcessingMode
 	}
 
-	ret, _, err := procSetConsoleMode.Call(uintptr(unsafe.Pointer(stream)), uintptr(mode))
+	ret, _, err := procSetConsoleMode.Call(uintptr(stream), uintptr(mode))
 	if ret == 0 {
 		return err
 	}
