@@ -20,6 +20,7 @@ import (
 // Don't support color:
 // 	"TERM=cygwin"
 var specialColorTerms = map[string]bool{
+	"alacritty":       		 true,
 	"screen-256color":       true,
 	"tmux-256color":         true,
 	"rxvt-unicode-256color": true,
@@ -75,7 +76,8 @@ func IsSupportColor() bool {
 		return true
 	}
 
-	return false
+	// up: if support 256-color, can also support basic color.
+	return IsSupport256Color()
 }
 
 // IsSupport256Color render
@@ -84,7 +86,13 @@ func IsSupport256Color() bool {
 	// "TERM=screen-256color"
 	// "TERM=tmux-256color"
 	// "TERM=rxvt-unicode-256color"
-	return strings.Contains(os.Getenv("TERM"), "256color")
+	supported := strings.Contains(os.Getenv("TERM"), "256color")
+	if !supported {
+		// up: if support true-color, can also support 256-color.
+		supported = IsSupportTrueColor()
+	}
+
+	return supported
 }
 
 // IsSupportTrueColor render. IsSupportRGBColor
