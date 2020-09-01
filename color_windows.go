@@ -35,10 +35,10 @@ const (
 	winFgWhite  uint16 = 0x07 // 7 白色
 	winFgGray   uint16 = 0x08 // 8 灰色
 
-	winFgLightBlue   uint16 = 0x09 // 9 淡蓝色
+	winFgLightRed    uint16 = 0x09 // 9  淡红色
 	winFgLightGreen  uint16 = 0x0a // 10 淡绿色
 	winFgLightAqua   uint16 = 0x0b // 11 淡浅绿色
-	winFgLightRed    uint16 = 0x0c // 12 淡红色
+	winFgLightBlue   uint16 = 0x0c // 12 淡蓝色
 	winFgLightPink   uint16 = 0x0d // 13 Purple 淡紫色, Pink 粉红
 	winFgLightYellow uint16 = 0x0e // 14 淡黄色
 	winFgLightWhite  uint16 = 0x0f // 15 亮白色
@@ -54,10 +54,10 @@ const (
 	winBgWhite  uint16 = 0x70 // 白色
 	winBgGray   uint16 = 0x80 // 128 灰色
 
-	winBgLightBlue   uint16 = 0x90 // 淡蓝色
+	winBgLightRed    uint16 = 0x90 // 淡红色
 	winBgLightGreen  uint16 = 0xa0 // 淡绿色
 	winBgLightAqua   uint16 = 0xb0 // 淡浅绿色
-	winBgLightRed    uint16 = 0xc0 // 淡红色
+	winBgLightBlue   uint16 = 0xc0 // 淡蓝色
 	winBgLightPink   uint16 = 0xd0 // 淡紫色
 	winBgLightYellow uint16 = 0xe0 // 淡黄色
 	winBgLightWhite  uint16 = 0xf0 // 240 亮白色

@@ -57,7 +57,7 @@ const (
 
 // Extra background color 100 - 107(非标准)
 const (
-	BgDarkGray Color = iota + 99
+	BgDarkGray Color = iota + 100
 	BgLightRed
 	BgLightGreen
 	BgLightYellow
