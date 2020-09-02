@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - '**.go'
+      - 'go.mod'
 
 # https://github.com/actions
 jobs:
