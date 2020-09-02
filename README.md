@@ -15,7 +15,7 @@ A command-line color library with true color support, universal API methods and 
 
 Basic color preview:
 
-![basic-color](_examples/images/basic-color.png)
+![basic-color](_examples/images/basic-color2.png)
 
 Now, 256 colors and RGB colors have also been supported to work in Windows CMD and PowerShell:
 

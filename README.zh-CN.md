@@ -15,7 +15,7 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
 
 基本颜色预览：
 
-![basic-color](_examples/images/basic-color.png)
+![basic-color](_examples/images/basic-color2.png)
 
 现在，256色和RGB色彩也已经支持windows CMD和PowerShell中工作：
 
