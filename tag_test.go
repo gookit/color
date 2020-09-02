@@ -68,16 +68,16 @@ func TestParseCodeFromAttr(t *testing.T) {
 	is.Equal("", s)
 
 	s = ParseCodeFromAttr("fg=lightRed;bg=lightRed;op=bold,blink")
-	is.Equal("91;100;1;5", s)
+	is.Equal("91;101;1;5", s)
 
 	s = ParseCodeFromAttr("fg= lightRed;bg=lightRed;op=bold,")
-	is.Equal("91;100;1", s)
+	is.Equal("91;101;1", s)
 
 	s = ParseCodeFromAttr("fg =lightRed;bg=lightRed;op=bold,blink")
-	is.Equal("91;100;1;5", s)
+	is.Equal("91;101;1;5", s)
 
 	s = ParseCodeFromAttr("fg = lightRed;bg=lightRed;op=bold,blink")
-	is.Equal("91;100;1;5", s)
+	is.Equal("91;101;1;5", s)
 }
 
 func TestPrint(t *testing.T) {
