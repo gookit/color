@@ -44,6 +44,8 @@ var (
 	Enable = true
 	// RenderTag render HTML tag on call color.Xprint, color.PrintX
 	RenderTag = true
+	// errors on windows render OR print to io.Writer
+	errors []error
 	// output the default io.Writer message print
 	output io.Writer = os.Stdout
 	// mark current env, It's like in `cmd.exe`
@@ -67,9 +69,9 @@ func Set(colors ...Color) (int, error) {
 	}
 
 	// on windows cmd.exe
-	if isLikeInCmd {
-		return winSet(colors...)
-	}
+	// if isLikeInCmd {
+	// 	return winSet(colors...)
+	// }
 
 	return fmt.Printf(SettingTpl, colors2code(colors...))
 }
@@ -81,9 +83,9 @@ func Reset() (int, error) {
 	}
 
 	// on windows cmd.exe
-	if isLikeInCmd {
-		return winReset()
-	}
+	// if isLikeInCmd {
+	// 	return winReset()
+	// }
 
 	return fmt.Print(ResetSet)
 }
@@ -131,6 +133,11 @@ func ForceOpenColor() bool {
 // IsLikeInCmd check result
 func IsLikeInCmd() bool {
 	return isLikeInCmd
+}
+
+// GetErrors info
+func GetErrors() []error {
+	return errors
 }
 
 /*************************************************************

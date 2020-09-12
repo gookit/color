@@ -80,6 +80,7 @@ func TestSet(t *testing.T) {
 	}
 
 	is.False(IsLikeInCmd())
+	is.Empty(GetErrors())
 
 	// set
 	testSetFunc(t)
@@ -270,31 +271,19 @@ func TestColor16(t *testing.T) {
 	// Color.Print
 	FgGray.Print("MSG")
 	str = buf.String()
-	if isLikeInCmd {
-		at.Equal("MSG", str)
-	} else {
-		at.Equal("\x1b[90mMSG\x1b[0m", str)
-	}
+	at.Equal("\x1b[90mMSG\x1b[0m", str)
 	buf.Reset()
 
 	// Color.Printf
 	BgGray.Printf("A %s", "MSG")
 	str = buf.String()
-	if isLikeInCmd {
-		at.Equal("A MSG", str)
-	} else {
-		at.Equal("\x1b[100mA MSG\x1b[0m", str)
-	}
+	at.Equal("\x1b[100mA MSG\x1b[0m", str)
 	buf.Reset()
 
 	// Color.Println
 	LightMagenta.Println("MSG")
 	str = buf.String()
-	if isLikeInCmd {
-		at.Equal("MSG\n", str)
-	} else {
-		at.Equal("\x1b[95mMSG\x1b[0m\n", str)
-	}
+	at.Equal("\x1b[95mMSG\x1b[0m\n", str)
 	buf.Reset()
 
 	LightMagenta.Println()
@@ -302,14 +291,12 @@ func TestColor16(t *testing.T) {
 	at.Equal("\n", str)
 	buf.Reset()
 
-	if isLikeInCmd {
-		LightCyan.Print("msg")
-		LightRed.Printf("m%s", "sg")
-		LightGreen.Println("msg")
-		str = buf.String()
-		at.Equal("msgmsgmsg\n", str)
-		buf.Reset()
-	}
+	LightCyan.Print("msg")
+	LightRed.Printf("m%s", "sg")
+	LightGreen.Println("msg")
+	str = buf.String()
+	at.Equal("\x1b[96mmsg\x1b[0m\x1b[91mmsg\x1b[0m\x1b[92mmsg\x1b[0m\n", str)
+	buf.Reset()
 
 	// Color.Darken
 	blue := LightBlue.Darken()
@@ -334,6 +321,36 @@ func TestColor16(t *testing.T) {
 	at.True(ok)
 	_, ok = ExBgColors["lightRed"]
 	at.True(ok)
+}
+
+func TestPrintBasicColor(t *testing.T) {
+	fmt.Println("Foreground colors:")
+	for name, c := range FgColors {
+		c.Print(" ", name, " ")
+	}
+
+	fmt.Println("\nBackground colors:")
+	for name, c := range BgColors {
+		c.Print(" ", name, " ")
+	}
+
+	fmt.Println("\nBasic Options:")
+	for name, c := range Options {
+		c.Print(" ", name, " ")
+	}
+
+	fmt.Println("\nExtra foreground colors:")
+	for name, c := range ExFgColors {
+		c.Print(" ", name, " ")
+	}
+
+	fmt.Println("\nExtra background colors:")
+	for name, c := range ExBgColors {
+		c.Print(" ", name, " ")
+	}
+
+	fmt.Println()
+	fmt.Println()
 }
 
 /*************************************************************
@@ -440,6 +457,24 @@ func TestStyle256(t *testing.T) {
 	str = buf.String()
 	buf.Reset()
 	is.Equal("\x1b[38;5;132mMSG\x1b[0m\n", str)
+}
+
+func TestPrint256color(t *testing.T)  {
+	fmt.Printf("\n%-50s24th Order Grayscale Color\n", " ")
+
+	var fg uint8 = 255
+	for i := range []int{23: 0} { // // 232-255：从黑到白的24阶灰度色
+		if i < 12 {
+			fg = 255
+		} else {
+			fg = 0
+		}
+
+		i += 232
+		S256(fg, uint8(i)).Printf(" %-4d", i)
+	}
+	fmt.Println()
+	fmt.Println()
 }
 
 /*************************************************************
@@ -597,6 +632,14 @@ func TestRGBStyle(t *testing.T) {
 	str = buf.String()
 	buf.Reset()
 	at.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m\n", str)
+}
+
+func TestPrintRGBColor(t *testing.T) {
+	RGB(30, 144, 255).Println("message. use RGB number")
+	HEX("#1976D2").Println("blue-darken")
+	RGBStyleFromString("213,0,0").Println("red-accent. use RGB number")
+	// foreground: eee, background: D50000
+	HEXStyle("eee", "D50000").Println("deep-purple color")
 }
 
 func TestUtilFuncs(t *testing.T) {

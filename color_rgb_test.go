@@ -5,8 +5,8 @@ import (
 )
 
 func testRgbToC256Color(t *testing.T, name string, c RGBColor, expected uint8) {
-	t.Log("RGB:", c.Sprint(name))
-	t.Log("256:", c.C256().Sprint(name))
+	t.Log("RGB Color:", c.Sprint(name))
+	t.Log("256 Color:", c.C256().Sprint(name))
 	actual := c.C256().Value()
 	if actual != expected {
 		t.Errorf("%s not converted correctly: expected %v, actual %v", name, actual, expected)
