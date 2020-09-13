@@ -234,13 +234,15 @@ func Fprintln(w io.Writer, a ...interface{}) {
 // Lprint passes colored messages to a log.Logger for printing.
 // Notice: should be goroutine safe
 func Lprint(l *log.Logger, a ...interface{}) {
-	if isLikeInCmd {
-		renderColorCodeOnCmd(func() {
-			l.Print(Render(a...))
-		})
-	} else {
-		l.Print(Render(a...))
-	}
+	l.Print(Render(a...))
+
+	// if isLikeInCmd {
+	// 	renderColorCodeOnCmd(func() {
+	// 		l.Print(Render(a...))
+	// 	})
+	// } else {
+	// 	l.Print(Render(a...))
+	// }
 }
 
 // Render parse color tags, return rendered string.
