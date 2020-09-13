@@ -63,86 +63,53 @@ func Example() {
 func TestSet(t *testing.T) {
 	is := assert.New(t)
 
-	// disable color
-	old := Enable
-	Disable()
+	// set
 	num, err := Set(FgGreen)
+	fmt.Println("test color.Set() on OS:", runtime.GOOS)
+	is.True(num > 0)
+	is.NoError(err)
+	_, err = Reset()
+	is.NoError(err)
+
+	// disable
+	old := Disable()
+	num, err = Set(FgGreen)
 	is.Nil(err)
 	is.Equal(0, num)
 
 	num, err = Reset()
 	is.Nil(err)
 	is.Equal(0, num)
-	Enable = old
+	Enable = old // revert
 
 	if runtime.GOOS == "windows" {
-		return
+		fd := uintptr(syscall.Stdout)
+		// if run test by goland, will return false
+		if IsTerminal(int(fd)) {
+			fmt.Println("- IsTerminal return TRUE")
+		} else {
+			fmt.Println("- IsTerminal return FALSE")
+		}
+	} else {
+		is.False(IsLikeInCmd())
+		is.Empty(GetErrors())
 	}
-
-	is.False(IsLikeInCmd())
-	is.Empty(GetErrors())
-
-	// set
-	testSetFunc(t)
-}
-
-func TestSet_OnWindows(t *testing.T) {
-	if runtime.GOOS != "windows" {
-		return
-	}
-
-	// set
-	fd := uintptr(syscall.Stdout)
-
-	// if run test by goland, will return false
-	if IsTerminal(int(fd)) {
-		testSetFunc(t)
-	}
-}
-
-func testSetFunc(t *testing.T) {
-	is := assert.New(t)
 
 	// set
 	rewriteStdout()
-	num, err := Set(FgGreen)
+	num, err = Set(FgGreen)
 	str := restoreStdout()
 
 	is.True(num > 0)
 	is.NoError(err)
-	if isLikeInCmd {
-		is.Equal("", str)
-	} else {
-		is.Equal("\x1b[32m", str)
-	}
-	_, _ = Reset()
+	is.Equal("\x1b[32m", str)
 
 	// unset
 	rewriteStdout()
 	_, err = Reset()
 	str = restoreStdout()
 	is.NoError(err)
-	if isLikeInCmd {
-		is.Equal("", str)
-	} else {
-		is.Equal("\x1b[0m", str)
-	}
-
-	if isLikeInCmd {
-		// set
-		rewriteStdout()
-		_, err = Set(FgGreen)
-		str = restoreStdout()
-		is.NoError(err)
-		is.Equal("", str)
-
-		// unset
-		rewriteStdout()
-		_, err = Reset()
-		str = restoreStdout()
-		is.NoError(err)
-		is.Equal("", str)
-	}
+	is.Equal("\x1b[0m", str)
 }
 
 func TestRenderCode(t *testing.T) {
@@ -459,7 +426,7 @@ func TestStyle256(t *testing.T) {
 	is.Equal("\x1b[38;5;132mMSG\x1b[0m\n", str)
 }
 
-func TestPrint256color(t *testing.T)  {
+func TestPrint256color(t *testing.T) {
 	fmt.Printf("\n%-50s24th Order Grayscale Color\n", " ")
 
 	var fg uint8 = 255

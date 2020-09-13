@@ -20,7 +20,7 @@ import (
 // Don't support color:
 // 	"TERM=cygwin"
 var specialColorTerms = map[string]bool{
-	"alacritty":       		 true,
+	"alacritty":             true,
 	"screen-256color":       true,
 	"tmux-256color":         true,
 	"rxvt-unicode-256color": true,

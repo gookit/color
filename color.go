@@ -91,8 +91,10 @@ func Reset() (int, error) {
 }
 
 // Disable disable color output
-func Disable() {
+func Disable() bool {
+	oldVal := Enable
 	Enable = false
+	return oldVal
 }
 
 // NotRenderTag on call color.Xprint, color.PrintX
