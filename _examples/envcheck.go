@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"runtime"
 
 	"github.com/gookit/color"
-	"github.com/gookit/goutil/dump"
+	// "github.com/gookit/goutil/dump"
 )
 
 func main() {
@@ -15,5 +14,5 @@ func main() {
 	fmt.Println("IsSupport256Color", color.IsSupport256Color())
 	fmt.Println("IsSupportColor", color.IsSupportColor())
 
-	dump.P(os.Environ())
+	// dump.P(os.Environ())
 }
