@@ -48,7 +48,12 @@ func init() {
 	procGetConsoleMode = kernel32.NewProc("GetConsoleMode")
 	procSetConsoleMode = kernel32.NewProc("SetConsoleMode")
 
-	err := EnableVirtualTerminalProcessing(syscall.Stdout, true)
+	outHandle, err := syscall.Open("CONOUT$", syscall.O_RDWR, 0)
+	if err != nil {
+		fmt.Println(53, err)
+		return
+	}
+	err = EnableVirtualTerminalProcessing(outHandle, true)
 	saveInternalError(err)
 	if err != nil {
 		fmt.Println(err)
@@ -84,7 +89,7 @@ func EnableVirtualTerminalProcessing(stream syscall.Handle, enable bool) error {
 	// err := syscall.GetConsoleMode(syscall.Stdout, &mode)
 	err := syscall.GetConsoleMode(stream, &mode)
 	if err != nil {
-		fmt.Println(88, err)
+		fmt.Println(92, err)
 		return err
 	}
 
