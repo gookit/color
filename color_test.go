@@ -375,6 +375,8 @@ func TestColor256(t *testing.T) {
 
 func TestStyle256(t *testing.T) {
 	is := assert.New(t)
+
+	ForceColor()
 	s := S256(192, 38)
 	s.Println("style 256 colored text")
 	is.Equal("\x1b[38;5;192;48;5;38m MSG \x1b[0m", s.Sprint(" MSG "))
@@ -565,6 +567,7 @@ func TestHexToRGB(t *testing.T) {
 func TestRGBStyle(t *testing.T) {
 	is := assert.New(t)
 
+	ForceColor()
 	fg := RGB(20, 144, 234)
 	bg := RGB(234, 78, 23)
 
