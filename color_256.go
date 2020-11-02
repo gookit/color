@@ -128,9 +128,12 @@ func (c Color256) IsEmpty() bool {
 // 都是由两位uint8组成, 第一位是色彩值；
 // 第二位与Bit8Color不一样的是，在这里表示是否设置了值 0 未设置 ^0 已设置
 type Style256 struct {
-	p *Printer
+	// p Printer
+
 	// Name of the style
 	Name string
+	// color options of the style
+	opts Opts
 	// fg and bg color
 	fg, bg Color256
 }
@@ -155,9 +158,10 @@ func S256(fgAndBg ...uint8) *Style256 {
 }
 
 // Set fg and bg color value
-func (s *Style256) Set(fgVal, bgVal uint8) *Style256 {
+func (s *Style256) Set(fgVal, bgVal uint8, ops ...Color) *Style256 {
 	s.fg = Color256{fgVal, 1}
 	s.bg = Color256{bgVal, 1}
+	s.opts.Add(ops...)
 	return s
 }
 
@@ -173,7 +177,19 @@ func (s *Style256) SetFg(fgVal uint8) *Style256 {
 	return s
 }
 
-// Print print message
+// SetOpts set options
+func (s *Style256) SetOpts(opts Opts) *Style256 {
+	s.opts = opts
+	return s
+}
+
+// AddOpts add options
+func (s *Style256) AddOpts(opts ...Color) *Style256 {
+	s.opts.Add(opts...)
+	return s
+}
+
+// Print message
 func (s *Style256) Print(a ...interface{}) {
 	doPrintV2(s.String(), fmt.Sprint(a...))
 }
@@ -212,6 +228,10 @@ func (s *Style256) String() string {
 
 	if s.bg[1] > 0 {
 		ss = append(ss, fmt.Sprintf(TplBg256, s.bg[0]))
+	}
+
+	if s.opts.IsValid() {
+		ss = append(ss, s.opts.String())
 	}
 
 	return strings.Join(ss, ";")

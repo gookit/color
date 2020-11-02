@@ -144,11 +144,11 @@ func (c RGBColor) Code() string {
 
 // String to color code string
 func (c RGBColor) String() string {
-	if c[3] == AsFg { // 0 is Fg
+	if c[3] == AsFg {
 		return fmt.Sprintf(TplFgRGB, c[0], c[1], c[2])
 	}
 
-	if c[3] == AsBg { // 1 is Bg
+	if c[3] == AsBg {
 		return fmt.Sprintf(TplBgRGB, c[0], c[1], c[2])
 
 	}
@@ -159,19 +159,17 @@ func (c RGBColor) String() string {
 
 // IsEmpty value
 func (c RGBColor) IsEmpty() bool {
-	return c[3] > 1
+	return c[3] > AsBg
 }
+
+// IsValid value
+// func (c RGBColor) IsValid() bool {
+// 	return c[3] <= AsBg
+// }
 
 // C256 returns the closest approximate 256 (8 bit) color
 func (c RGBColor) C256() Color256 {
-	var isBg bool
-	if c[3] == 0 {
-		isBg = false
-	} else if c[3] == 1 {
-		isBg = true
-	}
-
-	return C256(rgb2short(c[0], c[1], c[2]), isBg)
+	return C256(rgb2short(c[0], c[1], c[2]), c[3] == AsBg)
 }
 
 /*************************************************************
@@ -188,6 +186,8 @@ func (c RGBColor) C256() Color256 {
 type RGBStyle struct {
 	// Name of the style
 	Name string
+	// color options of the style
+	opts Opts
 	// fg and bg color
 	fg, bg RGBColor
 }
@@ -233,21 +233,33 @@ func RGBStyleFromString(fg string, bg ...string) *RGBStyle {
 }
 
 // Set fg and bg color
-func (s *RGBStyle) Set(fg, bg RGBColor) *RGBStyle {
-	return s.SetFg(fg).SetBg(bg)
+func (s *RGBStyle) Set(fg, bg RGBColor, opts ...Color) *RGBStyle {
+	return s.SetFg(fg).SetBg(bg).SetOpts(opts)
 }
 
 // SetFg set fg color
 func (s *RGBStyle) SetFg(fg RGBColor) *RGBStyle {
-	fg[3] = 1
+	fg[3] = 1 // add fixed value, mark is valid
 	s.fg = fg
 	return s
 }
 
 // SetBg set bg color
 func (s *RGBStyle) SetBg(bg RGBColor) *RGBStyle {
-	bg[3] = 1
+	bg[3] = 1 // add fixed value, mark is valid
 	s.bg = bg
+	return s
+}
+
+// SetOpts set options
+func (s *RGBStyle) SetOpts(opts Opts) *RGBStyle {
+	s.opts = opts
+	return s
+}
+
+// AddOpts add options
+func (s *RGBStyle) AddOpts(opts ...Color) *RGBStyle {
+	s.opts.Add(opts...)
 	return s
 }
 
@@ -284,12 +296,17 @@ func (s *RGBStyle) Code() string {
 // String convert to color code string
 func (s *RGBStyle) String() string {
 	var ss []string
-	if s.fg[3] == 1 { // last value ensure is enable.
+	// last value ensure is enable.
+	if s.fg[3] == 1 {
 		ss = append(ss, fmt.Sprintf(TplFgRGB, s.fg[0], s.fg[1], s.fg[2]))
 	}
 
 	if s.bg[3] == 1 {
 		ss = append(ss, fmt.Sprintf(TplBgRGB, s.bg[0], s.bg[1], s.bg[2]))
+	}
+
+	if s.opts.IsValid() {
+		ss = append(ss, s.opts.String())
 	}
 
 	return strings.Join(ss, ";")

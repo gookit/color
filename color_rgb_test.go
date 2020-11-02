@@ -13,6 +13,14 @@ func testRgbToC256Color(t *testing.T, name string, c RGBColor, expected uint8) {
 	}
 }
 
+func TestRGBStyle_SetOpts(t *testing.T) {
+	s := NewRGBStyle(RGB(234, 78, 23), RGB(20, 144, 234))
+	s.Println("rgb style message")
+
+	s.SetOpts(Opts{OpItalic, OpBold, OpUnderscore})
+	s.Println("RGB style message with options")
+}
+
 func TestRgbToC256(t *testing.T) {
 	testRgbToC256Color(t, "white", RGB(255, 255, 255), 15)
 	testRgbToC256Color(t, "red", RGB(255, 0, 0), 9)

@@ -2,12 +2,40 @@ package color
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
 // Color Color16, 16 color value type
 // 3(2^3=8) OR 4(2^4=16) bite color.
 type Color uint8
+
+// Opts basic color options. code: 0 - 9
+type Opts []Color
+
+// Add option value
+func (o *Opts) Add(ops ...Color) {
+	for _, op := range ops {
+		if uint8(op) < 10 {
+			*o = append(*o, op)
+		}
+	}
+}
+
+// IsValid options
+func (o Opts) IsValid() bool {
+	return len(o) > 0
+}
+
+// IsEmpty options
+func (o Opts) IsEmpty() bool {
+	return len(o) == 0
+}
+
+// String options to string. eg: "1;3"
+func (o Opts) String() string {
+	return colors2code(o...)
+}
 
 /*************************************************************
  * Basic 16 color definition
@@ -202,12 +230,14 @@ func (c Color) Darken() Color {
 
 // Code convert to code string. eg "35"
 func (c Color) Code() string {
-	return fmt.Sprintf("%d", c)
+	// return fmt.Sprintf("%d", c)
+	return strconv.Itoa(int(c))
 }
 
 // String convert to code string. eg "35"
 func (c Color) String() string {
-	return fmt.Sprintf("%d", c)
+	// return fmt.Sprintf("%d", c)
+	return strconv.Itoa(int(c))
 }
 
 // IsValid color value
