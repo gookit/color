@@ -79,7 +79,7 @@ func (s Style) Code() string {
 
 // String convert to code string. returns like "32;45;3"
 func (s Style) String() string {
-	return colors2code(s...)
+	return Colors2code(s...)
 }
 
 // IsEmpty style

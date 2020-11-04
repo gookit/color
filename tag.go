@@ -149,7 +149,7 @@ func ReplaceTag(str string) string {
 
 // ParseCodeFromAttr parse color attributes.
 // attr like:
-// 		"fg=VALUE;bg=VALUE;op=VALUE" // VALUE please see var: FgColors, BgColors, Options
+// 		"fg=VALUE;bg=VALUE;op=VALUE" // VALUE please see var: FgColors, BgColors, AllOptions
 // eg:
 // 		"fg=yellow"
 // 		"bg=red"
@@ -188,17 +188,17 @@ func ParseCodeFromAttr(attr string) (code string) {
 			if strings.Contains(val, ",") {
 				ns := strings.Split(val, ",")
 				for _, n := range ns {
-					if c, ok := Options[n]; ok {
+					if c, ok := AllOptions[n]; ok {
 						colors = append(colors, c)
 					}
 				}
-			} else if c, ok := Options[val]; ok {
+			} else if c, ok := AllOptions[val]; ok {
 				colors = append(colors, c)
 			}
 		}
 	}
 
-	return colors2code(colors...)
+	return Colors2code(colors...)
 }
 
 // ClearTag clear all tag for a string

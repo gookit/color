@@ -73,7 +73,7 @@ func Set(colors ...Color) (int, error) {
 	// 	return winSet(colors...)
 	// }
 
-	return fmt.Printf(SettingTpl, colors2code(colors...))
+	return fmt.Printf(SettingTpl, Colors2code(colors...))
 }
 
 // Reset reset console color attributes

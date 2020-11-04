@@ -26,6 +26,24 @@ var specialColorTerms = map[string]bool{
 	"rxvt-unicode-256color": true,
 }
 
+/*************************************************************
+ * helper methods
+ *************************************************************/
+
+// Colors2code convert colors to code. return like "32;45;3"
+func Colors2code(colors ...Color) string {
+	if len(colors) == 0 {
+		return ""
+	}
+
+	var codes []string
+	for _, color := range colors {
+		codes = append(codes, color.String())
+	}
+
+	return strings.Join(codes, ";")
+}
+
 // IsConsole Determine whether w is one of stderr, stdout, stdin
 func IsConsole(w io.Writer) bool {
 	o, ok := w.(*os.File)
@@ -258,8 +276,12 @@ func Render(a ...interface{}) string {
 }
 
 // Sprint parse color tags, return rendered string
-func Sprint(args ...interface{}) string {
-	return Render(args...)
+func Sprint(a ...interface{}) string {
+	if len(a) == 0 {
+		return ""
+	}
+
+	return ReplaceTag(fmt.Sprint(a...))
 }
 
 // Sprintf format and return rendered string

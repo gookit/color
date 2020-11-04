@@ -272,12 +272,22 @@ c.Printf("format %s", "message")
 
 > 可同时设置前景和背景色
  
-  - `color.S256(fgAndBg ...uint8) *Style256`
+- `color.S256(fgAndBg ...uint8) *Style256`
 
 ```go
 s := color.S256(32, 203)
 s.Println("message")
 s.Printf("format %s", "message")
+```
+
+可以同时添加选项设置:
+
+```go
+s := color.S256(32, 203)
+s.SetOpts(color.Opts{color.OpBold})
+
+s.Println("style with options")
+s.Printf("style with %s\n", "options")
 ```
 
 > 运行 demo: `go run ./_examples/color256.go`
@@ -308,7 +318,7 @@ color.HEXStyle("eee", "D50000").Println("deep-purple color")
 
 ### 使用前景或后景色 
 
-  - `color.RGB(r, g, b uint8, isBg ...bool) RGBColor`
+- `color.RGB(r, g, b uint8, isBg ...bool) RGBColor`
 
 ```go
 c := color.RGB(30,144,255) // fg color
@@ -320,7 +330,7 @@ c.Println("message")
 c.Printf("format %s", "message")
 ```
 
-  - `color.HEX(hex string, isBg ...bool) RGBColor` 从16进制颜色创建
+- `color.HEX(hex string, isBg ...bool) RGBColor` 从16进制颜色创建
 
 ```go
 c := color.HEX("ccc") // 也可以写为: "cccccc" "#cccccc"
@@ -336,7 +346,7 @@ c.Printf("format %s", "message")
 
 > 可同时设置前景和背景色
 
-  - `color.NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle`
+- `color.NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle`
 
 ```go
 s := color.NewRGBStyle(RGB(20, 144, 234), RGB(234, 78, 23))
@@ -352,6 +362,16 @@ s.Println("message")
 s.Printf("format %s", "message")
 ```
 
+- 可以同时添加选项设置:
+
+```go
+s := color.HEXStyle("11aa23", "eee")
+s.SetOpts(color.Opts{color.OpBold})
+
+s.Println("style with options")
+s.Printf("style with %s\n", "options")
+```
+
 ## 方法参考
 
 一些有用的工具方法参考
@@ -360,6 +380,7 @@ s.Printf("format %s", "message")
 - `SetOutput(io.Writer)` custom set the colored text output writer
 - `ForceOpenColor()` force open color render
 - `ClearCode(str string) string` Use for clear color codes
+- `Colors2code(colors ...Color) string` Convert colors to code. return like "32;45;3"
 - `ClearTag(s string) string` clear all color html-tag for a string
 - `IsConsole(w io.Writer)` Determine whether w is one of stderr, stdout, stdin
 - `HexToRgb(hex string) (rgb []int)` Convert hex color string to RGB numbers

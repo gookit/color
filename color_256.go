@@ -157,11 +157,11 @@ func S256(fgAndBg ...uint8) *Style256 {
 	return s
 }
 
-// Set fg and bg color value
-func (s *Style256) Set(fgVal, bgVal uint8, ops ...Color) *Style256 {
+// Set fg and bg color value, can also with color options
+func (s *Style256) Set(fgVal, bgVal uint8, opts ...Color) *Style256 {
 	s.fg = Color256{fgVal, 1}
 	s.bg = Color256{bgVal, 1}
-	s.opts.Add(ops...)
+	s.opts.Add(opts...)
 	return s
 }
 

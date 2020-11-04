@@ -302,7 +302,7 @@ func TestPrintBasicColor(t *testing.T) {
 	}
 
 	fmt.Println("\nBasic Options:")
-	for name, c := range Options {
+	for name, c := range AllOptions {
 		c.Print(" ", name, " ")
 	}
 

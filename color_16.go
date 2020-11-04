@@ -3,7 +3,6 @@ package color
 import (
 	"fmt"
 	"strconv"
-	"strings"
 )
 
 // Color Color16, 16 color value type
@@ -34,7 +33,7 @@ func (o Opts) IsEmpty() bool {
 
 // String options to string. eg: "1;3"
 func (o Opts) String() string {
-	return colors2code(o...)
+	return Colors2code(o...)
 }
 
 /*************************************************************
@@ -300,7 +299,12 @@ var ExBgColors = map[string]Color{
 }
 
 // Options color options map
-var Options = map[string]Color{
+// Deprecated
+// NOTICE: please use AllOptions instead.
+var Options = AllOptions
+
+// AllOptions color options map
+var AllOptions = map[string]Color{
 	"reset":      OpReset,
 	"bold":       OpBold,
 	"fuzzy":      OpFuzzy,
@@ -309,22 +313,4 @@ var Options = map[string]Color{
 	"blink":      OpBlink,
 	"reverse":    OpReverse,
 	"concealed":  OpConcealed,
-}
-
-/*************************************************************
- * helper methods
- *************************************************************/
-
-// convert colors to code. return like "32;45;3"
-func colors2code(colors ...Color) string {
-	if len(colors) == 0 {
-		return ""
-	}
-
-	var codes []string
-	for _, color := range colors {
-		codes = append(codes, color.String())
-	}
-
-	return strings.Join(codes, ";")
 }

@@ -169,7 +169,7 @@ func (c RGBColor) IsEmpty() bool {
 
 // C256 returns the closest approximate 256 (8 bit) color
 func (c RGBColor) C256() Color256 {
-	return C256(rgb2short(c[0], c[1], c[2]), c[3] == AsBg)
+	return C256(Rgb2short(c[0], c[1], c[2]), c[3] == AsBg)
 }
 
 /*************************************************************
@@ -232,7 +232,7 @@ func RGBStyleFromString(fg string, bg ...string) *RGBStyle {
 	return s.SetFg(RGBFromString(fg))
 }
 
-// Set fg and bg color
+// Set fg and bg color, can also with color options
 func (s *RGBStyle) Set(fg, bg RGBColor, opts ...Color) *RGBStyle {
 	return s.SetFg(fg).SetBg(bg).SetOpts(opts)
 }
@@ -251,7 +251,7 @@ func (s *RGBStyle) SetBg(bg RGBColor) *RGBStyle {
 	return s
 }
 
-// SetOpts set options
+// SetOpts set color options
 func (s *RGBStyle) SetOpts(opts Opts) *RGBStyle {
 	s.opts = opts
 	return s

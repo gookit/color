@@ -19,7 +19,7 @@ func main() {
 	}
 
 	fmt.Println("\nBasic Options:")
-	for name, c := range color.Options {
+	for name, c := range color.AllOptions {
 		c.Print(" ", name, " ")
 	}
 

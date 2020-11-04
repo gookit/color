@@ -280,7 +280,8 @@ var (
 	incs = []uint8{0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff}
 )
 
-func rgb2short(r, g, b uint8) uint8 {
+// Rgb2short convert RGB-code to 256-code
+func Rgb2short(r, g, b uint8) uint8 {
 	res := make([]uint8, 3)
 	for partI, part := range [3]uint8{r, g, b} {
 		i := 0
