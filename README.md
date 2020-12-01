@@ -44,6 +44,20 @@ Now, 256 colors and RGB colors have also been supported to work in Windows CMD a
 go get github.com/gookit/color
 ```
 
+### NOTICE
+
+If you want print custom colors message on windows, should use `color.PrintX` instead of `fmt.PrintX`
+
+```go
+str := color.Red.Sprint("an colored message string")
+
+// Color will not be output under Windows
+fmt.Println(str)
+
+// Color will be output under Windows
+color.Println(str)
+```
+
 ## Quick start
 
 ```go
