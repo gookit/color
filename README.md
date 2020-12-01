@@ -58,6 +58,8 @@ fmt.Println(str)
 color.Println(str)
 ```
 
+> `color.PrintX` is universal, you can use it directly instead of `fmt.PrintX`
+
 ## Quick start
 
 ```go

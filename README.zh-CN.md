@@ -45,6 +45,22 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
 go get github.com/gookit/color
 ```
 
+### 提示
+
+如果要在Windows上打印颜色消息，应使用 `color.PrintX` 而不是 `fmt.PrintX`
+
+```go
+str := color.Red.Sprint("an colored message string")
+
+// Windows 下将不会输出颜色
+fmt.Println(str)
+
+// Windows 也可以输出色彩
+color.Println(str)
+```
+
+> `color.PrintX` 系列方法是通用的，您可以直接使用它们替代 `fmt.PrintX` 方法
+
 ## 快速开始
 
 如下，引入当前包就可以快速的使用
