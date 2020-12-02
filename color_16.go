@@ -40,6 +40,12 @@ func (o Opts) String() string {
  * Basic 16 color definition
  *************************************************************/
 
+// Base value for foreground/background color
+const (
+	FgBase uint8 = 30
+	BgBase uint8 = 40
+)
+
 // Foreground colors. basic foreground colors 30 - 37
 const (
 	FgBlack Color = iota + 30

@@ -24,9 +24,9 @@ Now, 256 colors and RGB colors have also been supported to work in Windows CMD a
 ## Features
 
   - Simple to use, zero dependencies
-  - Supports rich color output: 16-color, 256-color, true color (24-bit, RGB)
+  - Supports rich color output: 16-color (4-bit), 256-color (8-bit), true color (24-bit, RGB)
     - 16-color output is the most commonly used and most widely supported, working on any Windows version
-    - Since `v1.2.4` **the 256-color, true color (24-bit) support windows CMD and PowerShell**
+    - Since `v1.2.4` **the 256-color (8-bit), true color (24-bit) support windows CMD and PowerShell**
     - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
   - Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
   - Supports HTML tag-style color rendering, such as `<green>message</>`. Support working on windows `cmd` `powerShell`

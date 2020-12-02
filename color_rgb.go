@@ -173,9 +173,10 @@ func (c RGBColor) C256() Color256 {
 }
 
 // C16 returns the closest approximate 256 (8 bit) color
-// func (c RGBColor) C16() Color {
-// 	return Color()
-// }
+// refer https://github.com/radareorg/radare2/blob/master/libr/cons/rgb.c#L249-L271
+func (c RGBColor) C16() Color {
+	return Color(RgbToAnsi(c[0], c[1], c[2], c[3] == AsBg))
+}
 
 /*************************************************************
  * RGB Style
