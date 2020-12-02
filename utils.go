@@ -189,6 +189,7 @@ func Rgb2ansi(r, g, b uint8, isBg bool) uint8  {
 }
 
 // RgbToAnsi convert RGB-code to 16-code
+// refer https://github.com/radareorg/radare2/blob/master/libr/cons/rgb.c#L249-L271
 func RgbToAnsi(r, g, b uint8, isBg bool) uint8  {
 	var bright, c, k uint8
 
