@@ -172,7 +172,7 @@ func (c RGBColor) C256() Color256 {
 	return C256(Rgb2short(c[0], c[1], c[2]), c[3] == AsBg)
 }
 
-// C16 returns the closest approximate 256 (8 bit) color
+// C16 returns the closest approximate 16 (4 bit) color
 func (c RGBColor) C16() Color {
 	return Color(RgbToAnsi(c[0], c[1], c[2], c[3] == AsBg))
 }
