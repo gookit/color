@@ -1,11 +1,99 @@
 package color
 
 import (
+	"bytes"
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+func TestUtilFuncs(t *testing.T) {
+	is := assert.New(t)
+
+	// IsConsole
+	is.True(IsConsole(os.Stdin))
+	is.True(IsConsole(os.Stdout))
+	is.True(IsConsole(os.Stderr))
+	is.False(IsConsole(&bytes.Buffer{}))
+	ff, err := os.OpenFile(".travis.yml", os.O_WRONLY, 0)
+	is.NoError(err)
+	is.False(IsConsole(ff))
+
+	// IsMSys
+	oldVal := os.Getenv("MSYSTEM")
+	is.NoError(os.Setenv("MSYSTEM", "MINGW64"))
+	is.True(IsMSys())
+	is.NoError(os.Unsetenv("MSYSTEM"))
+	is.False(IsMSys())
+	_ = os.Setenv("MSYSTEM", oldVal)
+
+	// IsSupport256Color
+	oldVal = os.Getenv("TERM")
+	_ = os.Unsetenv("TERM")
+	is.False(IsSupportColor())
+	is.False(IsSupport256Color())
+
+	// ConEmuANSI
+	mockEnvValue("ConEmuANSI", "ON", func(_ string) {
+		is.True(IsSupportColor())
+	})
+
+	// ANSICON
+	mockEnvValue("ANSICON", "189x2000 (189x43)", func(_ string) {
+		is.True(IsSupportColor())
+	})
+
+	// "COLORTERM=truecolor"
+	mockEnvValue("COLORTERM", "truecolor", func(_ string) {
+		is.True(IsSupportTrueColor())
+	})
+
+	// TERM
+	mockEnvValue("TERM", "screen-256color", func(_ string) {
+		is.True(IsSupportColor())
+	})
+
+	// TERM
+	mockEnvValue("TERM", "tmux-256color", func(_ string) {
+		is.True(IsSupportColor())
+	})
+
+	// TERM
+	mockEnvValue("TERM", "rxvt-unicode-256color", func(_ string) {
+		is.True(IsSupportColor())
+	})
+
+	is.NoError(os.Setenv("TERM", "xterm-vt220"))
+	is.True(IsSupportColor())
+	// revert
+	if oldVal != "" {
+		is.NoError(os.Setenv("TERM", oldVal))
+	} else {
+		is.NoError(os.Unsetenv("TERM"))
+	}
+}
+
+func TestC256ToRgb(t *testing.T) {
+	tests := []struct {
+		given uint8
+		want  []uint8
+	}{
+		{4, []uint8{0, 0, 0}},
+		{7, []uint8{170, 0, 0}},
+		{14, []uint8{85, 85, 85}},
+		{124, []uint8{127, 0, 0}},
+		{234, []uint8{28, 28, 28}},
+	}
+
+	for _, item := range tests {
+		assert.Equal(t, item.want, C256ToRgb(item.given), fmt.Sprint("256 code:", item.given))
+		fmt.Println("--- c256:", item.given)
+		C256(item.given).Println("color 256 code message")
+		RGBFromSlice(item.want).Println("color rgb message from 256 code")
+	}
+}
 
 func TestHexToRgb(t *testing.T) {
 	tests := []struct {

@@ -20,29 +20,12 @@ import (
 // Don't support color:
 // 	"TERM=cygwin"
 var specialColorTerms = map[string]bool{
-	"alacritty":             true,
-	"screen-256color":       true,
-	"tmux-256color":         true,
-	"rxvt-unicode-256color": true,
+	"alacritty": true,
 }
 
 /*************************************************************
- * helper methods
+ * helper methods for check env
  *************************************************************/
-
-// Colors2code convert colors to code. return like "32;45;3"
-func Colors2code(colors ...Color) string {
-	if len(colors) == 0 {
-		return ""
-	}
-
-	var codes []string
-	for _, color := range colors {
-		codes = append(codes, color.String())
-	}
-
-	return strings.Join(codes, ";")
-}
 
 // IsConsole Determine whether w is one of stderr, stdout, stdin
 func IsConsole(w io.Writer) bool {
@@ -75,7 +58,7 @@ func IsMSys() bool {
 // 	windows cmd.exe, powerShell.exe
 func IsSupportColor() bool {
 	envTerm := os.Getenv("TERM")
-	if strings.Contains(envTerm, "xterm") {
+	if strings.Contains(envTerm, "term") {
 		return true
 	}
 
@@ -95,16 +78,20 @@ func IsSupportColor() bool {
 	}
 
 	// up: if support 256-color, can also support basic color.
-	return IsSupport256Color()
+	return isSupport256Color(envTerm)
 }
 
 // IsSupport256Color render
 func IsSupport256Color() bool {
+	return isSupport256Color(os.Getenv("TERM"))
+}
+
+func isSupport256Color(termVal string) bool {
 	// "TERM=xterm-256color"
 	// "TERM=screen-256color"
 	// "TERM=tmux-256color"
 	// "TERM=rxvt-unicode-256color"
-	supported := strings.Contains(os.Getenv("TERM"), "256color")
+	supported := strings.Contains(termVal, "256color")
 	if !supported {
 		// up: if support true-color, can also support 256-color.
 		supported = IsSupportTrueColor()
@@ -115,8 +102,57 @@ func IsSupport256Color() bool {
 
 // IsSupportTrueColor render. IsSupportRGBColor
 func IsSupportTrueColor() bool {
+	val := os.Getenv("COLORTERM")
 	// "COLORTERM=truecolor"
-	return strings.Contains(os.Getenv("COLORTERM"), "truecolor")
+	// "COLORTERM=24bit"
+	return strings.Contains(val, "truecolor") || strings.Contains(val, "24bit")
+}
+
+/*************************************************************
+ * helper methods for converts
+ *************************************************************/
+
+// Colors2code convert colors to code. return like "32;45;3"
+func Colors2code(colors ...Color) string {
+	if len(colors) == 0 {
+		return ""
+	}
+
+	var codes []string
+	for _, color := range colors {
+		codes = append(codes, color.String())
+	}
+
+	return strings.Join(codes, ";")
+}
+
+// C256ToRgb convert an 256 color code to RGB numbers
+// refer https://github.com/torvalds/linux/commit/cec5b2a97a11ade56a701e83044d0a2a984c67b4
+func C256ToRgb(val uint8) (rgb []uint8) {
+	var r, g, b uint8
+	if val < 8 { // Standard colours.
+		// r = val&1 ? 0xaa : 0x00;
+		// g = val&2 ? 0xaa : 0x00;
+		// b = val&4 ? 0xaa : 0x00;
+		r = compareVal(val&1 == 1, 0xaa, 0x00)
+		g = compareVal(val&2 == 1, 0xaa, 0x00)
+		b = compareVal(val&4 == 1, 0xaa, 0x00)
+	} else if val < 16 {
+		// r = val & 1 ? 0xff : 0x55;
+		r = compareVal(val&1 == 1, 0xff, 0x55)
+		g = compareVal(val&2 == 1, 0xff, 0x55)
+		b = compareVal(val&4 == 1, 0xff, 0x55)
+	} else if val < 232 { /* 6x6x6 colour cube. */
+		r = (val - 16) / 36 * 85 / 2
+		g = (val - 16) / 6 % 6 * 85 / 2
+		b = (val - 16) % 6 * 85 / 2
+	} else { /* Grayscale ramp. */
+		nv := uint8(int(val)*10 - 2312)
+		// set value
+		r, g, b = nv, nv, nv
+	}
+
+	return []uint8{r, g, b}
 }
 
 // Hex2rgb alias of the HexToRgb()
@@ -184,13 +220,13 @@ func RgbToHex(rgb []int) string {
 }
 
 // Rgb2ansi alias of the RgbToAnsi()
-func Rgb2ansi(r, g, b uint8, isBg bool) uint8  {
+func Rgb2ansi(r, g, b uint8, isBg bool) uint8 {
 	return RgbToAnsi(r, g, b, isBg)
 }
 
 // RgbToAnsi convert RGB-code to 16-code
 // refer https://github.com/radareorg/radare2/blob/master/libr/cons/rgb.c#L249-L271
-func RgbToAnsi(r, g, b uint8, isBg bool) uint8  {
+func RgbToAnsi(r, g, b uint8, isBg bool) uint8 {
 	var bright, c, k uint8
 
 	base := compareVal(isBg, BgBase, FgBase)
@@ -209,7 +245,7 @@ func RgbToAnsi(r, g, b uint8, isBg bool) uint8  {
 		g = compareVal(g > 0x7f, 1, 0)
 		b = compareVal(b > 0x7f, 1, 0)
 	} else {
-		k = (r + g + b) / 3;
+		k = (r + g + b) / 3
 
 		// r = (r >= k) ? 1 : 0;
 		r = compareVal(r >= k, 1, 0)
@@ -285,28 +321,12 @@ func Fprintln(w io.Writer, a ...interface{}) {
 	str := formatArgsForPrintln(a)
 	_, err := fmt.Fprintln(w, ReplaceTag(str))
 	saveInternalError(err)
-
-	// if isLikeInCmd {
-	// 	renderColorCodeOnCmd(func() {
-	// 		_, _ = fmt.Fprintln(w, ReplaceTag(str))
-	// 	})
-	// } else {
-	// 	_, _ = fmt.Fprintln(w, ReplaceTag(str))
-	// }
 }
 
 // Lprint passes colored messages to a log.Logger for printing.
 // Notice: should be goroutine safe
 func Lprint(l *log.Logger, a ...interface{}) {
 	l.Print(Render(a...))
-
-	// if isLikeInCmd {
-	// 	renderColorCodeOnCmd(func() {
-	// 		l.Print(Render(a...))
-	// 	})
-	// } else {
-	// 	l.Print(Render(a...))
-	// }
 }
 
 // Render parse color tags, return rendered string.
@@ -349,25 +369,6 @@ func Text(s string) string {
  * helper methods for print
  *************************************************************/
 
-// its Win system. linux windows darwin
-// func isWindows() bool {
-// 	return runtime.GOOS == "windows"
-// }
-
-// equals: return ok ? val1 : val2
-func compareVal(ok bool, val1, val2 uint8) uint8 {
-	if ok {
-		return val1
-	}
-	return val2
-}
-
-func saveInternalError(err error) {
-	if err != nil {
-		errors = append(errors, err)
-	}
-}
-
 // new implementation, support render full color code on pwsh.exe, cmd.exe
 func doPrintV2(code, str string) {
 	_, err := fmt.Fprint(output, RenderString(code, str))
@@ -397,6 +398,43 @@ func doPrintlnV2(code string, args []interface{}) {
 	// }
 }
 
+// if use Println, will add spaces for each arg
+func formatArgsForPrintln(args []interface{}) (message string) {
+	if ln := len(args); ln == 0 {
+		message = ""
+	} else if ln == 1 {
+		message = fmt.Sprint(args[0])
+	} else {
+		message = fmt.Sprintln(args...)
+		// clear last "\n"
+		message = message[:len(message)-1]
+	}
+	return
+}
+
+/*************************************************************
+ * helper methods
+ *************************************************************/
+
+// its Win system. linux windows darwin
+// func isWindows() bool {
+// 	return runtime.GOOS == "windows"
+// }
+
+// equals: return ok ? val1 : val2
+func compareVal(ok bool, val1, val2 uint8) uint8 {
+	if ok {
+		return val1
+	}
+	return val2
+}
+
+func saveInternalError(err error) {
+	if err != nil {
+		errors = append(errors, err)
+	}
+}
+
 func stringToArr(str, sep string) (arr []string) {
 	str = strings.TrimSpace(str)
 	if str == "" {
@@ -412,16 +450,28 @@ func stringToArr(str, sep string) (arr []string) {
 	return
 }
 
-// if use Println, will add spaces for each arg
-func formatArgsForPrintln(args []interface{}) (message string) {
-	if ln := len(args); ln == 0 {
-		message = ""
-	} else if ln == 1 {
-		message = fmt.Sprint(args[0])
-	} else {
-		message = fmt.Sprintln(args...)
-		// clear last "\n"
-		message = message[:len(message)-1]
-	}
-	return
-}
+// refer https://github.com/Delta456/box-cli-maker
+// func detectTerminalColor() terminfo.ColorLevel {
+// 	level, err := terminfo.ColorLevelFromEnv()
+// 	if err != nil {
+// 		saveInternalError(err)
+// 		return terminfo.ColorLevelNone
+// 	}
+//
+// 	// Detect WSL as it has True Color support
+// 	if level == terminfo.ColorLevelNone && runtime.GOOS == "windows" {
+// 		wsl, err := ioutil.ReadFile("/proc/sys/kernel/osrelease")
+// 		if err != nil {
+// 			saveInternalError(err)
+// 			return level
+// 		}
+//
+// 		// Microsoft for WSL and microsoft for WSL 2
+// 		content := strings.ToLower(string(wsl))
+// 		if strings.Contains(content, "microsoft") {
+// 			return terminfo.ColorLevelMillions
+// 		}
+// 	}
+//
+// 	return level
+// }

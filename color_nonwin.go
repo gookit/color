@@ -15,6 +15,7 @@ func winReset() (n int, err error) {
 
 func winPrint(_ string, _ ...Color)   {}
 func winPrintln(_ string, _ ...Color) {}
+
 // func renderColorCodeOnCmd(_ func())   {}
 
 // IsTerminal check currently is terminal
