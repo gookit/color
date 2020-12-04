@@ -25,20 +25,28 @@ var (
 )
 
 func init() {
-	// if at linux, mac, or windows's ConEmu, Cmder, putty
+	// if at windows's ConEmu, Cmder, putty ... terminals
 	if isSupportColor {
 		return
 	}
 
 	isLikeInCmd = true
+
+	// if disabled.
 	if !Enable {
 		return
 	}
 
-	// force open
-	isSupportColor = true
+	// -------- try force enable colors on windows terminal -------
+
 	// init simple color code info
 	// initWinColorsMap()
+
+	outHandle, err := syscall.Open("CONOUT$", syscall.O_RDWR, 0)
+	if err != nil {
+		fmt.Println(53, err)
+		return
+	}
 
 	// load related windows dll
 	// isMSys = utils.IsMSys()
@@ -48,17 +56,16 @@ func init() {
 	procGetConsoleMode = kernel32.NewProc("GetConsoleMode")
 	procSetConsoleMode = kernel32.NewProc("SetConsoleMode")
 
-	outHandle, err := syscall.Open("CONOUT$", syscall.O_RDWR, 0)
-	if err != nil {
-		fmt.Println(53, err)
-		return
-	}
+	// enable colors on windows terminal
 	err = EnableVirtualTerminalProcessing(outHandle, true)
-	saveInternalError(err)
 	if err != nil {
-		fmt.Println(err)
-		// isSupportColor = false
+		fmt.Println("Enable colors error:", err)
+		saveInternalError(err)
+		isSupportColor = false
 	}
+
+	// NOTICE: update var `isSupportColor` to TRUE.
+	isSupportColor = true
 
 	// fetch console screen buffer info
 	// err := getConsoleScreenBufferInfo(uintptr(syscall.Stdout), &defScreenInfo)

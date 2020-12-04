@@ -438,6 +438,7 @@ there are some useful functions reference
   - [gookit/ini](https://github.com/gookit/ini) Go config management, use INI files
   - [gookit/rux](https://github.com/gookit/rux) Simple and fast request router for golang HTTP 
   - [gookit/gcli](https://github.com/gookit/gcli) build CLI application, tool library, running CLI commands
+  - [gookit/slog](https://github.com/gookit/slog) Concise and extensible go log library
   - [gookit/event](https://github.com/gookit/event) Lightweight event manager and dispatcher implements by Go
   - [gookit/cache](https://github.com/gookit/cache) Generic cache use and cache manager for golang. support File, Memory, Redis, Memcached.
   - [gookit/config](https://github.com/gookit/config) Go config management. support JSON, YAML, TOML, INI, HCL, ENV and Flags
@@ -449,10 +450,12 @@ there are some useful functions reference
 
 ## See also
 
-  - [`issue9/term`](https://github.com/issue9/term)
-  - [`beego/bee`](https://github.com/beego/bee)
-  - [`inhere/console`](https://github.com/inhere/php-console)
+  - [inhere/console](https://github.com/inhere/php-console)
+  - [xo/terminfo](https://github.com/xo/terminfo)
+  - [beego/bee](https://github.com/beego/bee)
+  - [issue9/term](https://github.com/issue9/term)
   - [ANSI escape code](https://en.wikipedia.org/wiki/ANSI_escape_code)
+  - [Standard ANSI color map](https://conemu.github.io/en/AnsiEscapeCodes.html#Standard_ANSI_color_map)
 
 ## License
 

@@ -33,6 +33,27 @@ const (
 	AsBg
 )
 
+// values from https://github.com/go-terminfo/terminfo
+// var (
+	// RgbaBlack    = image_color.RGBA{0, 0, 0, 255}
+	// Red       = color.RGBA{205, 0, 0, 255}
+	// Green     = color.RGBA{0, 205, 0, 255}
+	// Orange    = color.RGBA{205, 205, 0, 255}
+	// Blue      = color.RGBA{0, 0, 238, 255}
+	// Magenta   = color.RGBA{205, 0, 205, 255}
+	// Cyan      = color.RGBA{0, 205, 205, 255}
+	// LightGrey = color.RGBA{229, 229, 229, 255}
+	//
+	// DarkGrey     = color.RGBA{127, 127, 127, 255}
+	// LightRed     = color.RGBA{255, 0, 0, 255}
+	// LightGreen   = color.RGBA{0, 255, 0, 255}
+	// Yellow       = color.RGBA{255, 255, 0, 255}
+	// LightBlue    = color.RGBA{92, 92, 255, 255}
+	// LightMagenta = color.RGBA{255, 0, 255, 255}
+	// LightCyan    = color.RGBA{0, 255, 255, 255}
+	// White        = color.RGBA{255, 255, 255, 255}
+// )
+
 /*************************************************************
  * RGB Color(Bit24Color, TrueColor)
  *************************************************************/
