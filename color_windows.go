@@ -108,26 +108,26 @@ func EnableVirtualTerminalProcessing(stream syscall.Handle, enable bool) error {
 }
 
 // renderColorCodeOnCmd enable cmd color render.
-func renderColorCodeOnCmd(fn func()) {
-	err := EnableVirtualTerminalProcessing(syscall.Stdout, true)
-	// if is not in terminal, will clear color tag.
-	if err != nil {
-		// panic(err)
-		fn()
-		return
-	}
-
-	// force open color render
-	old := ForceOpenColor()
-	fn()
-	// revert color setting
-	isSupportColor = old
-
-	err = EnableVirtualTerminalProcessing(syscall.Stdout, false)
-	if err != nil {
-		panic(err)
-	}
-}
+// func renderColorCodeOnCmd(fn func()) {
+// 	err := EnableVirtualTerminalProcessing(syscall.Stdout, true)
+// 	// if is not in terminal, will clear color tag.
+// 	if err != nil {
+// 		// panic(err)
+// 		fn()
+// 		return
+// 	}
+//
+// 	// force open color render
+// 	old := ForceOpenColor()
+// 	fn()
+// 	// revert color setting
+// 	isSupportColor = old
+//
+// 	err = EnableVirtualTerminalProcessing(syscall.Stdout, false)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// }
 
 /*************************************************************
  * render simple color code on windows
