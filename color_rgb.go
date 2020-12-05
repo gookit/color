@@ -89,6 +89,11 @@ func RGB(r, g, b uint8, isBg ...bool) RGBColor {
 	return rgb
 }
 
+// Bit24 alias of the RGB()
+func Bit24(r, g, b uint8, isBg ...bool) RGBColor {
+	return RGB(r, g, b, isBg...)
+}
+
 // RGBFromSlice quick RGBColor from slice
 func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor {
 	return RGB(rgb[0], rgb[1], rgb[2], isBg...)

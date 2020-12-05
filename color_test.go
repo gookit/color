@@ -276,7 +276,7 @@ func TestColor16(t *testing.T) {
 	lightCyan := Cyan.Light()
 	at.Equal(36, int(Cyan))
 	at.Equal(96, int(lightCyan))
-	c = Color(120).Light()
+	c = Bit4(120).Light()
 	at.Equal(120, int(c))
 
 	// Colors vars

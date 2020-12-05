@@ -144,6 +144,11 @@ const (
 	LightMagenta = FgLightMagenta
 )
 
+// Bit4 an method for create Color
+func Bit4(code uint8) Color {
+	return Color(code)
+}
+
 /*************************************************************
  * Color render methods
  *************************************************************/

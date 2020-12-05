@@ -6,9 +6,9 @@ import (
 )
 
 // adapted from https://gist.github.com/MicahElliott/719710
-
 var (
-	lookupTable = map[string]uint8{ // color look-up table
+	// rgb to 256 color look-up table
+	lookupTable = map[string]uint8{
 		// 8-bit, RGB hex
 
 		// Primary 3-bit (8 colors). Unique representation!
@@ -279,6 +279,11 @@ var (
 	}
 	incs = []uint8{0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff}
 )
+
+// RgbTo256Table mapping data
+func RgbTo256Table() map[string]uint8 {
+	return lookupTable
+}
 
 // Rgb2short convert RGB-code to 256-code
 func Rgb2short(r, g, b uint8) uint8 {

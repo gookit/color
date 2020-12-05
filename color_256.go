@@ -37,14 +37,14 @@ const (
  * 8bit(256) Color: Bit8Color Color256
  *************************************************************/
 
-// Color256 256 (8 bit) color, uint8 range at 0 - 255
+// Color256 256 color (8 bit), uint8 range at 0 - 255
 //
 // 颜色值使用10进制和16进制都可 0x98 = 152
 //
-// 颜色有两位uint8组成:
+// The color consists of two uint8:
 // 	0: color value
-// 	1: color type, Fg=0 Bg=1
-// 	>1: unset value
+// 	1: color type; Fg=0, Bg=1, >1: unset value
+//
 // example:
 // 	fg color: [152, 0]
 //  bg color: [152, 1]
@@ -92,6 +92,11 @@ func (c Color256) Sprint(a ...interface{}) string {
 // Sprintf returns format and rendered message
 func (c Color256) Sprintf(format string, a ...interface{}) string {
 	return RenderString(c.String(), fmt.Sprintf(format, a...))
+}
+
+// RGBColor convert color-256 to RGB color.
+func (c Color256) RGBColor() RGBColor {
+	return RGBFromSlice(C256ToRgb(c[0]), c[1] == AsBg)
 }
 
 // Value return color value
