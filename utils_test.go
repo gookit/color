@@ -75,6 +75,21 @@ func TestUtilFuncs(t *testing.T) {
 	}
 }
 
+func TestRgbTo256Table(t *testing.T) {
+	index := 0
+	for hex, c256 := range RgbTo256Table() {
+		Hex(hex).Print("RGB:", hex)
+		fmt.Print(" = ")
+		C256(c256).Print("C256:", c256)
+		fmt.Print(" | ")
+		index++
+		if index%5 == 0 {
+			fmt.Println()
+		}
+	}
+	fmt.Println()
+}
+
 func TestC256ToRgb(t *testing.T) {
 	tests := []struct {
 		given uint8

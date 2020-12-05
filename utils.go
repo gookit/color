@@ -126,35 +126,6 @@ func Colors2code(colors ...Color) string {
 	return strings.Join(codes, ";")
 }
 
-// C256ToRgb convert an 256 color code to RGB numbers
-// refer https://github.com/torvalds/linux/commit/cec5b2a97a11ade56a701e83044d0a2a984c67b4
-func C256ToRgb(val uint8) (rgb []uint8) {
-	var r, g, b uint8
-	if val < 8 { // Standard colours.
-		// r = val&1 ? 0xaa : 0x00;
-		// g = val&2 ? 0xaa : 0x00;
-		// b = val&4 ? 0xaa : 0x00;
-		r = compareVal(val&1 == 1, 0xaa, 0x00)
-		g = compareVal(val&2 == 1, 0xaa, 0x00)
-		b = compareVal(val&4 == 1, 0xaa, 0x00)
-	} else if val < 16 {
-		// r = val & 1 ? 0xff : 0x55;
-		r = compareVal(val&1 == 1, 0xff, 0x55)
-		g = compareVal(val&2 == 1, 0xff, 0x55)
-		b = compareVal(val&4 == 1, 0xff, 0x55)
-	} else if val < 232 { /* 6x6x6 colour cube. */
-		r = (val - 16) / 36 * 85 / 2
-		g = (val - 16) / 6 % 6 * 85 / 2
-		b = (val - 16) % 6 * 85 / 2
-	} else { /* Grayscale ramp. */
-		nv := uint8(int(val)*10 - 2312)
-		// set value
-		r, g, b = nv, nv, nv
-	}
-
-	return []uint8{r, g, b}
-}
-
 // Hex2rgb alias of the HexToRgb()
 func Hex2rgb(hex string) []int { return HexToRgb(hex) }
 

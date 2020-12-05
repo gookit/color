@@ -35,11 +35,13 @@ var (
 
 		// Strictly ascending.
 		// "000000": 16,
+		"000001": 16, // up: avoid key conflicts, value + 1
 		"00005f": 17,
 		"000087": 18,
 		"0000af": 19,
 		"0000d7": 20,
 		// "0000ff": 21,
+		"0000fe": 21, // up: avoid key conflicts, value - 1
 		"005f00": 22,
 		"005f5f": 23,
 		"005f87": 24,
@@ -65,11 +67,13 @@ var (
 		"00d7d7": 44,
 		"00d7ff": 45,
 		// "00ff00": 46,
+		"00ff01": 46, // up: avoid key conflicts, value + 1
 		"00ff5f": 47,
 		"00ff87": 48,
 		"00ffaf": 49,
 		"00ffd7": 50,
 		// "00ffff": 51,
+		"00fffe": 51, // up: avoid key conflicts, value - 1
 		"5f0000": 52,
 		"5f005f": 53,
 		"5f0087": 54,
@@ -215,11 +219,13 @@ var (
 		"d7ffd7": 194,
 		"d7ffff": 195,
 		// "ff0000": 196,
+		"ff0001": 196, // up: avoid key conflicts, value + 1
 		"ff005f": 197,
 		"ff0087": 198,
 		"ff00af": 199,
 		"ff00d7": 200,
 		// "ff00ff": 201,
+		"ff00fe": 201, // up: avoid key conflicts, value - 1
 		"ff5f00": 202,
 		"ff5f5f": 203,
 		"ff5f87": 204,
@@ -245,11 +251,13 @@ var (
 		"ffd7d7": 224,
 		"ffd7ff": 225,
 		// "ffff00": 226,
+		"ffff01": 226, // up: avoid key conflicts, value + 1
 		"ffff5f": 227,
 		"ffff87": 228,
 		"ffffaf": 229,
 		"ffffd7": 230,
 		// "ffffff": 231,
+		"fffffe": 231, // up: avoid key conflicts, value - 1
 
 		// Gray-scale range.
 		"080808": 232,
@@ -265,6 +273,7 @@ var (
 		"6c6c6c": 242,
 		"767676": 243,
 		// "808080": 244,
+		"808081": 244, // up: avoid key conflicts, value + 1
 		"8a8a8a": 245,
 		"949494": 246,
 		"9e9e9e": 247,
@@ -277,6 +286,7 @@ var (
 		"e4e4e4": 254,
 		"eeeeee": 255,
 	}
+
 	incs = []uint8{0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff}
 )
 
@@ -310,4 +320,33 @@ func Rgb2short(r, g, b uint8) uint8 {
 	hex := fmt.Sprintf("%02x%02x%02x", res[0], res[1], res[2])
 	equiv := lookupTable[hex]
 	return equiv
+}
+
+// C256ToRgb convert an 256 color code to RGB numbers
+// refer https://github.com/torvalds/linux/commit/cec5b2a97a11ade56a701e83044d0a2a984c67b4
+func C256ToRgb(val uint8) (rgb []uint8) {
+	var r, g, b uint8
+	if val < 8 { // Standard colours.
+		// r = val&1 ? 0xaa : 0x00;
+		// g = val&2 ? 0xaa : 0x00;
+		// b = val&4 ? 0xaa : 0x00;
+		r = compareVal(val&1 == 1, 0xaa, 0x00)
+		g = compareVal(val&2 == 1, 0xaa, 0x00)
+		b = compareVal(val&4 == 1, 0xaa, 0x00)
+	} else if val < 16 {
+		// r = val & 1 ? 0xff : 0x55;
+		r = compareVal(val&1 == 1, 0xff, 0x55)
+		g = compareVal(val&2 == 1, 0xff, 0x55)
+		b = compareVal(val&4 == 1, 0xff, 0x55)
+	} else if val < 232 { /* 6x6x6 colour cube. */
+		r = (val - 16) / 36 * 85 / 2
+		g = (val - 16) / 6 % 6 * 85 / 2
+		b = (val - 16) % 6 * 85 / 2
+	} else { /* Grayscale ramp. */
+		nv := uint8(int(val)*10 - 2312)
+		// set value
+		r, g, b = nv, nv, nv
+	}
+
+	return []uint8{r, g, b}
 }

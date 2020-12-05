@@ -33,7 +33,7 @@ func TestRgbToC256(t *testing.T) {
 }
 
 func TestRgbToC256Background(t *testing.T) {
-	white := RGB(255, 255, 255)
+	white := Rgb(255, 255, 255)
 	whiteBg := Bit24(255, 255, 255, true)
 	whiteFg := RGB(255, 255, 255, false)
 	if white.C256().String() != whiteFg.C256().String() {

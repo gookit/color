@@ -89,10 +89,11 @@ func RGB(r, g, b uint8, isBg ...bool) RGBColor {
 	return rgb
 }
 
+// Rgb alias of the RGB()
+func Rgb(r, g, b uint8, isBg ...bool) RGBColor { return RGB(r, g, b, isBg...) }
+
 // Bit24 alias of the RGB()
-func Bit24(r, g, b uint8, isBg ...bool) RGBColor {
-	return RGB(r, g, b, isBg...)
-}
+func Bit24(r, g, b uint8, isBg ...bool) RGBColor { return RGB(r, g, b, isBg...) }
 
 // RGBFromSlice quick RGBColor from slice
 func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor {
@@ -114,6 +115,9 @@ func HEX(hex string, isBg ...bool) RGBColor {
 	// mark is empty
 	return emptyRGBColor
 }
+
+// Hex alias of the HEX()
+func Hex(hex string, isBg ...bool) RGBColor { return HEX(hex, isBg...) }
 
 // RGBFromString create RGB color from a string.
 // Usage:

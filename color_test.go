@@ -544,7 +544,7 @@ func TestHexToRGB(t *testing.T) {
 	c = HEX("aabbcc") // rgb: [170 187 204]
 	is.Equal("38;2;170;187;204", c.String())
 
-	c = HEX("#aabbcc") // rgb: [170 187 204]
+	c = Hex("#aabbcc") // rgb: [170 187 204]
 	is.Equal("38;2;170;187;204", c.String())
 
 	c = HEX("0xad99c0") // rgb: [170 187 204]
