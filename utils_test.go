@@ -90,24 +90,34 @@ func TestRgbTo256Table(t *testing.T) {
 	fmt.Println()
 }
 
-func TestC256ToRgb(t *testing.T) {
-	tests := []struct {
-		given uint8
-		want  []uint8
-	}{
-		{4, []uint8{0, 0, 0}},
-		{7, []uint8{170, 0, 0}},
-		{14, []uint8{85, 85, 85}},
-		{124, []uint8{127, 0, 0}},
-		{234, []uint8{28, 28, 28}},
+func TestC256ToRgbV1(t *testing.T) {
+	for i :=0; i < 256; i++ {
+		c256 := uint8(i)
+		C256(c256).Printf("C256:%d", c256)
+		fmt.Print(" => ")
+		rgb := C256ToRgbV1(c256)
+		RGBFromSlice(rgb).Printf("RGB:%v | ", rgb)
+		// assert.Equal(t, item.want, rgb, fmt.Sprint("256 code:", c256))
+		if i%4 == 0 {
+			fmt.Println()
+		}
 	}
+	fmt.Println()
+}
 
-	for _, item := range tests {
-		assert.Equal(t, item.want, C256ToRgb(item.given), fmt.Sprint("256 code:", item.given))
-		fmt.Println("--- c256:", item.given)
-		C256(item.given).Println("color 256 code message")
-		RGBFromSlice(item.want).Println("color rgb message from 256 code")
+func TestC256ToRgb(t *testing.T) {
+	for i :=0; i < 256; i++ {
+		c256 := uint8(i)
+		C256(c256).Printf("C256:%d", c256)
+		fmt.Print(" => ")
+		rgb := C256ToRgb(c256)
+		RGBFromSlice(rgb).Printf("RGB:%v | ", rgb)
+		// assert.Equal(t, item.want, rgb, fmt.Sprint("256 code:", c256))
+		if i%4 == 0 {
+			fmt.Println()
+		}
 	}
+	fmt.Println()
 }
 
 func TestHexToRgb(t *testing.T) {

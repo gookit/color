@@ -325,13 +325,21 @@ func TestPrintBasicColor(t *testing.T) {
  *************************************************************/
 
 func TestColor256(t *testing.T) {
+	is := assert.New(t)
+	c := Bit8(132)
+	c.Print("c256 message")
+	is.Equal(uint8(132), c.Value())
+	is.Equal("38;5;132", c.String())
+	rgb := c.RGBColor()
+	rgb.Print(" => to rgb message\n")
+	is.Equal([]int{175, 95, 135}, rgb.Values())
+	is.Equal("38;2;175;95;135", rgb.String())
+
 	buf := forceOpenColorRender()
 	defer resetColorRender()
 
-	is := assert.New(t)
-
 	// empty
-	c := Color256{1: 99}
+	c = Color256{1: 99}
 	is.True(c.IsEmpty())
 	is.Equal("", c.String())
 

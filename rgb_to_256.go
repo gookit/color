@@ -7,6 +7,8 @@ import (
 
 // adapted from https://gist.github.com/MicahElliott/719710
 var (
+	c256ToRgb = map[uint8]string{}
+
 	// rgb to 256 color look-up table
 	lookupTable = map[string]uint8{
 		// 8-bit, RGB hex
@@ -323,21 +325,43 @@ func Rgb2short(r, g, b uint8) uint8 {
 }
 
 // C256ToRgb convert an 256 color code to RGB numbers
-// refer https://github.com/torvalds/linux/commit/cec5b2a97a11ade56a701e83044d0a2a984c67b4
 func C256ToRgb(val uint8) (rgb []uint8) {
+	// TODO use sync.Once
+	if len(c256ToRgb) == 0 {
+		for hex, c256 := range lookupTable {
+			c256ToRgb[c256] = hex
+		}
+	}
+
+	hex, ok := c256ToRgb[val]
+	if false == ok {
+		return
+	}
+
+	// convert to rgb code
+	rgbInts := Hex2rgb(hex)
+
+	return []uint8{
+		uint8(rgbInts[0]),
+		uint8(rgbInts[1]),
+		uint8(rgbInts[2]),
+	}
+}
+
+// C256ToRgbV1 convert an 256 color code to RGB numbers
+// refer https://github.com/torvalds/linux/commit/cec5b2a97a11ade56a701e83044d0a2a984c67b4
+func C256ToRgbV1(val uint8) (rgb []uint8) {
 	var r, g, b uint8
 	if val < 8 { // Standard colours.
 		// r = val&1 ? 0xaa : 0x00;
-		// g = val&2 ? 0xaa : 0x00;
-		// b = val&4 ? 0xaa : 0x00;
 		r = compareVal(val&1 == 1, 0xaa, 0x00)
-		g = compareVal(val&2 == 1, 0xaa, 0x00)
-		b = compareVal(val&4 == 1, 0xaa, 0x00)
+		g = compareVal(val&2 == 2, 0xaa, 0x00)
+		b = compareVal(val&4 == 4, 0xaa, 0x00)
 	} else if val < 16 {
 		// r = val & 1 ? 0xff : 0x55;
 		r = compareVal(val&1 == 1, 0xff, 0x55)
-		g = compareVal(val&2 == 1, 0xff, 0x55)
-		b = compareVal(val&4 == 1, 0xff, 0x55)
+		g = compareVal(val&2 == 2, 0xff, 0x55)
+		b = compareVal(val&4 == 4, 0xff, 0x55)
 	} else if val < 232 { /* 6x6x6 colour cube. */
 		r = (val - 16) / 36 * 85 / 2
 		g = (val - 16) / 6 % 6 * 85 / 2
