@@ -150,7 +150,7 @@ color.Reset()
 
 ## 基础颜色方法
 
-> 支持在windows `cmd.exe` 使用
+> 支持在windows `cmd.exe`  `powerShell` 等终端使用
 
   - `color.Bold`
   - `color.Black`
@@ -174,7 +174,7 @@ color.Yellow.Println("yellow message")
 
 ## 扩展风格方法 
 
-> 支持在windows `cmd.exe` 使用
+> 支持在windows `cmd.exe`  `powerShell` 等终端使用
 
   - `color.Info`
   - `color.Note`
@@ -401,6 +401,7 @@ s.Printf("style with %s\n", "options")
 - `IsConsole(w io.Writer)` Determine whether w is one of stderr, stdout, stdin
 - `HexToRgb(hex string) (rgb []int)` Convert hex color string to RGB numbers
 - `RgbToHex(rgb []int) string` Convert RGB to hex code
+- 更多请查看文档 https://pkg.go.dev/github.com/gookit/color
 
 ## Gookit 工具包
 
