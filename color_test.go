@@ -118,6 +118,7 @@ func TestRenderCode(t *testing.T) {
 	defer resetColorRender()
 
 	is := assert.New(t)
+	is.True(SupportColor())
 
 	str := RenderCode("36;1", "Hi,", "babe")
 	is.Equal("\x1b[36;1mHi,babe\x1b[0m", str)
@@ -679,8 +680,8 @@ var oldVal bool
 
 // force open color render for testing
 func forceOpenColorRender() *bytes.Buffer {
-	oldVal = isSupportColor
-	isSupportColor = true
+	oldVal = supportColor
+	supportColor = true
 
 	// set output for test
 	buf := new(bytes.Buffer)
@@ -690,7 +691,7 @@ func forceOpenColorRender() *bytes.Buffer {
 }
 
 func resetColorRender() {
-	isSupportColor = oldVal
+	supportColor = oldVal
 	// reset
 	ResetOutput()
 }

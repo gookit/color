@@ -26,7 +26,7 @@ var (
 
 func init() {
 	// if at windows's ConEmu, Cmder, putty ... terminals
-	if isSupportColor {
+	if supportColor {
 		return
 	}
 
@@ -61,11 +61,11 @@ func init() {
 	if err != nil {
 		fmt.Println("Enable colors error:", err)
 		saveInternalError(err)
-		isSupportColor = false
+		supportColor = false
 	}
 
-	// NOTICE: update var `isSupportColor` to TRUE.
-	isSupportColor = true
+	// NOTICE: update var `supportColor` to TRUE.
+	supportColor = true
 
 	// fetch console screen buffer info
 	// err := getConsoleScreenBufferInfo(uintptr(syscall.Stdout), &defScreenInfo)
@@ -128,7 +128,7 @@ func EnableVirtualTerminalProcessing(stream syscall.Handle, enable bool) error {
 // 	old := ForceOpenColor()
 // 	fn()
 // 	// revert color setting
-// 	isSupportColor = old
+// 	supportColor = old
 //
 // 	err = EnableVirtualTerminalProcessing(syscall.Stdout, false)
 // 	if err != nil {

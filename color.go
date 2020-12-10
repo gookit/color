@@ -54,8 +54,8 @@ var (
 	// match color codes
 	codeRegex = regexp.MustCompile(CodeExpr)
 	// mark current env is support color.
-	// Always: isLikeInCmd != isSupportColor
-	isSupportColor = IsSupportColor()
+	// Always: isLikeInCmd != supportColor
+	supportColor = IsSupportColor()
 )
 
 /*************************************************************
@@ -119,6 +119,11 @@ func ResetOptions() {
 	output = os.Stdout
 }
 
+// SupportColor of the current ENV
+func SupportColor() bool {
+	return supportColor
+}
+
 // ForceColor force open color render
 func ForceColor() bool {
 	return ForceOpenColor()
@@ -126,8 +131,8 @@ func ForceColor() bool {
 
 // ForceOpenColor force open color render
 func ForceOpenColor() bool {
-	oldVal := isSupportColor
-	isSupportColor = true
+	oldVal := supportColor
+	supportColor = true
 
 	return oldVal
 }
@@ -161,7 +166,7 @@ func RenderCode(code string, args ...interface{}) string {
 	}
 
 	// disabled OR not support color
-	if !Enable || !isSupportColor {
+	if !Enable || !supportColor {
 		return ClearCode(message)
 	}
 
@@ -177,7 +182,7 @@ func RenderWithSpaces(code string, args ...interface{}) string {
 	}
 
 	// disabled OR not support color
-	if !Enable || !isSupportColor {
+	if !Enable || !supportColor {
 		return ClearCode(message)
 	}
 
@@ -193,7 +198,7 @@ func RenderString(code string, str string) string {
 	}
 
 	// disabled OR not support color
-	if !Enable || !isSupportColor {
+	if !Enable || !supportColor {
 		return ClearCode(str)
 	}
 

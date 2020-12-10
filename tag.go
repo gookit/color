@@ -118,7 +118,7 @@ func ReplaceTag(str string) string {
 	}
 
 	// disabled OR not support color
-	if !Enable || !isSupportColor {
+	if !Enable || !supportColor {
 		return ClearTag(str)
 	}
 
