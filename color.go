@@ -68,10 +68,9 @@ func Set(colors ...Color) (int, error) {
 		return 0, nil
 	}
 
-	// on windows cmd.exe
-	// if isLikeInCmd {
-	// 	return winSet(colors...)
-	// }
+	if !supportColor {
+		return 0, nil
+	}
 
 	return fmt.Printf(SettingTpl, Colors2code(colors...))
 }
@@ -82,10 +81,9 @@ func Reset() (int, error) {
 		return 0, nil
 	}
 
-	// on windows cmd.exe
-	// if isLikeInCmd {
-	// 	return winReset()
-	// }
+	if !supportColor {
+		return 0, nil
+	}
 
 	return fmt.Print(ResetSet)
 }
