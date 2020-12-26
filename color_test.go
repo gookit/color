@@ -64,8 +64,8 @@ func TestSet(t *testing.T) {
 	is := assert.New(t)
 
 	// set
-	num, err := Set(FgGreen)
 	fmt.Println("test color.Set() on OS:", runtime.GOOS)
+	num, err := Set(FgGreen)
 	is.True(num > 0)
 	is.NoError(err)
 	_, err = Reset()
