@@ -4,6 +4,7 @@ on:
     paths:
       - '**.go'
       - 'go.mod'
+      - '**.yml'
 
 # https://github.com/actions
 jobs:

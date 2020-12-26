@@ -63,7 +63,7 @@ func Example() {
 func TestSet(t *testing.T) {
 	is := assert.New(t)
 
-	// set
+	// set enable
 	Enable = true
 	fmt.Println("support color:", SupportColor())
 	fmt.Println("test color.Set() on OS:", runtime.GOOS)
