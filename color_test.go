@@ -67,6 +67,11 @@ func TestSet(t *testing.T) {
 	Enable = true
 	fmt.Println("support color:", SupportColor())
 	fmt.Println("test color.Set() on OS:", runtime.GOOS)
+	if os.Getenv("GITHUB_ACTION") != "" {
+		fmt.Println("Skip run the tests on Github Action")
+		return
+	}
+
 	num, err := Set(FgGreen)
 	is.True(num > 0)
 	is.NoError(err)
