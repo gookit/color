@@ -42,12 +42,6 @@ func init() {
 	// init simple color code info
 	// initWinColorsMap()
 
-	outHandle, err := syscall.Open("CONOUT$", syscall.O_RDWR, 0)
-	if err != nil {
-		fmt.Println(53, err)
-		return
-	}
-
 	// load related windows dll
 	// isMSys = utils.IsMSys()
 	kernel32 = syscall.NewLazyDLL("kernel32.dll")
@@ -57,18 +51,46 @@ func init() {
 	procSetConsoleMode = kernel32.NewProc("SetConsoleMode")
 
 	// enable colors on windows terminal
-	err = EnableVirtualTerminalProcessing(outHandle, true)
-	if err != nil {
-		fmt.Println("Enable colors error:", err)
-		saveInternalError(err)
-		supportColor = false
+	if tryApplyOnCONOUT() {
+		// NOTICE: update var `supportColor` to TRUE.
+		supportColor = true
+		return
 	}
 
-	// NOTICE: update var `supportColor` to TRUE.
-	supportColor = true
+	if tryApplyOnStdout() {
+		// NOTICE: update var `supportColor` to TRUE.
+		supportColor = true
+	}
 
 	// fetch console screen buffer info
 	// err := getConsoleScreenBufferInfo(uintptr(syscall.Stdout), &defScreenInfo)
+}
+
+func tryApplyOnCONOUT() bool {
+	outHandle, err := syscall.Open("CONOUT$", syscall.O_RDWR, 0)
+	if err != nil {
+		saveInternalError(err)
+		return false
+	}
+
+	err = EnableVirtualTerminalProcessing(outHandle, true)
+	if err != nil {
+		saveInternalError(err)
+		return false
+	}
+
+	return true
+}
+
+func tryApplyOnStdout() bool {
+	// try direct open syscall.Stdout
+	err = EnableVirtualTerminalProcessing(syscall.Stdout, true)
+	if err != nil {
+		saveInternalError(err)
+		return false
+	}
+
+	return true
 }
 
 /*************************************************************
