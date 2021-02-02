@@ -84,7 +84,7 @@ func tryApplyOnCONOUT() bool {
 
 func tryApplyOnStdout() bool {
 	// try direct open syscall.Stdout
-	err = EnableVirtualTerminalProcessing(syscall.Stdout, true)
+	err := EnableVirtualTerminalProcessing(syscall.Stdout, true)
 	if err != nil {
 		saveInternalError(err)
 		return false
