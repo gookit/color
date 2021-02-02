@@ -63,24 +63,12 @@ func Example() {
 func TestSet(t *testing.T) {
 	is := assert.New(t)
 
-	// set enable
-	Enable = true
 	fmt.Println("support color:", SupportColor())
 	fmt.Println("test color.Set() on OS:", runtime.GOOS)
-	if os.Getenv("GITHUB_ACTION") != "" {
-		fmt.Println("Skip run the tests on Github Action")
-		return
-	}
-
-	num, err := Set(FgGreen)
-	is.True(num > 0)
-	is.NoError(err)
-	_, err = Reset()
-	is.NoError(err)
 
 	// disable
 	old := Disable()
-	num, err = Set(FgGreen)
+	num, err := Set(FgGreen)
 	is.Nil(err)
 	is.Equal(0, num)
 
@@ -88,6 +76,19 @@ func TestSet(t *testing.T) {
 	is.Nil(err)
 	is.Equal(0, num)
 	Enable = old // revert
+
+	// set enable
+	Enable = true
+	if os.Getenv("GITHUB_ACTION") != "" {
+		fmt.Println("Skip run the tests on Github Action")
+		return
+	}
+
+	num, err = Set(FgGreen)
+	is.True(num > 0)
+	is.NoError(err)
+	_, err = Reset()
+	is.NoError(err)
 
 	if runtime.GOOS == "windows" {
 		fd := uintptr(syscall.Stdout)
