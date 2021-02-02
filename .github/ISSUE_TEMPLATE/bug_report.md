@@ -12,6 +12,12 @@ assignees: inhere
  - OS: `linux` [e.g. linux, macOS]
  - GO Version: `1.13` [e.g. `1.13`]
  - Pkg Version: `1.1.1` [e.g. `1.1.1`]
+ 
+ ENV info on the terminal (by command `env`)
+ 
+ ```
+ // paste env info. NOTICE: Please delete private information 
+ ```
 
 **Describe the bug**
 
