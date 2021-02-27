@@ -41,18 +41,24 @@ var (
 var colorTags = map[string]string{
 	// basic tags,
 	"red":      "0;31",
+	"red1":     "1;31", // with bold
 	"blue":     "0;34",
+	"blue1":    "1;34", // with bold
 	"cyan":     "0;36",
+	"cyan1":    "1;36", // with bold
 	"black":    "0;30",
 	"green":    "0;32",
+	"green1":   "1;32", // with bold
 	"white":    "1;37",
 	"default":  "0;39", // no color
 	"normal":   "0;39", // no color
+	"ylw0":     "0;33",
+	"ylw1":     "1;33", // with bold
 	"brown":    "0;33",
 	"yellow":   "1;33",
 	"mga":      "0;35", // short name
 	"magenta":  "0;35",
-	"mgb":      "1;35", // short name
+	"mgb":      "1;35", // short name, with bold
 	"magentaB": "1;35", // add bold
 
 	// alert tags, like bootstrap's alert

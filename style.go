@@ -283,3 +283,114 @@ func Warnf(format string, a ...interface{}) {
 func Warnln(a ...interface{}) {
 	Warn.Println(a...)
 }
+
+/*************************************************************
+ * SimplePrinter struct
+ *************************************************************/
+
+// SimplePrinter use for quick use color print on inject to struct
+type SimplePrinter struct{}
+
+// Print message
+func (s *SimplePrinter) Print(v ...interface{}) {
+	Print(v...)
+}
+
+// Printf message
+func (s *SimplePrinter) Printf(format string, v ...interface{}) {
+	Printf(format, v...)
+}
+
+// Println message
+func (s *SimplePrinter) Println(v ...interface{}) {
+	Println(v...)
+}
+
+// Infof message
+func (s *SimplePrinter) Infof(format string, a ...interface{}) {
+	Info.Printf(format, a...)
+}
+
+// Infoln message
+func (s *SimplePrinter) Infoln(a ...interface{}) {
+	Info.Println(a...)
+}
+
+// Warnf message
+func (s *SimplePrinter) Warnf(format string, a ...interface{}) {
+	Warn.Printf(format, a...)
+}
+
+// Warnln message
+func (s *SimplePrinter) Warnln(a ...interface{}) {
+	Warn.Println(a...)
+}
+
+// Errorf message
+func (s *SimplePrinter) Errorf(format string, a ...interface{}) {
+	Error.Printf(format, a...)
+}
+
+// Errorln message
+func (s *SimplePrinter) Errorln(a ...interface{}) {
+	Error.Println(a...)
+}
+
+/*************************************************************
+ * color scheme
+ *************************************************************/
+
+// Scheme struct
+type Scheme struct {
+	Name   string
+	Styles map[string]Style
+}
+
+// NewScheme create new Scheme
+func NewScheme(name string, styles map[string]Style) *Scheme {
+	return &Scheme{Name: name, Styles: styles}
+}
+
+// NewDefaultScheme create an defuault color Scheme
+func NewDefaultScheme(name string) *Scheme {
+	return NewScheme(name, map[string]Style{
+		"info":  {OpReset, FgGreen},
+		"warn":  {OpBold, FgYellow},
+		"error": {FgLightWhite, BgRed},
+	})
+}
+
+// Style get by name
+func (s *Scheme) Style(name string) Style {
+	return s.Styles[name]
+}
+
+// Infof message print
+func (s *Scheme) Infof(format string, a ...interface{}) {
+	s.Styles["info"].Printf(format, a...)
+}
+
+// Infoln message print
+func (s *Scheme) Infoln(v ...interface{}) {
+	s.Styles["info"].Println(v...)
+}
+
+// Warnf message print
+func (s *Scheme) Warnf(format string, a ...interface{}) {
+	s.Styles["warn"].Printf(format, a...)
+}
+
+// Warnln message print
+func (s *Scheme) Warnln(v ...interface{}) {
+	s.Styles["warn"].Println(v...)
+}
+
+// Errorf message print
+func (s *Scheme) Errorf(format string, a ...interface{}) {
+	s.Styles["error"].Printf(format, a...)
+}
+
+// Errorln message print
+func (s *Scheme) Errorln(v ...interface{}) {
+	s.Styles["error"].Println(v...)
+}

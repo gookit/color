@@ -165,3 +165,28 @@ func TestStyleFunc(t *testing.T) {
 	assert.Equal(t, "\x1b[97;41mcolor message\x1b[0m", buf.String())
 	buf.Reset()
 }
+
+func TestSimplePrinter_Print(t *testing.T) {
+	sp := &SimplePrinter{}
+	sp.Printf("simple %s", "printer")
+	sp.Infof("simple %s", "printer")
+	sp.Warnf("simple %s", "printer")
+	sp.Errorf("simple %s", "printer")
+	sp.Print("simple printer\n")
+	sp.Println("simple printer")
+	sp.Infoln("simple printer")
+	sp.Warnln("simple printer")
+	sp.Errorln("simple printer")
+}
+
+func TestNewScheme(t *testing.T) {
+	cs := NewDefaultScheme("test")
+
+	cs.Infof("color %s\n", "scheme")
+	cs.Warnf("color %s\n", "scheme")
+	cs.Errorf("color %s\n", "scheme")
+	cs.Infoln("color scheme")
+	cs.Warnln("color scheme")
+	cs.Errorln("color scheme")
+	cs.Style("info").Println("color scheme")
+}

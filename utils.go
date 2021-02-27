@@ -10,6 +10,9 @@ import (
 	"syscall"
 )
 
+// mark/flag
+var supColorMark string
+
 // Support color:
 // 	"TERM=xterm"
 // 	"TERM=xterm-vt220"
@@ -21,6 +24,11 @@ import (
 // 	"TERM=cygwin"
 var specialColorTerms = map[string]bool{
 	"alacritty": true,
+}
+
+// SupColorMark get
+func SupColorMark() string {
+	return supColorMark
 }
 
 /*************************************************************
@@ -59,21 +67,25 @@ func IsMSys() bool {
 func IsSupportColor() bool {
 	envTerm := os.Getenv("TERM")
 	if strings.Contains(envTerm, "term") {
+		supColorMark = "TERM=" + envTerm
 		return true
 	}
 
 	// it's special color term
 	if _, ok := specialColorTerms[envTerm]; ok {
+		supColorMark = "TERM=" + envTerm
 		return true
 	}
 
 	// like on ConEmu software, e.g "ConEmuANSI=ON"
 	if os.Getenv("ConEmuANSI") == "ON" {
+		supColorMark = "ConEmuANSI=ON"
 		return true
 	}
 
 	// like on ConEmu software, e.g "ANSICON=189x2000 (189x43)"
-	if os.Getenv("ANSICON") != "" {
+	if val := os.Getenv("ANSICON"); val != "" {
+		supColorMark = "ANSICON=" + val
 		return true
 	}
 
@@ -94,18 +106,29 @@ func isSupport256Color(termVal string) bool {
 	supported := strings.Contains(termVal, "256color")
 	if !supported {
 		// up: if support true-color, can also support 256-color.
-		supported = IsSupportTrueColor()
+		return IsSupportTrueColor()
 	}
 
+	supColorMark = "TERM=" + termVal
 	return supported
 }
 
-// IsSupportTrueColor render. IsSupportRGBColor
+// IsSupportRGBColor render. alias of the IsSupportTrueColor()
+func IsSupportRGBColor() bool {
+	return IsSupportTrueColor()
+}
+
+// IsSupportTrueColor render.
 func IsSupportTrueColor() bool {
-	val := os.Getenv("COLORTERM")
+	v := os.Getenv("COLORTERM")
 	// "COLORTERM=truecolor"
 	// "COLORTERM=24bit"
-	return strings.Contains(val, "truecolor") || strings.Contains(val, "24bit")
+	ok := strings.Contains(v, "truecolor") || strings.Contains(v, "24bit")
+
+	if ok {
+		supColorMark = "COLORTERM=" + v
+	}
+	return ok
 }
 
 /*************************************************************
@@ -276,14 +299,6 @@ func Fprintf(w io.Writer, format string, a ...interface{}) {
 	str := fmt.Sprintf(format, a...)
 	_, err := fmt.Fprint(w, ReplaceTag(str))
 	saveInternalError(err)
-
-	// if isLikeInCmd {
-	// 	renderColorCodeOnCmd(func() {
-	// 		_, _ = fmt.Fprint(w, ReplaceTag(str))
-	// 	})
-	// } else {
-	// 	_, _ = fmt.Fprint(w, ReplaceTag(str))
-	// }
 }
 
 // Fprintln print rendered messages line to writer
@@ -359,14 +374,6 @@ func doPrintlnV2(code string, args []interface{}) {
 	str := formatArgsForPrintln(args)
 	_, err := fmt.Fprintln(output, RenderString(code, str))
 	saveInternalError(err)
-
-	// if isLikeInCmd {
-	// 	renderColorCodeOnCmd(func() {
-	// 		_, _ = fmt.Fprintln(output, RenderString(code, str))
-	// 	})
-	// } else {
-	// 		_, _ = fmt.Fprintln(output, RenderString(code, str))
-	// }
 }
 
 // if use Println, will add spaces for each arg

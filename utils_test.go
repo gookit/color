@@ -47,6 +47,7 @@ func TestUtilFuncs(t *testing.T) {
 
 	// "COLORTERM=truecolor"
 	mockEnvValue("COLORTERM", "truecolor", func(_ string) {
+		is.True(IsSupportRGBColor())
 		is.True(IsSupportTrueColor())
 	})
 
@@ -91,7 +92,7 @@ func TestRgbTo256Table(t *testing.T) {
 }
 
 func TestC256ToRgbV1(t *testing.T) {
-	for i :=0; i < 256; i++ {
+	for i := 0; i < 256; i++ {
 		c256 := uint8(i)
 		C256(c256).Printf("C256:%d", c256)
 		fmt.Print(" => ")
@@ -106,7 +107,7 @@ func TestC256ToRgbV1(t *testing.T) {
 }
 
 func TestC256ToRgb(t *testing.T) {
-	for i :=0; i < 256; i++ {
+	for i := 0; i < 256; i++ {
 		c256 := uint8(i)
 		C256(c256).Printf("C256:%d", c256)
 		fmt.Print(" => ")

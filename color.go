@@ -25,6 +25,14 @@ import (
 // 	ModeGrayscale
 // )
 
+// TODO console color available level
+const (
+	LevelNo uint8 = iota // not support color.
+	Level16
+	Level256
+	LevelRgb
+)
+
 // color render templates
 // ESC 操作的表示:
 // 	"\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
@@ -42,6 +50,8 @@ const CodeExpr = `\033\[[\d;?]+m`
 var (
 	// Enable switch color render and display
 	Enable = true
+	// Level color support level for current terminal
+	Level = Level16
 	// RenderTag render HTML tag on call color.Xprint, color.PrintX
 	RenderTag = true
 	// errors on windows render OR print to io.Writer
