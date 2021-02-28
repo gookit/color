@@ -28,9 +28,13 @@ func TestUtilFuncs(t *testing.T) {
 	is.NoError(os.Unsetenv("MSYSTEM"))
 	is.False(IsMSys())
 	_ = os.Setenv("MSYSTEM", oldVal)
+}
+
+func TestIsSupportColor(t *testing.T) {
+	is := assert.New(t)
 
 	// IsSupport256Color
-	oldVal = os.Getenv("TERM")
+	oldVal := os.Getenv("TERM")
 	_ = os.Unsetenv("TERM")
 	is.False(IsSupportColor())
 	is.False(IsSupport256Color())
@@ -59,10 +63,16 @@ func TestUtilFuncs(t *testing.T) {
 	// TERM
 	mockEnvValue("TERM", "tmux-256color", func(_ string) {
 		is.True(IsSupportColor())
+		is.Equal("TERM=tmux-256color", SupColorMark())
 	})
 
 	// TERM
 	mockEnvValue("TERM", "rxvt-unicode-256color", func(_ string) {
+		is.True(IsSupportColor())
+	})
+
+	// TERM
+	mockEnvValue("TERM", "alacritty", func(_ string) {
 		is.True(IsSupportColor())
 	})
 

@@ -168,6 +168,8 @@ func TestRenderCode(t *testing.T) {
 	str = RenderString("36;1", "Text")
 	is.Equal("Text", str)
 	Enable = true
+
+	is.Empty(GetErrors())
 }
 
 func TestClearCode(t *testing.T) {

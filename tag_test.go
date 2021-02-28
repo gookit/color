@@ -81,17 +81,21 @@ func TestParseCodeFromAttr(t *testing.T) {
 }
 
 func TestPrint(t *testing.T) {
+	is := assert.New(t)
+
+	s := Sprint()
+	is.Equal("", s)
+
 	// force open color render for testing
 	buf := forceOpenColorRender()
 	defer resetColorRender()
-	is := assert.New(t)
 
 	is.True(len(GetColorTags()) > 0)
 	is.True(IsDefinedTag("info"))
 	is.Equal("0;32", GetTagCode("info"))
 	is.Equal("", GetTagCode("not-exist"))
 
-	s := Sprint("<red>MSG</>")
+	s = Sprint("<red>MSG</>")
 	is.Equal("\x1b[0;31mMSG\x1b[0m", s)
 
 	s = Sprint("<red>H</><green>I</>")
