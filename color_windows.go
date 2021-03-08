@@ -54,12 +54,14 @@ func init() {
 	if tryApplyOnCONOUT() {
 		// NOTICE: update var `supportColor` to TRUE.
 		supportColor = true
+		colorLevel = LevelRgb
 		return
 	}
 
 	if tryApplyOnStdout() {
 		// NOTICE: update var `supportColor` to TRUE.
 		supportColor = true
+		colorLevel = LevelRgb
 	}
 
 	// fetch console screen buffer info

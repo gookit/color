@@ -3,6 +3,8 @@ package color
 import (
 	"fmt"
 	"math"
+	"strconv"
+	"strings"
 )
 
 // adapted from https://gist.github.com/MicahElliott/719710
@@ -295,6 +297,139 @@ var (
 // RgbTo256Table mapping data
 func RgbTo256Table() map[string]uint8 {
 	return lookupTable
+}
+
+/*************************************************************
+ * helper methods for converts
+ *************************************************************/
+
+// Colors2code convert colors to code. return like "32;45;3"
+func Colors2code(colors ...Color) string {
+	if len(colors) == 0 {
+		return ""
+	}
+
+	var codes []string
+	for _, color := range colors {
+		codes = append(codes, color.String())
+	}
+
+	return strings.Join(codes, ";")
+}
+
+// Hex2rgb alias of the HexToRgb()
+func Hex2rgb(hex string) []int { return HexToRgb(hex) }
+
+// HexToRGB alias of the HexToRgb()
+func HexToRGB(hex string) []int { return HexToRgb(hex) }
+
+// HexToRgb convert hex color string to RGB numbers
+// Usage:
+// 	rgb := HexToRgb("ccc") // rgb: [204 204 204]
+// 	rgb := HexToRgb("aabbcc") // rgb: [170 187 204]
+// 	rgb := HexToRgb("#aabbcc") // rgb: [170 187 204]
+// 	rgb := HexToRgb("0xad99c0") // rgb: [170 187 204]
+func HexToRgb(hex string) (rgb []int) {
+	hex = strings.TrimSpace(hex)
+	if hex == "" {
+		return
+	}
+
+	// like from css. eg "#ccc" "#ad99c0"
+	if hex[0] == '#' {
+		hex = hex[1:]
+	}
+
+	hex = strings.ToLower(hex)
+	switch len(hex) {
+	case 3: // "ccc"
+		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
+	case 8: // "0xad99c0"
+		hex = strings.TrimPrefix(hex, "0x")
+	}
+
+	// recheck
+	if len(hex) != 6 {
+		return
+	}
+
+	// convert string to int64
+	if i64, err := strconv.ParseInt(hex, 16, 32); err == nil {
+		color := int(i64)
+		// parse int
+		rgb = make([]int, 3)
+		rgb[0] = color >> 16
+		rgb[1] = (color & 0x00FF00) >> 8
+		rgb[2] = color & 0x0000FF
+	}
+
+	return
+}
+
+// Rgb2hex alias of the RgbToHex()
+func Rgb2hex(rgb []int) string { return RgbToHex(rgb) }
+
+// RgbToHex convert RGB-code to hex-code
+// Usage:
+//	hex := RgbToHex([]int{170, 187, 204}) // hex: "aabbcc"
+func RgbToHex(rgb []int) string {
+	hexNodes := make([]string, len(rgb))
+	for _, v := range rgb {
+		hexNodes = append(hexNodes, strconv.FormatInt(int64(v), 16))
+	}
+
+	return strings.Join(hexNodes, "")
+}
+
+// Rgb2ansi alias of the RgbToAnsi()
+func Rgb2ansi(r, g, b uint8, isBg bool) uint8 {
+	return RgbToAnsi(r, g, b, isBg)
+}
+
+// RgbToAnsi convert RGB-code to 16-code
+// refer https://github.com/radareorg/radare2/blob/master/libr/cons/rgb.c#L249-L271
+func RgbToAnsi(r, g, b uint8, isBg bool) uint8 {
+	var bright, c, k uint8
+
+	base := compareVal(isBg, BgBase, FgBase)
+
+	// eco bright-specific
+	if r == 0x80 && g == 0x80 && b == 0x80 { // 0x80=128
+		bright = 53
+	} else if r == 0xff || g == 0xff || b == 0xff { // 0xff=255
+		bright = 60
+	} // else bright = 0
+
+	if r == g && g == b {
+		// 0x7f=127
+		// r = (r > 0x7f) ? 1 : 0;
+		r = compareVal(r > 0x7f, 1, 0)
+		g = compareVal(g > 0x7f, 1, 0)
+		b = compareVal(b > 0x7f, 1, 0)
+	} else {
+		k = (r + g + b) / 3
+
+		// r = (r >= k) ? 1 : 0;
+		r = compareVal(r >= k, 1, 0)
+		g = compareVal(g >= k, 1, 0)
+		b = compareVal(b >= k, 1, 0)
+	}
+
+	// c = (r ? 1 : 0) + (g ? (b ? 6 : 2) : (b ? 4 : 0))
+	c = compareVal(r > 0, 1, 0)
+
+	if g > 0 {
+		c += compareVal(b > 0, 6, 2)
+	} else {
+		c += compareVal(b > 0, 4, 0)
+	}
+
+	return base + bright + c
+}
+
+// Rgb2short convert RGB-code to 256-code
+func RgbTo256(r, g, b uint8) uint8 {
+	return Rgb2short(r, g, b)
 }
 
 // Rgb2short convert RGB-code to 256-code

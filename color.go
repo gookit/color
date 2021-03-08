@@ -25,12 +25,12 @@ import (
 // 	ModeGrayscale
 // )
 
-// TODO console color available level
+// console color available level
 const (
-	LevelNo uint8 = iota // not support color.
-	Level16
-	Level256
-	LevelRgb
+	LevelNo  uint8 = iota // not support color.
+	Level16               // 3/4 bit color supported
+	Level256              // 8 bit color supported
+	LevelRgb              // (24 bit)true color supported
 )
 
 // color render templates
@@ -50,8 +50,7 @@ const CodeExpr = `\033\[[\d;?]+m`
 var (
 	// Enable switch color render and display
 	Enable = true
-	// Level color support level for current terminal
-	Level = Level16
+
 	// RenderTag render HTML tag on call color.Xprint, color.PrintX
 	RenderTag = true
 	// errors on windows render OR print to io.Writer
