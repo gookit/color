@@ -123,12 +123,6 @@ func isSupport16Color(envTerm string) bool {
 		return true
 	}
 
-	// it's special color term
-	if _, ok := specialColorTerms[envTerm]; ok {
-		supColorMark = "TERM=" + envTerm
-		return true
-	}
-
 	return false
 }
 
@@ -147,6 +141,12 @@ func isSupport256Color(envTerm string) bool {
 	// like on ConEmu software, e.g "ANSICON=189x2000 (189x43)"
 	if val := os.Getenv("ANSICON"); val != "" {
 		supColorMark = "ANSICON=" + val
+		return true
+	}
+
+	// it's special color term
+	if _, ok := specialColorTerms[envTerm]; ok {
+		supColorMark = "TERM=" + envTerm
 		return true
 	}
 

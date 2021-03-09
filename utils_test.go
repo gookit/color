@@ -39,6 +39,12 @@ func TestIsSupportColor(t *testing.T) {
 	is.False(IsSupportColor())
 	is.False(IsSupport256Color())
 
+	// TERM
+	mockEnvValue("TERM", "xterm", func(_ string) {
+		is.True(IsSupport16Color())
+		is.True(IsSupportColor())
+	})
+
 	// ConEmuANSI
 	mockEnvValue("ConEmuANSI", "ON", func(_ string) {
 		is.True(IsSupportColor())
@@ -47,10 +53,13 @@ func TestIsSupportColor(t *testing.T) {
 	// ANSICON
 	mockEnvValue("ANSICON", "189x2000 (189x43)", func(_ string) {
 		is.True(IsSupportColor())
+		is.Equal(Level256, ColorLevel())
 	})
 
 	// "COLORTERM=truecolor"
 	mockEnvValue("COLORTERM", "truecolor", func(_ string) {
+		is.True(IsSupportColor())
+		is.Equal(LevelRgb, ColorLevel())
 		is.True(IsSupportRGBColor())
 		is.True(IsSupportTrueColor())
 	})
@@ -58,22 +67,26 @@ func TestIsSupportColor(t *testing.T) {
 	// TERM
 	mockEnvValue("TERM", "screen-256color", func(_ string) {
 		is.True(IsSupportColor())
+		is.Equal(Level256, ColorLevel())
 	})
 
 	// TERM
 	mockEnvValue("TERM", "tmux-256color", func(_ string) {
 		is.True(IsSupportColor())
+		is.Equal(Level256, ColorLevel())
 		is.Equal("TERM=tmux-256color", SupColorMark())
 	})
 
 	// TERM
 	mockEnvValue("TERM", "rxvt-unicode-256color", func(_ string) {
 		is.True(IsSupportColor())
+		is.Equal(Level256, ColorLevel())
 	})
 
 	// TERM
 	mockEnvValue("TERM", "alacritty", func(_ string) {
 		is.True(IsSupportColor())
+		is.Equal(Level256, ColorLevel())
 	})
 
 	is.NoError(os.Setenv("TERM", "xterm-vt220"))

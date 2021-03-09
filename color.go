@@ -17,14 +17,6 @@ import (
 	"regexp"
 )
 
-// console color mode
-// const (
-// 	ModeNormal = iota
-// 	Mode256    // 8 bite
-// 	ModeRGB    // 24 bite
-// 	ModeGrayscale
-// )
-
 // console color available level
 const (
 	LevelNo  uint8 = iota // not support color.
@@ -50,7 +42,6 @@ const CodeExpr = `\033\[[\d;?]+m`
 var (
 	// Enable switch color render and display
 	Enable = true
-
 	// RenderTag render HTML tag on call color.Xprint, color.PrintX
 	RenderTag = true
 	// errors on windows render OR print to io.Writer

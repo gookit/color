@@ -61,7 +61,26 @@ def <info>info text
 	is.Equal("", s)
 }
 
-func TestParseCodeFromAttr(t *testing.T) {
+func TestParseCodeFromAttr_tagName(t *testing.T) {
+	is := assert.New(t)
+
+	s := ParseCodeFromAttr("=")
+	is.Equal("", s)
+
+	s = ParseCodeFromAttr("fg=lightRed;bg=lightRed;op=bold,blink")
+	is.Equal("91;101;1;5", s)
+
+	s = ParseCodeFromAttr("fg= lightRed;bg=lightRed;op=bold,")
+	is.Equal("91;101;1", s)
+
+	s = ParseCodeFromAttr("fg =lightRed;bg=lightRed;op=bold,blink")
+	is.Equal("91;101;1;5", s)
+
+	s = ParseCodeFromAttr("fg = lightRed;bg=lightRed;op=bold,blink")
+	is.Equal("91;101;1;5", s)
+}
+
+func TestParseCodeFromAttr_rgbCode(t *testing.T) {
 	is := assert.New(t)
 
 	s := ParseCodeFromAttr("=")
