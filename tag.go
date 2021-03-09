@@ -39,7 +39,7 @@ var (
 // Usage: <tag>content text</>
 // @notice 加 0 在前面是为了防止之前的影响到现在的设置
 var colorTags = map[string]string{
-	// basic tags,
+	// basic tags
 	"red":      "0;31",
 	"red1":     "1;31", // with bold
 	"blue":     "0;34",
@@ -95,16 +95,18 @@ var colorTags = map[string]string{
 	"light_magenta": "0;95",
 
 	// extra
-	"lightRedEx":     "0;91",
-	"light_red_ex":   "0;91",
-	"lightGreenEx":   "0;92",
-	"light_green_ex": "0;92",
-	"lightBlueEx":    "0;94",
-	"light_blue_ex":  "0;94",
-	"lightCyanEx":    "0;96",
-	"light_cyan_ex":  "0;96",
-	"whiteEx":        "0;97;40",
-	"white_ex":       "0;97;40",
+	"lightRedEx":       "0;91",
+	"light_red_ex":     "0;91",
+	"lightGreenEx":     "0;92",
+	"light_green_ex":   "0;92",
+	"lightBlueEx":      "0;94",
+	"light_blue_ex":    "0;94",
+	"lightMagentaEx":   "0;95",
+	"light_magenta_ex": "0;95",
+	"lightCyanEx":      "0;96",
+	"light_cyan_ex":    "0;96",
+	"whiteEx":          "0;97;40",
+	"white_ex":         "0;97;40",
 
 	// option
 	"bold":       "1",
