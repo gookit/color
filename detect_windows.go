@@ -28,25 +28,30 @@ var (
 )
 
 func init() {
-	// if at windows's ConEmu, Cmder, putty ... terminals
-	if supportColor {
+	if !SupportColor() {
+		isLikeInCmd = true
 		return
 	}
-
-	isLikeInCmd = true
 
 	// if disabled.
 	if !Enable {
 		return
 	}
 
+	// if at windows's ConEmu, Cmder, putty ... terminals not need VTP
+
 	// -------- try force enable colors on windows terminal -------
+	if needVTP {
+		tryEnableVTP()
+	}
 
-	// init simple color code info
-	// initWinColorsMap()
+	// fetch console screen buffer info
+	// err := getConsoleScreenBufferInfo(uintptr(syscall.Stdout), &defScreenInfo)
+}
 
+// try force enable colors on windows terminal
+func tryEnableVTP() bool {
 	// load related windows dll
-	// isMSys = utils.IsMSys()
 	kernel32 = syscall.NewLazyDLL("kernel32.dll")
 
 	// https://docs.microsoft.com/en-us/windows/console/setconsolemode
@@ -55,20 +60,12 @@ func init() {
 
 	// enable colors on windows terminal
 	if tryApplyOnCONOUT() {
-		// NOTICE: update var `supportColor` to TRUE.
-		supportColor = true
-		colorLevel, colorMark = LevelRgb, "VirtualTerminal"
 		return
 	}
 
 	if tryApplyOnStdout() {
-		// NOTICE: update var `supportColor` to TRUE.
-		supportColor = true
-		colorLevel, colorMark = LevelRgb, "VirtualTerminal"
+		return
 	}
-
-	// fetch console screen buffer info
-	// err := getConsoleScreenBufferInfo(uintptr(syscall.Stdout), &defScreenInfo)
 }
 
 func tryApplyOnCONOUT() bool {
@@ -103,16 +100,17 @@ var (
 	winVersion, _, buildNumber = windows.RtlGetNtVersionNumbers()
 )
 
-// refer from https://github.com/Delta456/box-cli-maker/blob/master/detect_windows.go
-// detectTerminalColor detects the Color Level Supported
-func detectTerminalColor() terminfo.ColorLevel {
+// refer
+//  https://github.com/Delta456/box-cli-maker/blob/7b5a1ad8a016ce181e7d8b05e24b54ff60b4b38a/detect_windows.go#L30-L57
+// detects the Color Level Supported on windows: cmd, powerShell
+func detectSpecialTermColor() (tl terminfo.ColorLevel, needVTP bool) {
 	if os.Getenv("ConEmuANSI") == "ON" {
 		// ConEmuANSI is "ON" for generic ANSI support
 		// but True Color option is enabled by default
 		// I am just assuming that people wouldn't have disabled it
 		// Even if it is not enabled then ConEmu will auto round off
 		// accordingly
-		return terminfo.ColorLevelMillions
+		return terminfo.ColorLevelMillions, false
 	}
 
 	// Before Windows 10 Build Number 10586, console never supported ANSI Colors
@@ -122,18 +120,18 @@ func detectTerminalColor() terminfo.ColorLevel {
 			conVersion := os.Getenv("ANSICON_VER")
 			// 8 bit Colors were only supported after v1.81 release
 			if conVersion >= "181" {
-				return terminfo.ColorLevelHundreds
+				return terminfo.ColorLevelHundreds, false
 			}
-			return terminfo.ColorLevelBasic
+			return terminfo.ColorLevelBasic, false
 		}
-		return terminfo.ColorLevelNone
+		return terminfo.ColorLevelNone, true
 	}
 
 	// True Color is not available before build 14931 so fallback to 8 bit color.
 	if buildNumber < 14931 {
-		return terminfo.ColorLevelHundreds
+		return terminfo.ColorLevelHundreds, true
 	}
-	return terminfo.ColorLevelMillions
+	return terminfo.ColorLevelMillions, true
 }
 
 /*************************************************************

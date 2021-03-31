@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/xo/terminfo"
 )
 
 func Example() {
@@ -93,7 +94,7 @@ func TestSet(t *testing.T) {
 	if runtime.GOOS == "windows" {
 		fd := uintptr(syscall.Stdout)
 		// if run test by goland, will return false
-		if IsTerminal(int(fd)) {
+		if IsTerminal(fd) {
 			fmt.Println("- IsTerminal return TRUE")
 		} else {
 			fmt.Println("- IsTerminal return FALSE")
@@ -686,12 +687,12 @@ func TestOpts_Add(t *testing.T) {
  * test helpers
  *************************************************************/
 
-var oldVal bool
+var oldVal terminfo.ColorLevel
 
 // force open color render for testing
 func forceOpenColorRender() *bytes.Buffer {
-	oldVal = supportColor
-	supportColor = true
+	oldVal = colorLevel
+	ForceOpenColor()
 
 	// set output for test
 	buf := new(bytes.Buffer)
@@ -701,7 +702,7 @@ func forceOpenColorRender() *bytes.Buffer {
 }
 
 func resetColorRender() {
-	supportColor = oldVal
+	colorLevel = oldVal
 	// reset
 	ResetOutput()
 }

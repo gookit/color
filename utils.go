@@ -3,7 +3,6 @@ package color
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"runtime"
@@ -32,23 +31,24 @@ var (
 
 	// the color support level for current terminal
 	// colorMark - mark/flag string. eg: "TERM=tmux-256color"
-	colorLevel, colorMark = DetectColorLevel()
+	colorLevel, needVTP = detectTermColorLevel()
 	// onceChecker = sync.Once{}
 )
 
 // TermColorLevel value
-func TermColorLevel() LevelTyp {
+func TermColorLevel() terminfo.ColorLevel {
 	return colorLevel
-}
-
-// SupColorMark value
-func SupColorMark() string {
-	return colorMark
 }
 
 /*************************************************************
  * helper methods for detect color supports
  *************************************************************/
+
+// DetectColorLevel for current env
+func DetectColorLevel() terminfo.ColorLevel {
+	level,_ := detectTermColorLevel()
+	return level
+}
 
 // func TermColorLevel(refresh bool) uint8 {
 // 	syncOnce.Do(func() {
@@ -58,26 +58,52 @@ func SupColorMark() string {
 // 	return colorLevel
 // }
 
-// DetectColorLevel for current env
-func DetectColorLevel() (LevelTyp, string) {
-	// check (rgb)true color.
-	if ok, mark := isSupportTrueColor(); ok {
-		return LevelRgb, mark
+// refer https://github.com/Delta456/box-cli-maker
+func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
+	var err error
+	level, err = terminfo.ColorLevelFromEnv()
+	if err != nil {
+		// if on windows OS
+		if runtime.GOOS == "windows" {
+			level, needVTP = detectSpecialTermColor()
+		} else {
+			saveInternalError(err)
+		}
+		return
 	}
 
-	envTerm := os.Getenv("TERM")
-
-	// check 256 color
-	if ok, mark := isSupport256Color(envTerm); ok {
-		return Level256, mark
+	// Detect WSL as it has True Color support
+	if level == terminfo.ColorLevelNone && runtime.GOOS == "windows" {
+		level, needVTP = detectSpecialTermColor()
 	}
+	return
+}
 
-	// check 16 color
-	if ok, mark := isSupport16Color(envTerm); ok {
-		return Level16, mark
+var detectedWSL bool
+var wslContents string
+
+// https://github.com/Microsoft/WSL/issues/423#issuecomment-221627364
+func detectWSL() bool {
+	if !detectedWSL {
+		b := make([]byte, 1024)
+		// `cat /proc/version`
+		// on mac:
+		// 	!not the file!
+		// on linux(debian,ubuntu,alpine):
+		//	Linux version 4.19.121-linuxkit (root@18b3f92ade35) (gcc version 9.2.0 (Alpine 9.2.0)) #1 SMP Thu Jan 21 15:36:34 UTC 2021
+		// on win git bash, conEmu:
+		// 	MINGW64_NT-10.0-19042 version 3.1.7-340.x86_64 (@WIN-N0G619FD3UK) (gcc version 9.3.0 (GCC) ) 2020-10-23 13:08 UTC
+		// on WSL:
+		//  Linux version 4.4.0-19041-Microsoft (Microsoft@Microsoft.com) (gcc version 5.4.0 (GCC) ) #488-Microsoft Mon Sep 01 13:43:00 PST 2020
+		f, err := os.Open("/proc/version")
+		if err == nil {
+			_, _ = f.Read(b) // ignore error
+			f.Close()
+			wslContents = string(b)
+		}
+		detectedWSL = true
 	}
-
-	return LevelNo, ""
+	return strings.Contains(wslContents, "Microsoft")
 }
 
 // IsSupportColor check current console is support color.
@@ -366,56 +392,4 @@ func stringToArr(str, sep string) (arr []string) {
 		}
 	}
 	return
-}
-
-// refer https://github.com/Delta456/box-cli-maker
-func detectTermColorLevel() terminfo.ColorLevel {
-	level, err := terminfo.ColorLevelFromEnv()
-	if err != nil {
-		saveInternalError(err)
-		return terminfo.ColorLevelNone
-	}
-
-	// Detect WSL as it has True Color support
-	if level == terminfo.ColorLevelNone && runtime.GOOS == "windows" {
-		// `cat /proc/sys/kernel/osrelease`
-		// on WSL Output:
-		// 4.4.0-19041-Microsoft
-		wsl, err := ioutil.ReadFile("/proc/sys/kernel/osrelease")
-		if err != nil {
-			saveInternalError(err)
-			return level
-		}
-
-		// Microsoft for WSL and microsoft for WSL 2
-		content := strings.ToLower(string(wsl))
-		if strings.Contains(content, "microsoft") {
-			return terminfo.ColorLevelMillions
-		}
-	}
-
-	return level
-}
-
-var detectedWSL bool
-var detectedWSLContents string
-
-// https://github.com/Microsoft/WSL/issues/423#issuecomment-221627364
-func detectWSL() bool {
-	if !detectedWSL {
-		b := make([]byte, 1024)
-		// `cat /proc/version`
-		// on win git bash, conEmu:
-		// 	MINGW64_NT-10.0-19042 version 3.1.7-340.x86_64 (@WIN-N0G619FD3UK) (gcc version 9.3.0 (GCC) ) 2020-10-23 13:08 UTC
-		// on WSL:
-		// Linux version 4.4.0-19041-Microsoft (Microsoft@Microsoft.com) (gcc version 5.4.0 (GCC) ) #488-Microsoft Mon Sep 01 13:43:00 PST 2020
-		f, err := os.Open("/proc/version")
-		if err == nil {
-			_, _ = f.Read(b) // ignore error
-			f.Close()
-			detectedWSLContents = string(b)
-		}
-		detectedWSL = true
-	}
-	return strings.Contains(detectedWSLContents, "Microsoft")
 }

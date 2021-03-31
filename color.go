@@ -15,6 +15,8 @@ import (
 	"io"
 	"os"
 	"regexp"
+
+	"github.com/xo/terminfo"
 )
 
 // color render templates
@@ -47,7 +49,7 @@ var (
 	codeRegex = regexp.MustCompile(CodeExpr)
 	// mark current env is support color.
 	// Always: isLikeInCmd != supportColor
-	supportColor = IsSupportColor()
+	// supportColor = IsSupportColor()
 )
 
 /*************************************************************
@@ -60,7 +62,7 @@ func Set(colors ...Color) (int, error) {
 		return 0, nil
 	}
 
-	if !supportColor {
+	if !SupportColor() {
 		return 0, nil
 	}
 
@@ -73,7 +75,7 @@ func Reset() (int, error) {
 		return 0, nil
 	}
 
-	if !supportColor {
+	if !SupportColor() {
 		return 0, nil
 	}
 
@@ -109,22 +111,27 @@ func ResetOptions() {
 	output = os.Stdout
 }
 
-// SupportColor of the current ENV
+// SupportColor on the current ENV
 func SupportColor() bool {
-	return supportColor
+	return colorLevel > terminfo.ColorLevelNone
 }
 
 // ForceColor force open color render
-func ForceColor() bool {
+func ForceSetColorLevel(level terminfo.ColorLevel) terminfo.ColorLevel {
+	oldLevelVal := colorLevel
+	colorLevel = level
+	return oldLevelVal
+}
+
+// ForceColor force open color render
+func ForceColor() terminfo.ColorLevel {
 	return ForceOpenColor()
 }
 
 // ForceOpenColor force open color render
-func ForceOpenColor() bool {
-	oldVal := supportColor
-	supportColor = true
-
-	return oldVal
+func ForceOpenColor() terminfo.ColorLevel {
+	// TODO should set level to ?
+	return ForceSetColorLevel(terminfo.ColorLevelMillions)
 }
 
 // IsLikeInCmd check result
@@ -156,7 +163,7 @@ func RenderCode(code string, args ...interface{}) string {
 	}
 
 	// disabled OR not support color
-	if !Enable || !supportColor {
+	if !Enable || !SupportColor() {
 		return ClearCode(message)
 	}
 
@@ -172,7 +179,7 @@ func RenderWithSpaces(code string, args ...interface{}) string {
 	}
 
 	// disabled OR not support color
-	if !Enable || !supportColor {
+	if !Enable || !SupportColor() {
 		return ClearCode(message)
 	}
 
@@ -188,7 +195,7 @@ func RenderString(code string, str string) string {
 	}
 
 	// disabled OR not support color
-	if !Enable || !supportColor {
+	if !Enable || !SupportColor() {
 		return ClearCode(str)
 	}
 
