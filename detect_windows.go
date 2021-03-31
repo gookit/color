@@ -8,6 +8,7 @@
 package color
 
 import (
+	"os"
 	"syscall"
 	"unsafe"
 
