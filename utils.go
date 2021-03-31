@@ -3,10 +3,14 @@ package color
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
+	"runtime"
 	"strings"
 	"syscall"
+
+	"github.com/xo/terminfo"
 )
 
 // LevelTyp for color level
@@ -365,27 +369,45 @@ func stringToArr(str, sep string) (arr []string) {
 }
 
 // refer https://github.com/Delta456/box-cli-maker
-// func detectTerminalColor() terminfo.ColorLevel {
-// 	level, err := terminfo.ColorLevelFromEnv()
-// 	if err != nil {
-// 		saveInternalError(err)
-// 		return terminfo.ColorLevelNone
-// 	}
-//
-// 	// Detect WSL as it has True Color support
-// 	if level == terminfo.ColorLevelNone && runtime.GOOS == "windows" {
-// 		wsl, err := ioutil.ReadFile("/proc/sys/kernel/osrelease")
-// 		if err != nil {
-// 			saveInternalError(err)
-// 			return level
-// 		}
-//
-// 		// Microsoft for WSL and microsoft for WSL 2
-// 		content := strings.ToLower(string(wsl))
-// 		if strings.Contains(content, "microsoft") {
-// 			return terminfo.ColorLevelMillions
-// 		}
-// 	}
-//
-// 	return level
-// }
+func detectTermColorLevel() terminfo.ColorLevel {
+	level, err := terminfo.ColorLevelFromEnv()
+	if err != nil {
+		saveInternalError(err)
+		return terminfo.ColorLevelNone
+	}
+
+	// Detect WSL as it has True Color support
+	if level == terminfo.ColorLevelNone && runtime.GOOS == "windows" {
+		wsl, err := ioutil.ReadFile("/proc/sys/kernel/osrelease")
+		if err != nil {
+			saveInternalError(err)
+			return level
+		}
+
+		// Microsoft for WSL and microsoft for WSL 2
+		content := strings.ToLower(string(wsl))
+		if strings.Contains(content, "microsoft") {
+			return terminfo.ColorLevelMillions
+		}
+	}
+
+	return level
+}
+
+var detectedWSL bool
+var detectedWSLContents string
+
+// https://github.com/Microsoft/WSL/issues/423#issuecomment-221627364
+func detectWSL() bool {
+	if !detectedWSL {
+		b := make([]byte, 1024)
+		f, err := os.Open("/proc/version")
+		if err == nil {
+			_, _ = f.Read(b) // ignore error
+			f.Close()
+			detectedWSLContents = string(b)
+		}
+		detectedWSL = true
+	}
+	return strings.Contains(detectedWSLContents, "Microsoft")
+}

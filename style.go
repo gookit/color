@@ -285,58 +285,6 @@ func Warnln(a ...interface{}) {
 }
 
 /*************************************************************
- * SimplePrinter struct
- *************************************************************/
-
-// SimplePrinter use for quick use color print on inject to struct
-type SimplePrinter struct{}
-
-// Print message
-func (s *SimplePrinter) Print(v ...interface{}) {
-	Print(v...)
-}
-
-// Printf message
-func (s *SimplePrinter) Printf(format string, v ...interface{}) {
-	Printf(format, v...)
-}
-
-// Println message
-func (s *SimplePrinter) Println(v ...interface{}) {
-	Println(v...)
-}
-
-// Infof message
-func (s *SimplePrinter) Infof(format string, a ...interface{}) {
-	Info.Printf(format, a...)
-}
-
-// Infoln message
-func (s *SimplePrinter) Infoln(a ...interface{}) {
-	Info.Println(a...)
-}
-
-// Warnf message
-func (s *SimplePrinter) Warnf(format string, a ...interface{}) {
-	Warn.Printf(format, a...)
-}
-
-// Warnln message
-func (s *SimplePrinter) Warnln(a ...interface{}) {
-	Warn.Println(a...)
-}
-
-// Errorf message
-func (s *SimplePrinter) Errorf(format string, a ...interface{}) {
-	Error.Printf(format, a...)
-}
-
-// Errorln message
-func (s *SimplePrinter) Errorln(a ...interface{}) {
-	Error.Println(a...)
-}
-
-/*************************************************************
  * color scheme
  *************************************************************/
 

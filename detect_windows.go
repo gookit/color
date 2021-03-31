@@ -8,9 +8,11 @@
 package color
 
 import (
-	"fmt"
 	"syscall"
 	"unsafe"
+
+	"github.com/xo/terminfo"
+	"golang.org/x/sys/windows"
 )
 
 // related docs
@@ -95,6 +97,44 @@ func tryApplyOnStdout() bool {
 	return true
 }
 
+// Get the Windows Version and Build Number
+var (
+	winVersion, _, buildNumber = windows.RtlGetNtVersionNumbers()
+)
+
+// refer from https://github.com/Delta456/box-cli-maker/blob/master/detect_windows.go
+// detectTerminalColor detects the Color Level Supported
+func detectTerminalColor() terminfo.ColorLevel {
+	if os.Getenv("ConEmuANSI") == "ON" {
+		// ConEmuANSI is "ON" for generic ANSI support
+		// but True Color option is enabled by default
+		// I am just assuming that people wouldn't have disabled it
+		// Even if it is not enabled then ConEmu will auto round off
+		// accordingly
+		return terminfo.ColorLevelMillions
+	}
+
+	// Before Windows 10 Build Number 10586, console never supported ANSI Colors
+	if buildNumber < 10586 || winVersion < 10 {
+		// Detect if using ANSICON on older systems
+		if os.Getenv("ANSICON") != "" {
+			conVersion := os.Getenv("ANSICON_VER")
+			// 8 bit Colors were only supported after v1.81 release
+			if conVersion >= "181" {
+				return terminfo.ColorLevelHundreds
+			}
+			return terminfo.ColorLevelBasic
+		}
+		return terminfo.ColorLevelNone
+	}
+
+	// True Color is not available before build 14931 so fallback to 8 bit color.
+	if buildNumber < 14931 {
+		return terminfo.ColorLevelHundreds
+	}
+	return terminfo.ColorLevelMillions
+}
+
 /*************************************************************
  * render full color code on windows(8,16,24bit color)
  *************************************************************/
@@ -120,7 +160,7 @@ func EnableVirtualTerminalProcessing(stream syscall.Handle, enable bool) error {
 	// err := syscall.GetConsoleMode(syscall.Stdout, &mode)
 	err := syscall.GetConsoleMode(stream, &mode)
 	if err != nil {
-		fmt.Println(92, err)
+		// fmt.Println("EnableVirtualTerminalProcessing", err)
 		return err
 	}
 
@@ -172,12 +212,13 @@ func IsTty(fd uintptr) bool {
 }
 
 // IsTerminal returns true if the given file descriptor is a terminal.
+//
 // Usage:
 // 	fd := os.Stdout.Fd()
 // 	fd := uintptr(syscall.Stdout) // for windows
 // 	IsTerminal(fd)
-func IsTerminal(fd int) bool {
+func IsTerminal(fd uintptr) bool {
 	var st uint32
-	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, uintptr(fd), uintptr(unsafe.Pointer(&st)), 0)
+	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, fd, uintptr(unsafe.Pointer(&st)), 0)
 	return r != 0 && e == 0
 }
