@@ -18,4 +18,5 @@ func main() {
 	fmt.Printf("SupColorMark: %#v\n", color.SupColorMark())
 
 	// dump.P(os.Environ())
+	// fmt.Println(os.Environ())
 }

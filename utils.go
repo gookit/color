@@ -378,6 +378,9 @@ func detectTermColorLevel() terminfo.ColorLevel {
 
 	// Detect WSL as it has True Color support
 	if level == terminfo.ColorLevelNone && runtime.GOOS == "windows" {
+		// `cat /proc/sys/kernel/osrelease`
+		// on WSL Output:
+		// 4.4.0-19041-Microsoft
 		wsl, err := ioutil.ReadFile("/proc/sys/kernel/osrelease")
 		if err != nil {
 			saveInternalError(err)
@@ -401,6 +404,11 @@ var detectedWSLContents string
 func detectWSL() bool {
 	if !detectedWSL {
 		b := make([]byte, 1024)
+		// `cat /proc/version`
+		// on win git bash, conEmu:
+		// 	MINGW64_NT-10.0-19042 version 3.1.7-340.x86_64 (@WIN-N0G619FD3UK) (gcc version 9.3.0 (GCC) ) 2020-10-23 13:08 UTC
+		// on WSL:
+		// Linux version 4.4.0-19041-Microsoft (Microsoft@Microsoft.com) (gcc version 5.4.0 (GCC) ) #488-Microsoft Mon Sep 01 13:43:00 PST 2020
 		f, err := os.Open("/proc/version")
 		if err == nil {
 			_, _ = f.Read(b) // ignore error

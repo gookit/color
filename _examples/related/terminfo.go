@@ -13,6 +13,7 @@ func main() {
 	// 	panic(err)
 	// }
 
+	// will error on windows
 	lv, err := terminfo.ColorLevelFromEnv()
 	if err != nil {
 		panic(err)
