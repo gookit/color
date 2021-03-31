@@ -54,14 +54,14 @@ func init() {
 	if tryApplyOnCONOUT() {
 		// NOTICE: update var `supportColor` to TRUE.
 		supportColor = true
-		colorLevel = LevelRgb
+		colorLevel, colorMark = LevelRgb, "VirtualTerminal"
 		return
 	}
 
 	if tryApplyOnStdout() {
 		// NOTICE: update var `supportColor` to TRUE.
 		supportColor = true
-		colorLevel = LevelRgb
+		colorLevel, colorMark = LevelRgb, "VirtualTerminal"
 	}
 
 	// fetch console screen buffer info

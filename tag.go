@@ -110,7 +110,7 @@ var colorTags = map[string]string{
 
 	// option
 	"bold":       "1",
-	"us": 		  "4", // short name for 'underscore'
+	"us":         "4", // short name for 'underscore'
 	"underscore": "4",
 	"reverse":    "7",
 }

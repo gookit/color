@@ -29,7 +29,8 @@ Now, 256 colors and RGB colors have also been supported to work in Windows CMD a
     - Since `v1.2.4` **the 256-color (8-bit), true color (24-bit) support windows CMD and PowerShell**
     - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
   - Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
-  - Supports HTML tag-style color rendering, such as `<green>message</>`. Support working on windows `cmd` `powerShell`
+  - Supports HTML tag-style color rendering, such as `<green>message</>`.
+    - Support working on Windows `cmd` `powerShell` terminal
   - Basic colors: `Bold`, `Black`, `White`, `Gray`, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`
   - Additional styles: `Info`, `Note`, `Light`, `Error`, `Danger`, `Notice`, `Success`, `Comment`, `Primary`, `Warning`, `Question`, `Secondary`
 
@@ -432,6 +433,7 @@ there are some useful functions reference
 - `IsConsole(w io.Writer)` Determine whether w is one of stderr, stdout, stdin
 - `HexToRgb(hex string) (rgb []int)` Convert hex color string to RGB numbers
 - `RgbToHex(rgb []int) string` Convert RGB to hex code
+- More useful func please see https://pkg.go.dev/github.com/gookit/color
 
 ## Gookit packages
 

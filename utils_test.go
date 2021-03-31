@@ -28,6 +28,9 @@ func TestUtilFuncs(t *testing.T) {
 	is.NoError(os.Unsetenv("MSYSTEM"))
 	is.False(IsMSys())
 	_ = os.Setenv("MSYSTEM", oldVal)
+
+	is.NotEmpty(TermColorLevel())
+	is.NotEmpty(SupColorMark())
 }
 
 func TestIsSupportColor(t *testing.T) {
@@ -40,7 +43,8 @@ func TestIsSupportColor(t *testing.T) {
 	is.False(IsSupport256Color())
 
 	// TERM
-	mockEnvValue("TERM", "xterm", func(_ string) {
+	mockEnvValue("TERM", "xterm", func(val string) {
+		is.Equal("xterm", val)
 		is.True(IsSupport16Color())
 		is.True(IsSupportColor())
 	})
@@ -53,13 +57,17 @@ func TestIsSupportColor(t *testing.T) {
 	// ANSICON
 	mockEnvValue("ANSICON", "189x2000 (189x43)", func(_ string) {
 		is.True(IsSupportColor())
-		is.Equal(Level256, ColorLevel())
+		// is.Equal(Level256, TermColorLevel())
+		// is.Equal("TERM=xterm-256color", SupColorMark())
 	})
 
 	// "COLORTERM=truecolor"
-	mockEnvValue("COLORTERM", "truecolor", func(_ string) {
+	mockEnvValue("COLORTERM", "truecolor", func(val string) {
+		is.Equal("truecolor", val)
 		is.True(IsSupportColor())
-		is.Equal(LevelRgb, ColorLevel())
+		lv, mark := DetectColorLevel()
+		is.Equal(LevelRgb, lv)
+		is.Equal("COLORTERM=truecolor", mark)
 		is.True(IsSupportRGBColor())
 		is.True(IsSupportTrueColor())
 	})
@@ -67,26 +75,24 @@ func TestIsSupportColor(t *testing.T) {
 	// TERM
 	mockEnvValue("TERM", "screen-256color", func(_ string) {
 		is.True(IsSupportColor())
-		is.Equal(Level256, ColorLevel())
+		is.Equal(Level256, TermColorLevel())
 	})
 
 	// TERM
 	mockEnvValue("TERM", "tmux-256color", func(_ string) {
 		is.True(IsSupportColor())
-		is.Equal(Level256, ColorLevel())
-		is.Equal("TERM=tmux-256color", SupColorMark())
 	})
 
 	// TERM
 	mockEnvValue("TERM", "rxvt-unicode-256color", func(_ string) {
 		is.True(IsSupportColor())
-		is.Equal(Level256, ColorLevel())
+		is.Equal(Level256, TermColorLevel())
 	})
 
 	// TERM
 	mockEnvValue("TERM", "alacritty", func(_ string) {
 		is.True(IsSupportColor())
-		is.Equal(Level256, ColorLevel())
+		is.Equal(Level256, TermColorLevel())
 	})
 
 	is.NoError(os.Setenv("TERM", "xterm-vt220"))

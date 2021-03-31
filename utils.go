@@ -9,39 +9,44 @@ import (
 	"syscall"
 )
 
+// LevelTyp for color level
+type LevelTyp uint8
+
+// terminal color available level
+const (
+	LevelNo  LevelTyp = iota // not support color.
+	Level16                  // 3/4 bit color supported
+	Level256                 // 8 bit color supported
+	LevelRgb                 // (24 bit)true color supported
+)
+
 var (
-	// support color:
-	// 	"TERM=xterm"
-	// 	"TERM=xterm-vt220"
-	// 	"TERM=xterm-256color"
-	// 	"TERM=screen-256color"
-	// 	"TERM=tmux-256color"
-	// 	"TERM=rxvt-unicode-256color"
-	// Don't support color:
-	// 	"TERM=cygwin"
+	// special color terminals
 	specialColorTerms = map[string]bool{
 		"alacritty": true,
 	}
 
-	// mark/flag string.
-	supColorMark string
-
 	// the color support level for current terminal
-	colorLevel = LevelNo
-	// syncOnce = sync.Once{}
+	// colorMark - mark/flag string. eg: "TERM=tmux-256color"
+	colorLevel, colorMark = DetectColorLevel()
+	// onceChecker = sync.Once{}
 )
 
-// ColorLevel value
-func ColorLevel() uint8 {
+// TermColorLevel value
+func TermColorLevel() LevelTyp {
 	return colorLevel
 }
 
-// SupColorMark get
+// SupColorMark value
 func SupColorMark() string {
-	return supColorMark
+	return colorMark
 }
 
-// func ColorLevel(refresh bool) uint8 {
+/*************************************************************
+ * helper methods for detect color supports
+ *************************************************************/
+
+// func TermColorLevel(refresh bool) uint8 {
 // 	syncOnce.Do(func() {
 // 		IsSupportColor()
 // 	})
@@ -49,8 +54,119 @@ func SupColorMark() string {
 // 	return colorLevel
 // }
 
-// func findColorLevel() uint8 {
-// }
+// DetectColorLevel for current env
+func DetectColorLevel() (LevelTyp, string) {
+	// check (rgb)true color.
+	if ok, mark := isSupportTrueColor(); ok {
+		return LevelRgb, mark
+	}
+
+	envTerm := os.Getenv("TERM")
+
+	// check 256 color
+	if ok, mark := isSupport256Color(envTerm); ok {
+		return Level256, mark
+	}
+
+	// check 16 color
+	if ok, mark := isSupport16Color(envTerm); ok {
+		return Level16, mark
+	}
+
+	return LevelNo, ""
+}
+
+// IsSupportColor check current console is support color.
+//
+// Supported:
+// 	linux, mac, or windows's ConEmu, Cmder, putty, git-bash.exe
+// Not support:
+// 	windows cmd.exe, powerShell.exe
+func IsSupportColor() bool {
+	// check true color.
+	if ok, _ := isSupportTrueColor(); ok {
+		return true
+	}
+
+	envTerm := os.Getenv("TERM")
+
+	// check 256 color
+	ok, _ := isSupport256Color(envTerm)
+	if false == ok {
+		// check 16 color
+		ok, _ = isSupport16Color(envTerm)
+	}
+
+	return ok
+}
+
+// IsSupportColor check current console is support color.
+//
+// Supported:
+// 	linux, mac, or windows's ConEmu, Cmder, putty, git-bash.exe
+// Not support:
+// 	windows cmd.exe, powerShell.exe
+func IsSupport16Color() bool {
+	envTerm := os.Getenv("TERM")
+	yes, _ := isSupport16Color(envTerm)
+	return yes
+}
+
+func isSupport16Color(envTerm string) (bool, string) {
+	ok := strings.Contains(envTerm, "term")
+
+	return ok, "TERM=" + envTerm
+}
+
+// IsSupport256Color render
+func IsSupport256Color() bool {
+	yes, _ := isSupport256Color(os.Getenv("TERM"))
+	return yes
+}
+
+func isSupport256Color(envTerm string) (bool, string) {
+	// like on ConEmu software, e.g "ConEmuANSI=ON"
+	if os.Getenv("ConEmuANSI") == "ON" {
+		return true, "ConEmuANSI=ON"
+	}
+
+	// like on ConEmu software, e.g "ANSICON=189x2000 (189x43)"
+	if val := os.Getenv("ANSICON"); val != "" {
+		return true, "ANSICON=" + val
+	}
+
+	// it's special color term
+	if _, ok := specialColorTerms[envTerm]; ok {
+		return true, "TERM=" + envTerm
+	}
+
+	// "TERM=xterm-256color"
+	// "TERM=screen-256color"
+	// "TERM=tmux-256color"
+	// "TERM=rxvt-unicode-256color"
+	ok := strings.Contains(envTerm, "256color")
+	return ok, "TERM=" + envTerm
+}
+
+// IsSupportRGBColor render. alias of the IsSupportTrueColor()
+func IsSupportRGBColor() bool {
+	return IsSupportTrueColor()
+}
+
+// IsSupportTrueColor render.
+func IsSupportTrueColor() bool {
+	yes, _ := isSupportTrueColor()
+	return yes
+}
+
+func isSupportTrueColor() (bool, string) {
+	envCTerm := os.Getenv("COLORTERM")
+	// "COLORTERM=truecolor"
+	// "COLORTERM=24bit"
+	ok := strings.Contains(envCTerm, "truecolor") || strings.Contains(envCTerm, "24bit")
+
+	return ok, "COLORTERM=" + envCTerm
+}
 
 /*************************************************************
  * helper methods for check env
@@ -77,109 +193,6 @@ func IsMSys() bool {
 	}
 
 	return false
-}
-
-// IsSupportColor check current console is support color.
-//
-// Supported:
-// 	linux, mac, or windows's ConEmu, Cmder, putty, git-bash.exe
-// Not support:
-// 	windows cmd.exe, powerShell.exe
-func IsSupportColor() bool {
-	// check true color.
-	envCTerm := os.Getenv("COLORTERM")
-	if isSupportTrueColor(envCTerm) {
-		colorLevel = LevelRgb
-		return true
-	}
-
-	envTerm := os.Getenv("TERM")
-
-	// check 256 color
-	ok := isSupport256Color(envTerm)
-	if ok {
-		colorLevel = Level256
-	} else if ok = isSupport16Color(envTerm); ok { // check 16 color
-		colorLevel = Level16
-	}
-
-	return ok
-}
-
-// IsSupportColor check current console is support color.
-//
-// Supported:
-// 	linux, mac, or windows's ConEmu, Cmder, putty, git-bash.exe
-// Not support:
-// 	windows cmd.exe, powerShell.exe
-func IsSupport16Color() bool {
-	envTerm := os.Getenv("TERM")
-	return isSupport16Color(envTerm)
-}
-
-func isSupport16Color(envTerm string) bool {
-	if strings.Contains(envTerm, "term") {
-		supColorMark = "TERM=" + envTerm
-		return true
-	}
-
-	return false
-}
-
-// IsSupport256Color render
-func IsSupport256Color() bool {
-	return isSupport256Color(os.Getenv("TERM"))
-}
-
-func isSupport256Color(envTerm string) bool {
-	// like on ConEmu software, e.g "ConEmuANSI=ON"
-	if os.Getenv("ConEmuANSI") == "ON" {
-		supColorMark = "ConEmuANSI=ON"
-		return true
-	}
-
-	// like on ConEmu software, e.g "ANSICON=189x2000 (189x43)"
-	if val := os.Getenv("ANSICON"); val != "" {
-		supColorMark = "ANSICON=" + val
-		return true
-	}
-
-	// it's special color term
-	if _, ok := specialColorTerms[envTerm]; ok {
-		supColorMark = "TERM=" + envTerm
-		return true
-	}
-
-	// "TERM=xterm-256color"
-	// "TERM=screen-256color"
-	// "TERM=tmux-256color"
-	// "TERM=rxvt-unicode-256color"
-	ok := strings.Contains(envTerm, "256color")
-	if ok {
-		supColorMark = "TERM=" + envTerm
-	}
-	return ok
-}
-
-// IsSupportRGBColor render. alias of the IsSupportTrueColor()
-func IsSupportRGBColor() bool {
-	return IsSupportTrueColor()
-}
-
-// IsSupportTrueColor render.
-func IsSupportTrueColor() bool {
-	envCTerm := os.Getenv("COLORTERM")
-	return isSupportTrueColor(envCTerm)
-}
-
-func isSupportTrueColor(envCTerm string) bool {
-	// "COLORTERM=truecolor"
-	// "COLORTERM=24bit"
-	ok := strings.Contains(envCTerm, "truecolor") || strings.Contains(envCTerm, "24bit")
-	if ok {
-		supColorMark = "COLORTERM=" + envCTerm
-	}
-	return ok
 }
 
 /*************************************************************

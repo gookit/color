@@ -13,10 +13,10 @@ assignees: inhere
  - GO Version: `1.13` [e.g. `1.13`]
  - Pkg Version: `1.1.1` [e.g. `1.1.1`]
  
- ENV info on the terminal (by command `env`)
+ ENV info on the terminal (by command `env | grep -i TERM`)
  
  ```
- // paste env info. NOTICE: Please delete private information 
+ // paste env info.
  ```
 
 **Describe the bug**

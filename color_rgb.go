@@ -185,7 +185,6 @@ func (c RGBColor) String() string {
 
 	if c[3] == AsBg {
 		return fmt.Sprintf(TplBgRGB, c[0], c[1], c[2])
-
 	}
 
 	// >1 is empty
