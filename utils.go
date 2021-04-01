@@ -41,6 +41,14 @@ func IsWindows() bool {
 // refer https://github.com/Delta456/box-cli-maker
 func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
 	var err error
+
+	// On JetBrains Terminal
+	// support true-color
+	// 	TERMINAL_EMULATOR=JetBrains-JediTerm
+	if val := os.Getenv("TERMINAL_EMULATOR"); val == "JetBrains-JediTerm" {
+		return terminfo.ColorLevelMillions, false
+	}
+
 	level, err = terminfo.ColorLevelFromEnv()
 	if err != nil {
 		// if on windows OS

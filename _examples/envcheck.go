@@ -12,6 +12,7 @@ import (
 func main() {
 	fmt.Println("OS", runtime.GOOS)
 
+	fmt.Println("TermColorLevel:", color.TermColorLevel())
 	fmt.Println("IsSupportColor:", color.IsSupportColor())
 	fmt.Println("IsSupport256Color:", color.IsSupport256Color())
 	fmt.Println("IsSupportRGBColor:", color.IsSupportRGBColor())

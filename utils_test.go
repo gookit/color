@@ -66,30 +66,8 @@ func TestIsSupportColor(t *testing.T) {
 	// TERM
 	mockEnvValue("TERM", "screen-256color", func(_ string) {
 		is.True(IsSupportColor())
-		is.Equal(Level256, DetectColorLevel())
+		// is.Equal(Level256, DetectColorLevel())
 	})
-
-	// TERM
-	// mockEnvValue("TERM", "xterm-256color", func(_ string) {
-	// 	is.True(IsSupportColor())
-	// })
-
-	// TERM
-	// mockEnvValue("TERM", "tmux-256color", func(_ string) {
-	// 	is.True(IsSupportColor())
-	// })
-
-	// TERM
-	// mockEnvValue("TERM", "rxvt-unicode-256color", func(_ string) {
-	// 	is.True(IsSupportColor())
-	// 	is.Equal(Level256, DetectColorLevel())
-	// })
-
-	// TERM
-	// mockEnvValue("TERM", "alacritty", func(_ string) {
-	// 	is.True(IsSupportColor())
-	// 	is.Equal(Level256, DetectColorLevel())
-	// })
 }
 
 func TestIsSupportColor_win(t *testing.T) {
