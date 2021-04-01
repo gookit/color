@@ -59,16 +59,14 @@ func tryEnableVTP() bool {
 	procSetConsoleMode = kernel32.NewProc("SetConsoleMode")
 
 	// enable colors on windows terminal
-	if tryApplyOnCONOUT() {
-		return
+	if tryEnableOnCONOUT() {
+		return true
 	}
 
-	if tryApplyOnStdout() {
-		return
-	}
+	return tryEnableOnStdout()
 }
 
-func tryApplyOnCONOUT() bool {
+func tryEnableOnCONOUT() bool {
 	outHandle, err := syscall.Open("CONOUT$", syscall.O_RDWR, 0)
 	if err != nil {
 		saveInternalError(err)
@@ -84,7 +82,7 @@ func tryApplyOnCONOUT() bool {
 	return true
 }
 
-func tryApplyOnStdout() bool {
+func tryEnableOnStdout() bool {
 	// try direct open syscall.Stdout
 	err := EnableVirtualTerminalProcessing(syscall.Stdout, true)
 	if err != nil {

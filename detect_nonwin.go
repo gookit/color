@@ -14,8 +14,6 @@ import (
 	"github.com/xo/terminfo"
 )
 
-// func renderColorCodeOnCmd(_ func()) {}
-
 // refer
 //  https://github.com/Delta456/box-cli-maker/blob/7b5a1ad8a016ce181e7d8b05e24b54ff60b4b38a/detect_unix.go#L27-L45
 // detect WSL as it has True Color support

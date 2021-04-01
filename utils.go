@@ -12,41 +12,16 @@ import (
 	"github.com/xo/terminfo"
 )
 
-// LevelTyp for color level
-type LevelTyp uint8
-
-// terminal color available level
-const (
-	LevelNo  LevelTyp = iota // not support color.
-	Level16                  // 3/4 bit color supported
-	Level256                 // 8 bit color supported
-	LevelRgb                 // (24 bit)true color supported
-)
-
-var (
-	// special color terminals
-	specialColorTerms = map[string]bool{
-		"alacritty": true,
-	}
-
-	// the color support level for current terminal
-	// colorMark - mark/flag string. eg: "TERM=tmux-256color"
-	colorLevel, needVTP = detectTermColorLevel()
-	// onceChecker = sync.Once{}
-)
-
-// TermColorLevel value
-func TermColorLevel() terminfo.ColorLevel {
-	return colorLevel
-}
-
 /*************************************************************
  * helper methods for detect color supports
  *************************************************************/
 
 // DetectColorLevel for current env
+//
+// NOTICE: The method will detect terminal info each times,
+// 	if only want get current color level, please direct call SupportColor() or TermColorLevel()
 func DetectColorLevel() terminfo.ColorLevel {
-	level,_ := detectTermColorLevel()
+	level, _ := detectTermColorLevel()
 	return level
 }
 
@@ -108,94 +83,49 @@ func detectWSL() bool {
 
 // IsSupportColor check current console is support color.
 //
-// Supported:
-// 	linux, mac, or windows's ConEmu, Cmder, putty, git-bash.exe
-// Not support:
-// 	windows cmd.exe, powerShell.exe
+// NOTICE: The method will detect terminal info each times,
+// 	if only want get current color level, please direct call SupportColor() or TermColorLevel()
 func IsSupportColor() bool {
-	// check true color.
-	if ok, _ := isSupportTrueColor(); ok {
-		return true
-	}
-
-	envTerm := os.Getenv("TERM")
-
-	// check 256 color
-	ok, _ := isSupport256Color(envTerm)
-	if false == ok {
-		// check 16 color
-		ok, _ = isSupport16Color(envTerm)
-	}
-
-	return ok
+	return IsSupport16Color()
 }
 
 // IsSupportColor check current console is support color.
 //
-// Supported:
-// 	linux, mac, or windows's ConEmu, Cmder, putty, git-bash.exe
-// Not support:
-// 	windows cmd.exe, powerShell.exe
+// NOTICE: The method will detect terminal info each times,
+// 	if only want get current color level, please direct call SupportColor() or TermColorLevel()
 func IsSupport16Color() bool {
-	envTerm := os.Getenv("TERM")
-	yes, _ := isSupport16Color(envTerm)
-	return yes
+	level, _ := detectTermColorLevel()
+	return level > terminfo.ColorLevelNone
 }
 
-func isSupport16Color(envTerm string) (bool, string) {
-	ok := strings.Contains(envTerm, "term")
-
-	return ok, "TERM=" + envTerm
-}
-
-// IsSupport256Color render
+// IsSupport256Color render check
+//
+// NOTICE: The method will detect terminal info each times,
+// 	if only want get current color level, please direct call SupportColor() or TermColorLevel()
 func IsSupport256Color() bool {
-	yes, _ := isSupport256Color(os.Getenv("TERM"))
-	return yes
+	level, _ := detectTermColorLevel()
+	return level > terminfo.ColorLevelBasic
 }
 
-func isSupport256Color(envTerm string) (bool, string) {
-	// like on ConEmu software, e.g "ConEmuANSI=ON"
-	if os.Getenv("ConEmuANSI") == "ON" {
-		return true, "ConEmuANSI=ON"
-	}
-
-	// like on ConEmu software, e.g "ANSICON=189x2000 (189x43)"
-	if val := os.Getenv("ANSICON"); val != "" {
-		return true, "ANSICON=" + val
-	}
-
-	// it's special color term
-	if _, ok := specialColorTerms[envTerm]; ok {
-		return true, "TERM=" + envTerm
-	}
-
-	// "TERM=xterm-256color"
-	// "TERM=screen-256color"
-	// "TERM=tmux-256color"
-	// "TERM=rxvt-unicode-256color"
-	ok := strings.Contains(envTerm, "256color")
-	return ok, "TERM=" + envTerm
-}
-
-// IsSupportRGBColor render. alias of the IsSupportTrueColor()
+// IsSupportRGBColor check. alias of the IsSupportTrueColor()
+//
+// NOTICE: The method will detect terminal info each times,
+// 	if only want get current color level, please direct call SupportColor() or TermColorLevel()
 func IsSupportRGBColor() bool {
 	return IsSupportTrueColor()
 }
 
-// IsSupportTrueColor render.
+// IsSupportTrueColor render check.
+//
+// NOTICE: The method will detect terminal info each times,
+// 	if only want get current color level, please direct call SupportColor() or TermColorLevel()
+//
+// ENV:
+// "COLORTERM=truecolor"
+// "COLORTERM=24bit"
 func IsSupportTrueColor() bool {
-	yes, _ := isSupportTrueColor()
-	return yes
-}
-
-func isSupportTrueColor() (bool, string) {
-	envCTerm := os.Getenv("COLORTERM")
-	// "COLORTERM=truecolor"
-	// "COLORTERM=24bit"
-	ok := strings.Contains(envCTerm, "truecolor") || strings.Contains(envCTerm, "24bit")
-
-	return ok, "COLORTERM=" + envCTerm
+	level, _ := detectTermColorLevel()
+	return level > terminfo.ColorLevelHundreds
 }
 
 /*************************************************************

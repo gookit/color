@@ -19,6 +19,14 @@ import (
 	"github.com/xo/terminfo"
 )
 
+// terminal color available level alias of the terminfo.ColorLevel*
+const (
+	LevelNo  = terminfo.ColorLevelNone     // not support color.
+	Level16  = terminfo.ColorLevelBasic    // 3/4 bit color supported
+	Level256 = terminfo.ColorLevelHundreds // 8 bit color supported
+	LevelRgb = terminfo.ColorLevelMillions // (24 bit)true color supported
+)
+
 // color render templates
 // ESC 操作的表示:
 // 	"\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
@@ -45,12 +53,25 @@ var (
 	// mark current env, It's like in `cmd.exe`
 	// if not in windows, it's always is False.
 	isLikeInCmd bool
+	// the color support level for current terminal
+	// needVTP - need enable VTP, only for windows OS
+	colorLevel, needVTP = detectTermColorLevel()
 	// match color codes
 	codeRegex = regexp.MustCompile(CodeExpr)
 	// mark current env is support color.
 	// Always: isLikeInCmd != supportColor
 	// supportColor = IsSupportColor()
 )
+
+// TermColorLevel value on current ENV
+func TermColorLevel() terminfo.ColorLevel {
+	return colorLevel
+}
+
+// SupportColor on the current ENV
+func SupportColor() bool {
+	return colorLevel > terminfo.ColorLevelNone
+}
 
 /*************************************************************
  * global settings
@@ -109,11 +130,6 @@ func ResetOptions() {
 	RenderTag = true
 	Enable = true
 	output = os.Stdout
-}
-
-// SupportColor on the current ENV
-func SupportColor() bool {
-	return colorLevel > terminfo.ColorLevelNone
 }
 
 // ForceColor force open color render
