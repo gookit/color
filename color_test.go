@@ -121,6 +121,26 @@ func TestSet(t *testing.T) {
 	is.Equal("\x1b[0m", str)
 }
 
+func TestSupportColor(t *testing.T) {
+	is := assert.New(t)
+
+	if is.True(SupportTrueColor()) {
+		is.True(SupportColor())
+		is.True(Support256Color())
+	}
+
+	if is.True(Support256Color()) {
+		is.True(SupportColor())
+	} else {
+		is.False(SupportTrueColor())
+	}
+
+	if is.False(SupportColor()) {
+		is.False(Support256Color())
+		is.False(SupportTrueColor())
+	}
+}
+
 func TestRenderCode(t *testing.T) {
 	// force open color render for testing
 	oldVal = ForceColor()

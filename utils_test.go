@@ -52,6 +52,13 @@ func TestDetectColorLevel(t *testing.T) {
 		is.True(IsSupportColor())
 	})
 
+	// TERMINAL_EMULATOR=JetBrains-JediTerm
+	mockEnvValue("TERMINAL_EMULATOR", "JetBrains-JediTerm", func(val string) {
+		is.Equal(LevelRgb, DetectColorLevel())
+		is.True(IsSupport16Color())
+		is.True(IsSupportColor())
+	})
+
 	// "COLORTERM=truecolor"
 	mockEnvValue("COLORTERM", "truecolor", func(val string) {
 		is.Equal("truecolor", val)
@@ -80,7 +87,13 @@ func TestIsDetectColorLevel_win(t *testing.T) {
 	mockEnvValue("ConEmuANSI", "ON", func(_ string) {
 		is.Equal(LevelRgb, DetectColorLevel())
 		is.True(IsSupportColor())
+		is.True(IsSupport256Color())
 		is.True(IsSupportTrueColor())
+	})
+
+	// WSL_DISTRO_NAME=Debian
+	mockEnvValue("WSL_DISTRO_NAME", "Debian", func(_ string) {
+		is.True(IsSupportColor())
 	})
 
 	// ANSICON

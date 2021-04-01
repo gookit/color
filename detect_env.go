@@ -45,7 +45,7 @@ func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
 	// - support true-color
 	// 	TERMINAL_EMULATOR=JetBrains-JediTerm
 	if val := os.Getenv("TERMINAL_EMULATOR"); val == "JetBrains-JediTerm" {
-		debugf("on JetBrains-JediTerm, is win: %v", isWin)
+		debugf("True Color support on JetBrains-JediTerm, is win: %v", isWin)
 		return terminfo.ColorLevelMillions, isWin
 	}
 
