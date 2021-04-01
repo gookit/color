@@ -46,8 +46,15 @@ var (
 	Enable = true
 	// RenderTag render HTML tag on call color.Xprint, color.PrintX
 	RenderTag = true
-	// errors on windows render OR print to io.Writer
-	errors []error
+	// debug mode for development.
+	//
+	// set env:
+	// 	COLOR_DEBUG_MODE=on
+	// or:
+	// 	COLOR_DEBUG_MODE=on go run ./_examples/envcheck.go
+	debugMode = os.Getenv("COLOR_DEBUG_MODE")
+	// inner errors record on detect color level
+	innerErrs []error
 	// output the default io.Writer message print
 	output io.Writer = os.Stdout
 	// mark current env, It's like in `cmd.exe`
@@ -71,6 +78,16 @@ func TermColorLevel() terminfo.ColorLevel {
 // SupportColor on the current ENV
 func SupportColor() bool {
 	return colorLevel > terminfo.ColorLevelNone
+}
+
+// Support256Color on the current ENV
+func Support256Color() bool {
+	return colorLevel > terminfo.ColorLevelBasic
+}
+
+// SupportTrueColor on the current ENV
+func SupportTrueColor() bool {
+	return colorLevel > terminfo.ColorLevelHundreds
 }
 
 /*************************************************************
@@ -155,9 +172,9 @@ func IsLikeInCmd() bool {
 	return isLikeInCmd
 }
 
-// GetErrors info
-func GetErrors() []error {
-	return errors
+// InnerErrs info
+func InnerErrs() []error {
+	return innerErrs
 }
 
 /*************************************************************

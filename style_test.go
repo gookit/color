@@ -168,10 +168,10 @@ func TestStyleFunc(t *testing.T) {
 
 func TestSimplePrinter_Print(t *testing.T) {
 	sp := &SimplePrinter{}
-	sp.Printf("simple %s", "printer")
-	sp.Infof("simple %s", "printer")
-	sp.Warnf("simple %s", "printer")
-	sp.Errorf("simple %s", "printer")
+	sp.Printf("simple %s\n", "printer")
+	sp.Infof("simple %s\n", "printer")
+	sp.Warnf("simple %s\n", "printer")
+	sp.Errorf("simple %s\n", "printer")
 	sp.Print("simple printer\n")
 	sp.Println("simple printer")
 	sp.Infoln("simple printer")

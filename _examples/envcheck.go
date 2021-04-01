@@ -9,13 +9,18 @@ import (
 )
 
 // go run ./_examples/envcheck.go
+// COLOR_DEBUG_MODE=on go run ./_examples/envcheck.go
 func main() {
-	fmt.Println("OS", runtime.GOOS)
+	fmt.Println("current OS:", runtime.GOOS)
 
-	fmt.Println("TermColorLevel:", color.TermColorLevel())
-	fmt.Println("IsSupportColor:", color.IsSupportColor())
-	fmt.Println("IsSupport256Color:", color.IsSupport256Color())
-	fmt.Println("IsSupportRGBColor:", color.IsSupportRGBColor())
+	fmt.Println("Terminal Color Level:", color.TermColorLevel())
+	fmt.Println("Support Basic Color:", color.SupportColor())
+	fmt.Println("Support 256 Color:", color.Support256Color())
+	fmt.Println("Support True Color:", color.SupportTrueColor())
+
+	if es := color.InnerErrs(); len(es) > 0 {
+		fmt.Println(es)
+	}
 
 	// dump.P(os.Environ())
 	// fmt.Println(os.Environ())

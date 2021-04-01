@@ -101,7 +101,7 @@ func TestSet(t *testing.T) {
 		}
 	} else {
 		is.False(IsLikeInCmd())
-		is.Empty(GetErrors())
+		is.Empty(InnerErrs())
 	}
 
 	// set
@@ -170,7 +170,7 @@ func TestRenderCode(t *testing.T) {
 	is.Equal("Text", str)
 	Enable = true
 
-	is.Empty(GetErrors())
+	is.Empty(InnerErrs())
 }
 
 func TestClearCode(t *testing.T) {
