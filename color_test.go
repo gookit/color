@@ -124,18 +124,18 @@ func TestSet(t *testing.T) {
 func TestSupportColor(t *testing.T) {
 	is := assert.New(t)
 
-	if is.True(SupportTrueColor()) {
+	if SupportTrueColor() {
 		is.True(SupportColor())
 		is.True(Support256Color())
 	}
 
-	if is.True(Support256Color()) {
+	if Support256Color() {
 		is.True(SupportColor())
 	} else {
 		is.False(SupportTrueColor())
 	}
 
-	if is.False(SupportColor()) {
+	if false == SupportColor() {
 		is.False(Support256Color())
 		is.False(SupportTrueColor())
 	}

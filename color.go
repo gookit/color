@@ -80,6 +80,11 @@ func SupportColor() bool {
 	return colorLevel > terminfo.ColorLevelNone
 }
 
+// Support16Color on the current ENV
+// func Support16Color() bool {
+// 	return colorLevel > terminfo.ColorLevelNone
+// }
+
 // Support256Color on the current ENV
 func Support256Color() bool {
 	return colorLevel > terminfo.ColorLevelBasic
