@@ -25,6 +25,11 @@ func DetectColorLevel() terminfo.ColorLevel {
 	return level
 }
 
+// IsWindows OS env
+func IsWindows() bool {
+	return runtime.GOOS == "windows"
+}
+
 // func TermColorLevel(refresh bool) uint8 {
 // 	syncOnce.Do(func() {
 // 		IsSupportColor()

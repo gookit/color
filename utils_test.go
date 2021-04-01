@@ -36,29 +36,20 @@ func TestUtilFuncs(t *testing.T) {
 func TestIsSupportColor(t *testing.T) {
 	is := assert.New(t)
 
-	// IsSupport256Color
-	oldVal := os.Getenv("TERM")
-	_ = os.Unsetenv("TERM")
-	is.False(IsSupportColor())
-	is.False(IsSupport256Color())
-
-	// TERM
-	mockEnvValue("TERM", "xterm", func(val string) {
-		is.Equal("xterm", val)
+	// TERM_PROGRAM=Apple_Terminal
+	mockEnvValue("TERM_PROGRAM", "Apple_Terminal", func(val string) {
+		is.Equal("Apple_Terminal", val)
+		is.Equal(Level256, DetectColorLevel())
 		is.True(IsSupport16Color())
 		is.True(IsSupportColor())
 	})
 
-	// ConEmuANSI
-	mockEnvValue("ConEmuANSI", "ON", func(_ string) {
+	// TERM_PROGRAM=iTerm.app
+	mockEnvValue("TERM_PROGRAM", "iTerm.app", func(val string) {
+		is.Equal("iTerm.app", val)
+		is.Equal(Level256, DetectColorLevel())
+		is.True(IsSupport16Color())
 		is.True(IsSupportColor())
-	})
-
-	// ANSICON
-	mockEnvValue("ANSICON", "189x2000 (189x43)", func(_ string) {
-		is.True(IsSupportColor())
-		is.Equal(Level256, TermColorLevel())
-		// is.Equal("TERM=xterm-256color", SupColorMark())
 	})
 
 	// "COLORTERM=truecolor"
@@ -79,30 +70,47 @@ func TestIsSupportColor(t *testing.T) {
 	})
 
 	// TERM
-	mockEnvValue("TERM", "tmux-256color", func(_ string) {
-		is.True(IsSupportColor())
-	})
+	// mockEnvValue("TERM", "xterm-256color", func(_ string) {
+	// 	is.True(IsSupportColor())
+	// })
 
 	// TERM
-	mockEnvValue("TERM", "rxvt-unicode-256color", func(_ string) {
-		is.True(IsSupportColor())
-		is.Equal(Level256, DetectColorLevel())
-	})
+	// mockEnvValue("TERM", "tmux-256color", func(_ string) {
+	// 	is.True(IsSupportColor())
+	// })
 
 	// TERM
-	mockEnvValue("TERM", "alacritty", func(_ string) {
-		is.True(IsSupportColor())
-		is.Equal(Level256, DetectColorLevel())
-	})
+	// mockEnvValue("TERM", "rxvt-unicode-256color", func(_ string) {
+	// 	is.True(IsSupportColor())
+	// 	is.Equal(Level256, DetectColorLevel())
+	// })
 
-	is.NoError(os.Setenv("TERM", "xterm-vt220"))
-	is.True(IsSupportColor())
-	// revert
-	if oldVal != "" {
-		is.NoError(os.Setenv("TERM", oldVal))
-	} else {
-		is.NoError(os.Unsetenv("TERM"))
+	// TERM
+	// mockEnvValue("TERM", "alacritty", func(_ string) {
+	// 	is.True(IsSupportColor())
+	// 	is.Equal(Level256, DetectColorLevel())
+	// })
+}
+
+func TestIsSupportColor_win(t *testing.T) {
+	if !IsWindows() {
+		return
 	}
+	is := assert.New(t)
+
+	// ConEmuANSI
+	mockEnvValue("ConEmuANSI", "ON", func(_ string) {
+		is.Equal(LevelRgb, DetectColorLevel())
+		is.True(IsSupportColor())
+		is.True(IsSupportTrueColor())
+	})
+
+	// ANSICON
+	mockEnvValue("ANSICON", "189x2000 (189x43)", func(_ string) {
+		is.True(IsSupportColor())
+		is.Equal(Level256, DetectColorLevel())
+		// is.Equal("TERM=xterm-256color", SupColorMark())
+	})
 }
 
 func TestRgbTo256Table(t *testing.T) {
