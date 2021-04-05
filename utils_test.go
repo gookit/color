@@ -37,8 +37,9 @@ func TestDetectColorLevel(t *testing.T) {
 	is := assert.New(t)
 
 	// TERM_PROGRAM=Apple_Terminal
-	mockEnvValue("TERM_PROGRAM", "Apple_Terminal", func(val string) {
-		is.Equal("Apple_Terminal", val)
+	mockOsEnvironByText(`
+TERM_PROGRAM=Apple_Terminal
+`, func() {
 		is.Equal(Level256, DetectColorLevel())
 		is.True(IsSupport16Color())
 		is.True(IsSupportColor())

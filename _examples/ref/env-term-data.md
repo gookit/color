@@ -1,9 +1,18 @@
 # ENV grep term data
 
-by run
+tests scripts:
 
 ```bash
 env | grep -i term
+
+# run examples
+COLOR_DEBUG_MODE=on go run ./_examples/envcheck.go
+go run ./_examples/envcheck.go
+
+go run ./_examples/color_256.go
+# test true color
+sh ./_examples/ref/truecolor.sh
+go run ./_examples/color_rgb.go
 ```
 
 ## Windows
@@ -16,7 +25,7 @@ TERM_PROGRAM_VERSION=3.4.4
 TERM=xterm
 ```
 
-**git bash on windows terminal**
+**git bash on Windows terminal**
 
 ```text
 TERM=xterm-256color
@@ -54,9 +63,9 @@ TERM=xterm-256color
 
 default not support color.
 
-can by enable VTP for support True color
+can enable VTP for support True color
 
-**cmd on windows terminal**
+**cmd on Windows terminal**
 
 ```text
 TERM=xterm-256color
@@ -76,7 +85,7 @@ WT_SESSION=e68dfdf0-3f4e-4702-9b76-8768a6fbe784
 
 default not support color.
 
-can by enable VTP for support True color
+can enable VTP for support True color
 
 **powerShell on windows terminal**
 
@@ -113,7 +122,57 @@ WSL_DISTRO_NAME=Debian
 WSLENV=WT_SESSION::WT_PROFILE_ID
 ```
 
-## Unix
+## Linux
 
-contains `Mac OS X/Linux`
+TODO
 
+## Mac OS X
+
+**zsh on Apple_Terminal**
+
+```bash
+% env | grep -i term 
+TERM_PROGRAM=Apple_Terminal
+TERM=xterm-256color
+TERM_PROGRAM_VERSION=433
+TERM_SESSION_ID=F17907FE-DCA5-488D-829B-7AFA8B323753
+ZSH_TMUX_TERM=screen-256color
+```
+
+**zsh on iterm2**
+
+```bash
+% env | grep -i term   
+LC_TERMINAL_VERSION=3.4.5beta1
+ITERM_PROFILE=Default
+TERM_PROGRAM_VERSION=3.4.5beta1
+TERM_PROGRAM=iTerm.app
+LC_TERMINAL=iTerm2
+COLORTERM=truecolor
+TERM=xterm-256color
+ITERM_SESSION_ID=w0t2p0:3A53303E-BD72-4F1D-897D-EC15E3B4FDB5
+ZSH_TMUX_TERM=screen-256color
+```
+
+**bin/zsh on JetBrains Terminal**
+
+- support True color, but detect is `256`. so, need check `TERMINAL_EMULATOR`
+
+```bash
+% env | grep -i term 
+TERM=xterm-256color
+TERMINAL_EMULATOR=JetBrains-JediTerm
+ZSH_TMUX_TERM=screen-256color
+```
+
+**bin/zsh on Terminus Terminal**
+
+- support True color, but detect is `256`. so, need check `TERM_PROGRAM`
+
+```bash
+% env | grep -i TERM                                                                                                                                   :( 1 21-03-31 - 0:43:18
+TERMINUS_PLUGINS=
+TERM=xterm-256color
+TERM_PROGRAM=Terminus
+ZSH_TMUX_TERM=screen-256color
+```

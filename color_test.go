@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"runtime"
+	"strings"
 	"syscall"
 	"testing"
 
@@ -780,5 +781,41 @@ func mockEnvValue(key, val string, fn func(nv string)) {
 	}
 	if err != nil {
 		panic(err)
+	}
+}
+
+func mockOsEnvironByText(envText string, fn func()) {
+	ss := strings.Split(envText, "\n")
+	mp := make(map[string]string, len(ss))
+	for _, line := range ss {
+		if line = strings.TrimSpace(line); line == "" {
+			continue
+		}
+		nodes := strings.SplitN(line, "=", 2)
+
+		if len(nodes) < 2 {
+			mp[nodes[0]] = ""
+		} else {
+			mp[nodes[0]] = nodes[1]
+		}
+	}
+
+	mockOsEnviron(mp, fn)
+}
+
+func mockOsEnviron(mp map[string]string, fn func())  {
+	envBak := os.Environ()
+
+	os.Clearenv()
+	for key, val := range mp {
+		_ = os.Setenv(key, val)
+	}
+
+	fn()
+
+	os.Clearenv()
+	for _, str := range envBak {
+		nodes := strings.SplitN(str, "=", 2)
+		_ = os.Setenv(nodes[0], nodes[1])
 	}
 }

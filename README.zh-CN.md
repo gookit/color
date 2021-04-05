@@ -426,6 +426,7 @@ s.Printf("style with %s\n", "options")
   - [issue9/term](https://github.com/issue9/term)
   - [ANSI转义序列](https://zh.wikipedia.org/wiki/ANSI转义序列)
   - [Standard ANSI color map](https://conemu.github.io/en/AnsiEscapeCodes.html#Standard_ANSI_color_map)
+  - [Terminal Colors](https://gist.github.com/XVilka/8346728)
 
 ## License
 

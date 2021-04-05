@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"runtime"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -27,11 +28,10 @@ func DetectColorLevel() terminfo.ColorLevel {
 // refer https://github.com/Delta456/box-cli-maker
 func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
 	var err error
-	isWin := runtime.GOOS == "windows"
-
 	// on windows WSL:
 	// - runtime.GOOS == "Linux"
 	// - support true-color
+	// env:
 	// 	WSL_DISTRO_NAME=Debian
 	if val := os.Getenv("WSL_DISTRO_NAME"); val != "" {
 		// detect WSL as it has True Color support
@@ -41,15 +41,24 @@ func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
 		}
 	}
 
-	// On JetBrains Terminal
-	// - support true-color
-	// 	TERMINAL_EMULATOR=JetBrains-JediTerm
-	if val := os.Getenv("TERMINAL_EMULATOR"); val == "JetBrains-JediTerm" {
-		debugf("True Color support on JetBrains-JediTerm, is win: %v", isWin)
-		return terminfo.ColorLevelMillions, isWin
+	isWin := runtime.GOOS == "windows"
+	// TERM=screen
+	termVal := os.Getenv("TERM")
+
+	// on `screen` not support True-color
+	if termVal != "screen" {
+		// On JetBrains Terminal
+		// - support true-color
+		// 	TERMINAL_EMULATOR=JetBrains-JediTerm
+		val := os.Getenv("TERMINAL_EMULATOR")
+		if val == "JetBrains-JediTerm" {
+			debugf("True Color support on JetBrains-JediTerm, is win: %v", isWin)
+			return terminfo.ColorLevelMillions, isWin
+		}
 	}
 
-	level, err = terminfo.ColorLevelFromEnv()
+	// level, err = terminfo.ColorLevelFromEnv()
+	level, err = detectColorLevelFromEnv(termVal)
 	// fmt.Println(level.String(), err)
 	// debugf("color level by terminfo.ColorLevelFromEnv(): %s", level)
 	if err != nil {
@@ -63,15 +72,70 @@ func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
 		return
 	}
 
-	// Detect WSL as it has True Color support
-	// if level == terminfo.ColorLevelNone && isWin {
-	// on win10 cmd.exe:
-	// level == ColorLevelBasic, but need enable VTP; after level will change to millions
-	if level <= terminfo.ColorLevelBasic && isWin {
+	// enable VTP as it has True Color support
+	if level == terminfo.ColorLevelNone && isWin {
 		debugf("fallback2 check special term color on windows")
 		level, needVTP = detectSpecialTermColor()
 	}
 	return
+}
+
+// detectColorFromEnv returns the color level COLORTERM, FORCE_COLOR,
+// TERM_PROGRAM, or determined from the TERM environment variable.
+//
+// refer terminfo.ColorLevelFromEnv()
+func detectColorLevelFromEnv(termVal string) (terminfo.ColorLevel, error) {
+	// on TERM=screen: not support true-color
+	// termVal := os.Getenv("TERM")
+
+	// check for overriding environment variables
+	colorTerm, termProg, forceColor := os.Getenv("COLORTERM"), os.Getenv("TERM_PROGRAM"), os.Getenv("FORCE_COLOR")
+	switch {
+	case strings.Contains(colorTerm, "truecolor") || strings.Contains(colorTerm, "24bit") || termProg == "Hyper":
+		if termVal == "screen" { // on TERM=screen: not support true-color
+			return terminfo.ColorLevelHundreds, nil
+		}
+		return terminfo.ColorLevelMillions, nil
+	case colorTerm != "" || forceColor != "":
+		return terminfo.ColorLevelBasic, nil
+	case termProg == "Apple_Terminal":
+		return terminfo.ColorLevelHundreds, nil
+	case termProg == "iTerm.app":
+		if termVal == "screen" { // on TERM=screen: not support true-color
+			return terminfo.ColorLevelHundreds, nil
+		}
+		ver := os.Getenv("TERM_PROGRAM_VERSION")
+		if ver == "" {
+			return terminfo.ColorLevelHundreds, nil
+		}
+		i, err := strconv.Atoi(strings.Split(ver, ".")[0])
+		if err != nil {
+			return terminfo.ColorLevelNone, terminfo.ErrInvalidTermProgramVersion
+		}
+		if i == 3 {
+			return terminfo.ColorLevelMillions, nil
+		}
+		return terminfo.ColorLevelHundreds, nil
+	}
+
+	// otherwise determine from TERM's max_colors capability
+	if termVal != "" {
+		ti, err := terminfo.Load(termVal)
+		if err != nil {
+			return terminfo.ColorLevelNone, err
+		}
+
+		v, ok := ti.Nums[terminfo.MaxColors]
+		switch {
+		case !ok || v <= 16:
+			return terminfo.ColorLevelNone, nil
+		case ok && v >= 256:
+			return terminfo.ColorLevelHundreds, nil
+		}
+	}
+
+	// return terminfo.ColorLevelBasic, nil
+	return terminfo.ColorLevelNone, nil // default return none level
 }
 
 var detectedWSL bool
