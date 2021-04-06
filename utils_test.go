@@ -55,18 +55,20 @@ ZSH_TMUX_TERM=screen-256color
 		is.True(IsSupport16Color())
 		is.True(IsSupportColor())
 	})
+}
 
-	// TERM
+func TestIsDetectColorLevel_unix(t *testing.T) {
+	if IsWindows() {
+		return
+	}
+	is := assert.New(t)
+
 	mockOsEnvByText("TERM=screen-256color", func() {
 		is.Equal(Level256, DetectColorLevel())
 		is.False(IsSupportTrueColor())
 		is.True(IsSupport256Color())
 		is.True(IsSupportColor())
 	})
-}
-
-func TestIsDetectColorLevel_unix(t *testing.T) {
-	is := assert.New(t)
 
 	// TERM_PROGRAM=Terminus
 	mockOsEnvByText(`
@@ -122,6 +124,9 @@ ZSH_TMUX_TERM=screen-256color
 }
 
 func TestIsDetectColorLevel_screen(t *testing.T) {
+	if IsWindows() {
+		return
+	}
 	is := assert.New(t)
 
 	// TERM_PROGRAM=Apple_Terminal use screen

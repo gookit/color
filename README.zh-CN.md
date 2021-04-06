@@ -403,6 +403,12 @@ s.Printf("style with %s\n", "options")
 - `RgbToHex(rgb []int) string` Convert RGB to hex code
 - 更多请查看文档 https://pkg.go.dev/github.com/gookit/color
 
+## 使用color的项目
+
+看看这些使用了 https://github.com/gookit/color 的项目:
+
+- https://github.com/Delta456/box-cli-maker Make Highly Customized Boxes for your CLI
+
 ## Gookit 工具包
 
   - [gookit/ini](https://github.com/gookit/ini) INI配置读取管理，支持多文件加载，数据覆盖合并, 解析ENV变量, 解析变量引用

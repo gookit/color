@@ -435,6 +435,12 @@ there are some useful functions reference
 - `RgbToHex(rgb []int) string` Convert RGB to hex code
 - More useful func please see https://pkg.go.dev/github.com/gookit/color
 
+## Project use
+
+Check out these projects, which use https://github.com/gookit/color :
+
+- https://github.com/Delta456/box-cli-maker Make Highly Customized Boxes for your CLI
+
 ## Gookit packages
 
   - [gookit/ini](https://github.com/gookit/ini) Go config management, use INI files
