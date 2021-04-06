@@ -100,6 +100,11 @@ func detectColorLevelFromEnv(termVal string) (terminfo.ColorLevel, error) {
 		return terminfo.ColorLevelBasic, nil
 	case termProg == "Apple_Terminal":
 		return terminfo.ColorLevelHundreds, nil
+	case termProg == "Terminus":
+		if termVal == "screen" { // on TERM=screen: not support true-color
+			return terminfo.ColorLevelHundreds, nil
+		}
+		return terminfo.ColorLevelMillions, nil
 	case termProg == "iTerm.app":
 		if termVal == "screen" { // on TERM=screen: not support true-color
 			return terminfo.ColorLevelHundreds, nil

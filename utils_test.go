@@ -68,6 +68,19 @@ ZSH_TMUX_TERM=screen-256color
 func TestIsDetectColorLevel_unix(t *testing.T) {
 	is := assert.New(t)
 
+	// TERM_PROGRAM=Terminus
+	mockOsEnvByText(`
+TERMINUS_PLUGINS=
+TERM=xterm-256color
+TERM_PROGRAM=Terminus
+ZSH_TMUX_TERM=screen-256color
+`, func() {
+		is.Equal(LevelRgb, DetectColorLevel())
+		is.True(IsSupportRGBColor())
+		is.True(IsSupport16Color())
+		is.True(IsSupportColor())
+	})
+
 	// -------- tests on macOS ---------
 
 	// TERM_PROGRAM=Apple_Terminal
@@ -139,6 +152,21 @@ TERM_PROGRAM=iTerm.app
 LC_TERMINAL=iTerm2
 COLORTERM=truecolor
 ITERM_SESSION_ID=w0t2p0:3A53303E-BD72-4F1D-897D-EC15E3B4FDB5
+ZSH_TMUX_TERM=screen
+`, func() {
+		is.Equal(Level256, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.True(IsSupport256Color())
+		is.True(IsSupport16Color())
+		is.True(IsSupportColor())
+	})
+
+	// TERM_PROGRAM=Terminus use screen
+	mockOsEnvByText(`
+TERM=screen
+TERMCAP=SC|screen|VT 100/ANSI X3.64 virtual terminal:\
+TERMINUS_PLUGINS=
+TERM_PROGRAM=Terminus
 ZSH_TMUX_TERM=screen
 `, func() {
 		is.Equal(Level256, DetectColorLevel())
