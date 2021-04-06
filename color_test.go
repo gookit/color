@@ -784,7 +784,7 @@ func mockEnvValue(key, val string, fn func(nv string)) {
 	}
 }
 
-func mockOsEnvironByText(envText string, fn func()) {
+func mockOsEnvByText(envText string, fn func()) {
 	ss := strings.Split(envText, "\n")
 	mp := make(map[string]string, len(ss))
 	for _, line := range ss {
@@ -800,10 +800,10 @@ func mockOsEnvironByText(envText string, fn func()) {
 		}
 	}
 
-	mockOsEnviron(mp, fn)
+	mockOsEnv(mp, fn)
 }
 
-func mockOsEnviron(mp map[string]string, fn func())  {
+func mockOsEnv(mp map[string]string, fn func()) {
 	envBak := os.Environ()
 
 	os.Clearenv()

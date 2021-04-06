@@ -83,7 +83,7 @@ func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
 // detectColorFromEnv returns the color level COLORTERM, FORCE_COLOR,
 // TERM_PROGRAM, or determined from the TERM environment variable.
 //
-// refer terminfo.ColorLevelFromEnv()
+// refer the terminfo.ColorLevelFromEnv()
 func detectColorLevelFromEnv(termVal string) (terminfo.ColorLevel, error) {
 	// on TERM=screen: not support true-color
 	// termVal := os.Getenv("TERM")
@@ -104,6 +104,8 @@ func detectColorLevelFromEnv(termVal string) (terminfo.ColorLevel, error) {
 		if termVal == "screen" { // on TERM=screen: not support true-color
 			return terminfo.ColorLevelHundreds, nil
 		}
+
+		// check version
 		ver := os.Getenv("TERM_PROGRAM_VERSION")
 		if ver == "" {
 			return terminfo.ColorLevelHundreds, nil
@@ -125,6 +127,12 @@ func detectColorLevelFromEnv(termVal string) (terminfo.ColorLevel, error) {
 			return terminfo.ColorLevelNone, err
 		}
 
+		// on TERM=screen:
+		// - support 256, not support true-color. test on macOS
+		if termVal == "screen" {
+			return terminfo.ColorLevelHundreds, nil
+		}
+
 		v, ok := ti.Nums[terminfo.MaxColors]
 		switch {
 		case !ok || v <= 16:
@@ -132,10 +140,12 @@ func detectColorLevelFromEnv(termVal string) (terminfo.ColorLevel, error) {
 		case ok && v >= 256:
 			return terminfo.ColorLevelHundreds, nil
 		}
+		return terminfo.ColorLevelBasic, nil
 	}
 
+	// Not TERM env value. default return none level
+	return terminfo.ColorLevelNone, nil
 	// return terminfo.ColorLevelBasic, nil
-	return terminfo.ColorLevelNone, nil // default return none level
 }
 
 var detectedWSL bool

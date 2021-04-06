@@ -36,45 +36,130 @@ func TestUtilFuncs(t *testing.T) {
 func TestDetectColorLevel(t *testing.T) {
 	is := assert.New(t)
 
-	// TERM_PROGRAM=Apple_Terminal
-	mockOsEnvironByText(`
-TERM_PROGRAM=Apple_Terminal
+	// "COLORTERM=truecolor"
+	mockOsEnvByText("COLORTERM=truecolor", func() {
+		is.True(IsSupportColor())
+		is.Equal(LevelRgb, DetectColorLevel())
+		is.True(IsSupportRGBColor())
+		is.True(IsSupportTrueColor())
+	})
+
+	// TERMINAL_EMULATOR=JetBrains-JediTerm
+	mockOsEnvByText(`
+TERM=xterm-256color
+TERMINAL_EMULATOR=JetBrains-JediTerm
+ZSH_TMUX_TERM=screen-256color
 `, func() {
+		is.Equal(LevelRgb, DetectColorLevel())
+		is.True(IsSupportRGBColor())
+		is.True(IsSupport16Color())
+		is.True(IsSupportColor())
+	})
+
+	// TERM
+	mockOsEnvByText("TERM=screen-256color", func() {
 		is.Equal(Level256, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.True(IsSupport256Color())
+		is.True(IsSupportColor())
+	})
+}
+
+func TestIsDetectColorLevel_unix(t *testing.T) {
+	is := assert.New(t)
+
+	// -------- tests on macOS ---------
+
+	// TERM_PROGRAM=Apple_Terminal
+	mockOsEnvByText(`
+TERM_PROGRAM=Apple_Terminal
+TERM=xterm-256color
+TERM_PROGRAM_VERSION=433
+TERM_SESSION_ID=F17907FE-DCA5-488D-829B-7AFA8B323753
+ZSH_TMUX_TERM=screen-256color
+`, func() {
+		// fmt.Println(os.Environ())
+		is.Equal(Level256, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.True(IsSupport256Color())
 		is.True(IsSupport16Color())
 		is.True(IsSupportColor())
 	})
 
 	// TERM_PROGRAM=iTerm.app
-	mockEnvValue("TERM_PROGRAM", "iTerm.app", func(val string) {
-		is.Equal("iTerm.app", val)
-		is.Equal(Level256, DetectColorLevel())
-		is.True(IsSupport16Color())
-		is.True(IsSupportColor())
-	})
-
-	// TERMINAL_EMULATOR=JetBrains-JediTerm
-	mockEnvValue("TERMINAL_EMULATOR", "JetBrains-JediTerm", func(val string) {
+	mockOsEnvByText(`
+LC_TERMINAL_VERSION=3.4.5beta1
+ITERM_PROFILE=Default
+TERM_PROGRAM_VERSION=3.4.5beta1
+TERM_PROGRAM=iTerm.app
+LC_TERMINAL=iTerm2
+COLORTERM=truecolor
+TERM=xterm-256color
+ITERM_SESSION_ID=w0t2p0:3A53303E-BD72-4F1D-897D-EC15E3B4FDB5
+ZSH_TMUX_TERM=screen-256color
+`, func() {
 		is.Equal(LevelRgb, DetectColorLevel())
+		is.True(IsSupportTrueColor())
+		is.True(IsSupport256Color())
 		is.True(IsSupport16Color())
 		is.True(IsSupportColor())
 	})
 
-	// "COLORTERM=truecolor"
-	mockEnvValue("COLORTERM", "truecolor", func(val string) {
-		is.Equal("truecolor", val)
+	// -------- tests on linux ---------
+}
+
+func TestIsDetectColorLevel_screen(t *testing.T) {
+	is := assert.New(t)
+
+	// TERM_PROGRAM=Apple_Terminal use screen
+	mockOsEnvByText(`
+TERM_PROGRAM=Apple_Terminal
+TERM=xterm-256color
+TERM_PROGRAM_VERSION=433
+TERM_SESSION_ID=F17907FE-DCA5-488D-829B-7AFA8B323753
+ZSH_TMUX_TERM=screen-256color
+`, func() {
+		// fmt.Println(os.Environ())
+		is.Equal(Level256, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.True(IsSupport256Color())
+		is.True(IsSupport16Color())
 		is.True(IsSupportColor())
-		lv := DetectColorLevel()
-		is.Equal(LevelRgb, lv)
-		// is.Equal("COLORTERM=truecolor", mark)
-		is.True(IsSupportRGBColor())
-		is.True(IsSupportTrueColor())
 	})
 
-	// TERM
-	mockEnvValue("TERM", "screen-256color", func(_ string) {
+	// TERM_PROGRAM=iTerm.app use screen
+	mockOsEnvByText(`
+TERM=screen
+TERMCAP=SC|screen|VT 100/ANSI X3.64 virtual terminal:\
+TERM_SESSION_ID=w0t2p0:3A53303E-BD72-4F1D-897D-EC15E3B4FDB5
+LC_TERMINAL_VERSION=3.4.5beta1
+ITERM_PROFILE=Default
+TERM_PROGRAM_VERSION=3.4.5beta1
+TERM_PROGRAM=iTerm.app
+LC_TERMINAL=iTerm2
+COLORTERM=truecolor
+ITERM_SESSION_ID=w0t2p0:3A53303E-BD72-4F1D-897D-EC15E3B4FDB5
+ZSH_TMUX_TERM=screen
+`, func() {
+		is.Equal(Level256, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.True(IsSupport256Color())
+		is.True(IsSupport16Color())
 		is.True(IsSupportColor())
-		// is.Equal(Level256, DetectColorLevel())
+	})
+
+	// TERMINAL_EMULATOR=JetBrains-JediTerm use screen
+	mockOsEnvByText(`
+TERM=screen
+TERMCAP=SC|screen|VT 100/ANSI X3.64 virtual terminal:\
+TERMINAL_EMULATOR=JetBrains-JediTerm
+ZSH_TMUX_TERM=screen
+`, func() {
+		is.Equal(Level256, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.True(IsSupport256Color())
+		is.True(IsSupport16Color())
+		is.True(IsSupportColor())
 	})
 }
 

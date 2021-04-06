@@ -139,6 +139,18 @@ TERM_SESSION_ID=F17907FE-DCA5-488D-829B-7AFA8B323753
 ZSH_TMUX_TERM=screen-256color
 ```
 
+use screen:
+
+```bash
+% env | grep -i term                                                                                     
+TERM=screen
+TERMCAP=SC|screen|VT 100/ANSI X3.64 virtual terminal:\
+TERM_PROGRAM=Apple_Terminal
+TERM_PROGRAM_VERSION=433
+TERM_SESSION_ID=853CFB05-1F50-45A8-8F80-CF366958557E
+ZSH_TMUX_TERM=screen
+```
+
 **zsh on iterm2**
 
 ```bash
@@ -154,6 +166,23 @@ ITERM_SESSION_ID=w0t2p0:3A53303E-BD72-4F1D-897D-EC15E3B4FDB5
 ZSH_TMUX_TERM=screen-256color
 ```
 
+use screen:
+
+```bash
+% env | grep -i term                                  
+TERM=screen
+TERMCAP=SC|screen|VT 100/ANSI X3.64 virtual terminal:\
+TERM_SESSION_ID=w0t2p0:3A53303E-BD72-4F1D-897D-EC15E3B4FDB5
+LC_TERMINAL_VERSION=3.4.5beta1
+ITERM_PROFILE=Default
+TERM_PROGRAM_VERSION=3.4.5beta1
+TERM_PROGRAM=iTerm.app
+LC_TERMINAL=iTerm2
+COLORTERM=truecolor
+ITERM_SESSION_ID=w0t2p0:3A53303E-BD72-4F1D-897D-EC15E3B4FDB5
+ZSH_TMUX_TERM=screen
+```
+
 **bin/zsh on JetBrains Terminal**
 
 - support True color, but detect is `256`. so, need check `TERMINAL_EMULATOR`
@@ -165,12 +194,22 @@ TERMINAL_EMULATOR=JetBrains-JediTerm
 ZSH_TMUX_TERM=screen-256color
 ```
 
+use screen:
+
+```bash
+% env | grep -i term                                                            
+TERM=screen
+TERMCAP=SC|screen|VT 100/ANSI X3.64 virtual terminal:\
+TERMINAL_EMULATOR=JetBrains-JediTerm
+ZSH_TMUX_TERM=screen
+```
+
 **bin/zsh on Terminus Terminal**
 
 - support True color, but detect is `256`. so, need check `TERM_PROGRAM`
 
 ```bash
-% env | grep -i TERM                                                                                                                                   :( 1 21-03-31 - 0:43:18
+% env | grep -i TERM                   
 TERMINUS_PLUGINS=
 TERM=xterm-256color
 TERM_PROGRAM=Terminus
