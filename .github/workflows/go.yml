@@ -29,7 +29,8 @@ jobs:
 #      id: go
 
     - name: Display Env
-      run: env | grep -i term
+#      run: env | grep -i term # error on exec
+      run: env
 
     - name: Run unit tests
       env:
