@@ -25,6 +25,8 @@ func DetectColorLevel() terminfo.ColorLevel {
 	return level
 }
 
+// detect terminal color support level
+//
 // refer https://github.com/Delta456/box-cli-maker
 func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
 	var err error

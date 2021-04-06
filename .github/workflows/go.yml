@@ -29,9 +29,11 @@ jobs:
 #      id: go
 
     - name: Display Env
-      run: env
+      run: env | grep -i term
 
     - name: Run unit tests
+      env:
+        COLOR_DEBUG_MODE: on
       #      run: go test -v -cover ./...
       #      must add " for profile.cov on windows OS
       run: go test -v -coverprofile="profile.cov" ./...
