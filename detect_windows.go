@@ -55,12 +55,7 @@ func tryEnableVTP(enable bool) bool {
 
 	debugf("True-Color by enable VirtualTerminalProcessing on windows")
 
-	// load related windows dll
-	kernel32 = syscall.NewLazyDLL("kernel32.dll")
-
-	// https://docs.microsoft.com/en-us/windows/console/setconsolemode
-	procGetConsoleMode = kernel32.NewProc("GetConsoleMode")
-	procSetConsoleMode = kernel32.NewProc("SetConsoleMode")
+	initKernel32Proc()
 
 	// enable colors on windows terminal
 	if tryEnableOnCONOUT() {
@@ -68,6 +63,19 @@ func tryEnableVTP(enable bool) bool {
 	}
 
 	return tryEnableOnStdout()
+}
+
+func initKernel32Proc() {
+	if kernel32 != nil {
+		return
+	}
+
+	// load related windows dll
+	// https://docs.microsoft.com/en-us/windows/console/setconsolemode
+	kernel32 = syscall.NewLazyDLL("kernel32.dll")
+
+	procGetConsoleMode = kernel32.NewProc("GetConsoleMode")
+	procSetConsoleMode = kernel32.NewProc("SetConsoleMode")
 }
 
 func tryEnableOnCONOUT() bool {
@@ -213,6 +221,8 @@ func EnableVirtualTerminalProcessing(stream syscall.Handle, enable bool) error {
 
 // IsTty returns true if the given file descriptor is a terminal.
 func IsTty(fd uintptr) bool {
+	initKernel32Proc()
+
 	var st uint32
 	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, fd, uintptr(unsafe.Pointer(&st)), 0)
 	return r != 0 && e == 0
@@ -225,6 +235,8 @@ func IsTty(fd uintptr) bool {
 // 	fd := uintptr(syscall.Stdout) // for windows
 // 	IsTerminal(fd)
 func IsTerminal(fd uintptr) bool {
+	initKernel32Proc()
+
 	var st uint32
 	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, fd, uintptr(unsafe.Pointer(&st)), 0)
 	return r != 0 && e == 0
