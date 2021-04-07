@@ -29,10 +29,12 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
     - 自 `v1.2.4` 起 **256色(8bit)，RGB色彩(24bit)均支持Windows CMD和PowerShell终端**
     - 请查看 [this gist](https://gist.github.com/XVilka/8346728) 了解支持RGB色彩的终端
   - 通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
-  - 同时支持html标签式的颜色渲染. eg: `<green>message</>`
+  - 同时支持html标签式的颜色渲染.
+    - 例如: `this an <green>message</>` 标签内部的文本将会渲染为绿色字体
   - 基础色彩: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
   - 扩展风格: `Info` `Note` `Light` `Error` `Danger` `Notice` `Success` `Comment` `Primary` `Warning` `Question` `Secondary`
-  - 支持Linux、Mac同时兼容Windows系统环境
+  - 支持通过设置环境变量 `NO_COLOR` 来禁用色彩，或者使用 `FORCE_COLOR` 来强制使用色彩渲染.
+  - 支持Linux、Mac，同时兼容Windows系统环境
 
 ## GoDoc
 

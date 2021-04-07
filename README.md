@@ -33,6 +33,7 @@ Now, 256 colors and RGB colors have also been supported to work in Windows CMD a
     - Support working on Windows `cmd` `powerShell` terminal
   - Basic colors: `Bold`, `Black`, `White`, `Gray`, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`
   - Additional styles: `Info`, `Note`, `Light`, `Error`, `Danger`, `Notice`, `Success`, `Comment`, `Primary`, `Warning`, `Question`, `Secondary`
+  - Support by set `NO_COLOR` for disable color or use `FORCE_COLOR` for force open color render.
 
 ## GoDoc
 
