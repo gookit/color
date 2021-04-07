@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"runtime"
+	"strconv"
 
 	"github.com/gookit/color"
 	// "github.com/gookit/goutil/dump"
@@ -19,8 +21,15 @@ func main() {
 	fmt.Println("Support True Color:", color.SupportTrueColor())
 
 	if es := color.InnerErrs(); len(es) > 0 {
-		fmt.Println(es)
+		fmt.Println("inner errors:", es)
 	}
+
+	termVal := os.Getenv("TERM")
+	fmt.Println("----------------TERM value is", termVal, "---------------")
+	fmt.Println(
+		termVal[0:1],
+		strconv.FormatUint(uint64(termVal[0]), 16),
+	)
 
 	// dump.P(os.Environ())
 	// fmt.Println(os.Environ())

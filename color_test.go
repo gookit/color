@@ -535,6 +535,7 @@ func TestRGBColor(t *testing.T) {
 	str = c.Sprintf("msg")
 	is.Equal("\x1b[38;2;204;204;204mmsg\x1b[0m", str)
 	is.Equal("[204 204 204]", fmt.Sprint(c.Values()))
+	is.Equal("#cccccc", c.Hex())
 
 	// RGBColor.Print
 	c.Print("msg")
@@ -581,9 +582,11 @@ func TestHexToRGB(t *testing.T) {
 	c := HEX("ccc") // rgb: [204 204 204]
 	is.False(c.IsEmpty())
 	is.Equal("38;2;204;204;204", c.String())
+	is.Equal("#cccccc", c.Hex())
 
 	c = HEX("aabbcc") // rgb: [170 187 204]
 	is.Equal("38;2;170;187;204", c.String())
+	is.Equal("#aabbcc", c.Hex())
 
 	c = Hex("#aabbcc") // rgb: [170 187 204]
 	is.Equal("38;2;170;187;204", c.String())

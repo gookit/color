@@ -177,6 +177,12 @@ func (c RGBColor) Code() string {
 	return c.String()
 }
 
+// Hex color rgb to hex string. as in #ff0080.
+func (c RGBColor) Hex() string {
+	// Add 0.5 for rounding
+	return fmt.Sprintf("#%02x%02x%02x", c[0], c[1], c[2])
+}
+
 // String to color code string
 func (c RGBColor) String() string {
 	if c[3] == AsFg {

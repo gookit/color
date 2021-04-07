@@ -6,7 +6,7 @@ import (
 	"github.com/gookit/color"
 )
 
-// go run ./_examples/basiccolor.go
+// go run ./_examples/color_16.go
 func main() {
 	fmt.Println("Foreground colors:")
 	for name, c := range color.FgColors {

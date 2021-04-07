@@ -8,6 +8,7 @@ import (
 )
 
 // go run ./_examples/color_rgb.go
+// FORCE_COLOR=on go run ./_examples/color_rgb.go
 func main() {
 	color.RGB(30, 144, 255).Println("message. use RGB number")
 	color.HEX("#1976D2").Println("blue-darken")

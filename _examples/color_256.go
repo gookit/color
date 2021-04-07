@@ -6,7 +6,8 @@ import (
 	"github.com/gookit/color"
 )
 
-// go run ./_examples/color256.go
+// go run ./_examples/color_256.go
+// FORCE_COLOR=on go run ./_examples/color_256.go
 func main() {
 	// var s *color.Style256
 
