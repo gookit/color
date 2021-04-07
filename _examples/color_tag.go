@@ -7,7 +7,7 @@ import (
 	"github.com/gookit/color"
 )
 
-// go run ./_examples/color_tag1.go
+// go run ./_examples/color_tag.go
 func main() {
 	i := 0
 	fmt.Println("Current env whether support color:", color.IsSupportColor())
@@ -19,7 +19,10 @@ func main() {
 		}
 
 		i++
-		color.Tag(tag).Print(tag+" tag")
+		color.Tag(tag).Printf("tag: %-14s", tag)
+		// taggedText := color.WrapTag("tag:" + tag, tag)
+		// color.Printf("%s", taggedText)
+
 		if i%5 == 0 {
 			fmt.Print("\n")
 		} else {
@@ -27,5 +30,5 @@ func main() {
 		}
 	}
 
-	fmt.Printf("\n\ntotal tags: %d\n", i)
+	fmt.Printf("\n\nBuilt-in Tags Total Number: %d\n", i)
 }

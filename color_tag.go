@@ -9,20 +9,23 @@ import (
 // output colored text like use html tag. (not support windows cmd)
 const (
 	// MatchExpr regex to match color tags
-	// Notice: golang 不支持反向引用.  即不支持使用 \1 引用第一个匹配 ([a-z=;]+)
+	//
+	// Notice: golang 不支持反向引用. 即不支持使用 \1 引用第一个匹配 ([a-z=;]+)
 	// MatchExpr = `<([a-z=;]+)>(.*?)<\/\1>`
 	// 所以调整一下 统一使用 `</>` 来结束标签，例如 "<info>some text</>"
-	// 支持自定义颜色属性的tag "<fg=white;bg=blue;op=bold>content</>"
+	//
+	// allow custom attrs, eg: "<fg=white;bg=blue;op=bold>content</>"
 	// (?s:...) s - 让 "." 匹配换行
-	MatchExpr = `<([a-zA-Z_=,;]+)>(?s:(.*?))<\/>`
+	MatchExpr = `<([0-9a-zA-Z_=,;]+)>(?s:(.*?))<\/>`
 
-	// AttrExpr regex to match color attributes
-	AttrExpr = `(fg|bg|op)[\s]*=[\s]*([a-zA-Z,]+);?`
+	// AttrExpr regex to match custom color attributes
+	// eg: "<fg=white;bg=blue;op=bold>content</>"
+	AttrExpr = `(fg|bg|op)[\s]*=[\s]*([0-9a-zA-Z,]+);?`
 
 	// StripExpr regex used for removing color tags
 	// StripExpr = `<[\/]?[a-zA-Z=;]+>`
 	// 随着上面的做一些调整
-	StripExpr = `<[\/]?[a-zA-Z_=,;]*>`
+	StripExpr = `<[\/]?[0-9a-zA-Z_=,;]*>`
 )
 
 var (

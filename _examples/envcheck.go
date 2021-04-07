@@ -25,7 +25,7 @@ func main() {
 	}
 
 	termVal := os.Getenv("TERM")
-	fmt.Println("----------------TERM value is", termVal, "---------------")
+	fmt.Println("----------------TERM value is:", termVal, "---------------")
 	fmt.Println(
 		termVal[0:1],
 		strconv.FormatUint(uint64(termVal[0]), 16),
