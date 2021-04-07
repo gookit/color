@@ -25,9 +25,14 @@ func New(colors ...Color) Style {
 	return colors
 }
 
-// Save to styles map
+// Save to global styles map
 func (s Style) Save(name string) {
 	AddStyle(name, s)
+}
+
+// Add to global styles map
+func (s *Style) Add(cs ...Color) {
+	*s = append(*s, cs...)
 }
 
 // Render render text

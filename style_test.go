@@ -6,6 +6,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNew(t *testing.T) {
+	is := assert.New(t)
+
+	s := New(Red)
+	is.Equal("31", s.String())
+
+	s.Add(OpBold)
+	is.Equal("31;1", s.String())
+
+	s.Add(BgCyan)
+	is.Equal("31;1;46", s.String())
+}
+
 func TestStyle(t *testing.T) {
 	// force open color render for testing
 	buf := forceOpenColorRender()
