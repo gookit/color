@@ -43,7 +43,10 @@ const CodeExpr = `\033\[[\d;?]+m`
 
 var (
 	// Enable switch color render and display
-	Enable = true
+	//
+	// NOTICE:
+	// if ENV: NO_COLOR is not empty, will disable color render.
+	Enable = os.Getenv("NO_COLOR") == ""
 	// RenderTag render HTML tag on call color.Xprint, color.PrintX
 	RenderTag = true
 	// debug mode for development.
