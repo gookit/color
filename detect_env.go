@@ -124,17 +124,8 @@ func detectColorLevelFromEnv(termVal string, isWin bool) (terminfo.ColorLevel, e
 
 		// fallback: simple detect by TERM value string.
 		if err != nil {
-			debugf("terminfo.Load error - fallback detect color by check TERM value")
-			if strings.Contains(termVal, "256color") {
-				return terminfo.ColorLevelHundreds, nil
-			}
-			if strings.Contains(termVal, "xterm") {
-				return terminfo.ColorLevelHundreds, nil
-				// return terminfo.ColorLevelBasic, nil
-			}
-
 			saveInternalError(err)
-			return terminfo.ColorLevelNone, err
+			return fallbackCheckTermValue(termVal)
 		}
 
 		debugf("the loaded term info file is: %s", ti.File)
@@ -146,18 +137,39 @@ func detectColorLevelFromEnv(termVal string, isWin bool) (terminfo.ColorLevel, e
 		}
 
 		v, ok := ti.Nums[terminfo.MaxColors]
-		switch {
-		case !ok || v <= 16:
-			return terminfo.ColorLevelNone, nil
-		case ok && v >= 256:
+		// switch {
+		// case !ok || v <= 16:
+		// 	return terminfo.ColorLevelNone, nil
+		// case ok && v >= 256:
+		// 	return terminfo.ColorLevelHundreds, nil
+		// }
+		// return terminfo.ColorLevelBasic, nil
+
+		if ok && v >= 256 {
 			return terminfo.ColorLevelHundreds, nil
 		}
-		return terminfo.ColorLevelBasic, nil
+
+		return fallbackCheckTermValue(termVal)
 	}
 
 	// no TERM env value. default return none level
 	return terminfo.ColorLevelNone, nil
 	// return terminfo.ColorLevelBasic, nil
+}
+
+func fallbackCheckTermValue(termVal string) (terminfo.ColorLevel, error) {
+	debugf("terminfo.Load error - fallback detect color by check TERM value")
+	if strings.Contains(termVal, "256color") {
+		return terminfo.ColorLevelHundreds, nil
+	}
+
+	if strings.Contains(termVal, "xterm") {
+		return terminfo.ColorLevelHundreds, nil
+		// return terminfo.ColorLevelBasic, nil
+	}
+
+	// return terminfo.ColorLevelNone, nil
+	return terminfo.ColorLevelBasic, nil
 }
 
 var detectedWSL bool

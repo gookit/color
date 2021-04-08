@@ -63,6 +63,13 @@ func TestIsDetectColorLevel_unix(t *testing.T) {
 	}
 	is := assert.New(t)
 
+	mockOsEnvByText("TERM=xterm", func() {
+		is.Equal(Level256, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.True(IsSupport256Color())
+		is.True(IsSupportColor())
+	})
+
 	mockOsEnvByText("TERM=screen-256color", func() {
 		is.Equal(Level256, DetectColorLevel())
 		is.False(IsSupportTrueColor())

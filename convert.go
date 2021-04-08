@@ -9,7 +9,7 @@ import (
 
 var (
 	// ---------- basic(16) <=> 256 color convert ----------
-	basicTo256 = map[uint8]uint8{
+	basicTo256Map = map[uint8]uint8{
 		30: 0,   // black 	000000
 		31: 160, // red 	c51e14
 		32: 34,  // green 	1dc121
@@ -30,24 +30,7 @@ var (
 
 	// ---------- basic(16) <=> RGB color convert ----------
 	// refer from Hyper app
-	//
-	// black: '#000000',
-	// red: '#C51E14',
-	// green: '#1DC121',
-	// yellow: '#C7C329',
-	// blue: '#0A2FC4',
-	// magenta: '#C839C5',
-	// cyan: '#20C5C6',
-	// white: '#C7C7C7',
-	// lightBlack: '#686868',
-	// lightRed: '#FD6F6B',
-	// lightGreen: '#67F86F',
-	// lightYellow: '#FFFA72',
-	// lightBlue: '#6A76FB',
-	// lightMagenta: '#FD7CFC',
-	// lightCyan: '#68FDFE',
-	// lightWhite: '#FFFFFF',
-	basic2hex = map[uint8]string{
+	basic2hexMap = map[uint8]string{
 		30: "000000", // black
 		31: "c51e14", // red
 		32: "1dc121", // green
@@ -65,8 +48,8 @@ var (
 		96: "68fdfe", // lightCyan
 		97: "ffffff", // lightWhite
 	}
-	// will convert data from basic2hex
-	hex2basic = initHex2basic()
+	// will convert data from basic2hexMap
+	hex2basicMap = initHex2basic()
 
 	// ---------- 256 <=> RGB color convert ----------
 	// adapted from https://gist.github.com/MicahElliott/719710
@@ -445,19 +428,19 @@ func RgbToHex(rgb []int) string {
 
 // Basic2hex convert basic color to hex string.
 func Basic2hex(val uint8) string {
-	return basic2hex[val]
+	return basic2hexMap[val]
 }
 
 // Hex2basic convert hex string to basic color code.
 func Hex2basic(hex string) uint8 {
-	return hex2basic[hex]
+	return hex2basicMap[hex]
 }
 
 // Rgb2basic alias of the RgbToAnsi()
 func Rgb2basic(r, g, b uint8, isBg bool) uint8 {
 	// is basic color, direct use static map data.
 	hex := RgbToHex([]int{int(r), int(g), int(b)})
-	if val, ok := hex2basic[hex]; ok {
+	if val, ok := hex2basicMap[hex]; ok {
 		if isBg {
 			return val + 10
 		}
@@ -468,9 +451,9 @@ func Rgb2basic(r, g, b uint8, isBg bool) uint8 {
 }
 
 func initHex2basic() map[string]uint8 {
-	h2b := make(map[string]uint8, len(basic2hex))
+	h2b := make(map[string]uint8, len(basic2hexMap))
 	// ini data map
-	for u, s := range basic2hex {
+	for u, s := range basic2hexMap {
 		h2b[s] = u
 	}
 	return h2b

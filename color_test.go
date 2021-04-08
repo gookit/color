@@ -410,11 +410,14 @@ func TestColor256(t *testing.T) {
 
 	// empty
 	c = Color256{1: 99}
+	is.False(c.IsBg())
 	is.True(c.IsEmpty())
 	is.Equal("", c.String())
 
 	// fg
 	c = Bit8(132)
+	is.True(c.IsFg())
+	is.False(c.IsBg())
 	is.False(c.IsEmpty())
 	is.Equal(uint8(132), c.Value())
 	is.Equal("38;5;132", c.String())

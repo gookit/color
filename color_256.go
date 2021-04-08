@@ -50,7 +50,11 @@ const (
 //  bg color: [152, 1]
 //
 // NOTICE: now support 256 color on windows CMD, PowerShell
+// lint warn - Name starts with package name
 type Color256 [2]uint8
+type Bit8Color = Color256 // alias
+
+var emptyC256 = Color256{1: 99}
 
 // Bit8 create a color256
 func Bit8(val uint8, isBg ...bool) Color256 {
@@ -118,6 +122,16 @@ func (c Color256) String() string {
 	return ""
 }
 
+// IsFg color
+func (c Color256) IsFg() bool {
+	return c[1] == AsFg
+}
+
+// IsBg color
+func (c Color256) IsBg() bool {
+	return c[1] == AsBg
+}
+
 // IsEmpty value
 func (c Color256) IsEmpty() bool {
 	return c[1] > 1
@@ -131,7 +145,7 @@ func (c Color256) IsEmpty() bool {
 //
 // 前/背景色
 // 都是由两位uint8组成, 第一位是色彩值；
-// 第二位与Bit8Color不一样的是，在这里表示是否设置了值 0 未设置 ^0 已设置
+// 第二位与 Bit8Color 不一样的是，在这里表示是否设置了值 0 未设置 !=0 已设置
 type Style256 struct {
 	// p Printer
 

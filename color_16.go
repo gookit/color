@@ -254,29 +254,21 @@ func (c Color) Darken() Color {
 func (c Color) C256() Color256 {
 	val := uint8(c)
 	if val < 10 { // is option code
-		return Color256{} // empty
+		return emptyC256 // empty
 	}
 
 	var isBg uint8
 
 	// basic color
-	if val >= 30 && val <= 47 {
-		if val >= BgBase { // is bg
-			isBg = 1
-			val = val - 10 // to fg code
-		}
-
-		c256 := basicTo256[val]
-		return Color256{c256, isBg}
-	}
-
-	// hi color
-	if val >= HiBgBase { // is bg
+	if val >= BgBase && val <= 47 { // is bg
+		isBg = 1
+		val = val - 10 // to fg code
+	} else if val >= HiBgBase && val <= 107 { // is bg
 		isBg = 1
 		val = val - 10 // to fg code
 	}
 
-	c256 := basicTo256[val]
+	c256 := basicTo256Map[val]
 	return Color256{c256, isBg}
 }
 
