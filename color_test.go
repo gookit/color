@@ -383,10 +383,35 @@ func TestQuickFunc(t *testing.T) {
 	// inline func
 	testFuncs := []func(...interface{}) {
 		Redp,
+		Bluep,
+		Cyanp,
+		Grayp,
 		Greenp,
+		Yellowp,
+		Magentap,
 	}
-	for _, fn := range testFuncs {
+	fmt.Println("--- quick inline message print:")
+	for i, fn := range testFuncs {
+		if i == 3 {
+			fmt.Println()
+		}
 		fn("inline message,")
+	}
+	fmt.Println()
+
+	// line func
+	testFuncs = []func(...interface{}) {
+		Redln,
+		Blueln,
+		Cyanln,
+		Grayln,
+		Greenln,
+		Yellowln,
+		Magentaln,
+	}
+	fmt.Println("--- quick line message print:")
+	for _, fn := range testFuncs {
+		fn("quick line message.")
 	}
 }
 
