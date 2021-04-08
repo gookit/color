@@ -142,6 +142,16 @@ func RGBFromString(rgb string, isBg ...bool) RGBColor {
 	return RGB(uint8(ar[0]), uint8(ar[1]), uint8(ar[2]), isBg...)
 }
 
+// Set terminal by rgb/true color code
+func (c RGBColor) Set() error {
+	return SetTerminal(c.String())
+}
+
+// Reset terminal. alias of the ResetTerminal()
+func (c RGBColor) Reset() error {
+	return ResetTerminal()
+}
+
 // Print print message
 func (c RGBColor) Print(a ...interface{}) {
 	doPrintV2(c.String(), fmt.Sprint(a...))
@@ -177,13 +187,13 @@ func (c RGBColor) Code() string {
 	return c.String()
 }
 
-// Hex color rgb to hex string. as in #ff0080.
+// Hex color rgb to hex string. as in "ff0080".
 func (c RGBColor) Hex() string {
 	// Add 0.5 for rounding
-	return fmt.Sprintf("#%02x%02x%02x", c[0], c[1], c[2])
+	return fmt.Sprintf("%02x%02x%02x", c[0], c[1], c[2])
 }
 
-// String to color code string
+// String to color code string. eg: "38;2;204;123;56"
 func (c RGBColor) String() string {
 	if c[3] == AsFg {
 		return fmt.Sprintf(TplFgRGB, c[0], c[1], c[2])

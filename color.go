@@ -104,28 +104,15 @@ func SupportTrueColor() bool {
 
 // Set set console color attributes
 func Set(colors ...Color) (int, error) {
-	if !Enable { // not enable
-		return 0, nil
-	}
-
-	if !SupportColor() {
-		return 0, nil
-	}
-
-	return fmt.Printf(SettingTpl, Colors2code(colors...))
+	code := Colors2code(colors...)
+	err := SetTerminal(code)
+	return 0, err
 }
 
 // Reset reset console color attributes
 func Reset() (int, error) {
-	if !Enable { // not enable
-		return 0, nil
-	}
-
-	if !SupportColor() {
-		return 0, nil
-	}
-
-	return fmt.Print(ResetSet)
+	err := ResetTerminal()
+	return 0, err
 }
 
 // Disable disable color output

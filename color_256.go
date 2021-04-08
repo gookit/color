@@ -73,6 +73,16 @@ func C256(val uint8, isBg ...bool) Color256 {
 	return bc
 }
 
+// Set terminal by 256 color code
+func (c Color256) Set() error {
+	return SetTerminal(c.String())
+}
+
+// Reset terminal. alias of the ResetTerminal()
+func (c Color256) Reset() error {
+	return ResetTerminal()
+}
+
 // Print print message
 func (c Color256) Print(a ...interface{}) {
 	doPrintV2(c.String(), fmt.Sprint(a...))
@@ -108,7 +118,7 @@ func (c Color256) Value() uint8 {
 	return c[0]
 }
 
-// String convert to color code string.
+// String convert to color code string. eg: "38;5;12"
 func (c Color256) String() string {
 	if c[1] == AsFg { // 0 is Fg
 		return fmt.Sprintf(TplFg256, c[0])

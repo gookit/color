@@ -148,7 +148,6 @@ func detectColorLevelFromEnv(termVal string, isWin bool) (terminfo.ColorLevel, e
 		if ok && v >= 256 {
 			return terminfo.ColorLevelHundreds, nil
 		}
-
 		return fallbackCheckTermValue(termVal)
 	}
 
