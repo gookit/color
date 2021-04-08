@@ -8,6 +8,26 @@ import (
 )
 
 var (
+	// ---------- basic(16) <=> 256 color convert ----------
+	basicTo256 = map[uint8]uint8{
+		30: 0,   // black 	000000
+		31: 160, // red 	c51e14
+		32: 34,  // green 	1dc121
+		33: 184, // yellow 	c7c329
+		34: 20,  // blue 	0a2fc4
+		35: 170, // magenta c839c5
+		36: 44,  // cyan 	20c5c6
+		37: 188, // white 	c7c7c7
+		90: 59,  // lightBlack 		686868
+		91: 203, // lightRed 		fd6f6b
+		92: 83,  // lightGreen 		67f86f
+		93: 227, // lightYellow 	fffa72
+		94: 69,  // lightBlue 		6a76fb
+		95: 213, // lightMagenta 	fd7cfc
+		96: 87,  // lightCyan 		68fdfe
+		97: 15,  // lightWhite 		ffffff
+	}
+
 	// ---------- basic(16) <=> RGB color convert ----------
 	// refer from Hyper app
 	//

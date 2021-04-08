@@ -44,6 +44,9 @@ func (o Opts) String() string {
 const (
 	FgBase uint8 = 30
 	BgBase uint8 = 40
+	// hi color base code
+	HiFgBase uint8 = 90
+	HiBgBase uint8 = 100
 )
 
 // Foreground colors. basic foreground colors 30 - 37
@@ -247,14 +250,44 @@ func (c Color) Darken() Color {
 	return c
 }
 
-// C256 convert to 256-color code.
-// func (c Color) C256() Color256 {
-//
-// }
+// C256 convert 16 color to 256-color code.
+func (c Color) C256() Color256 {
+	val := uint8(c)
+	if val < 10 { // is option code
+		return Color256{} // empty
+	}
 
-// RGB convert to 256-color code.
+	var isBg uint8
+
+	// basic color
+	if val >= 30 && val <= 47 {
+		if val >= BgBase { // is bg
+			isBg = 1
+			val = val - 10 // to fg code
+		}
+
+		c256 := basicTo256[val]
+		return Color256{c256, isBg}
+	}
+
+	// hi color
+	if val >= HiBgBase { // is bg
+		isBg = 1
+		val = val - 10 // to fg code
+	}
+
+	c256 := basicTo256[val]
+	return Color256{c256, isBg}
+}
+
+// RGB convert 16 color to 256-color code.
 func (c Color) RGB() RGBColor {
-	return HEX(Basic2hex(uint8(c)))
+	val := uint8(c)
+	if val < 10 { // is option code
+		return emptyRGBColor
+	}
+
+	return HEX(Basic2hex(val))
 }
 
 // Code convert to code string. eg "35"
