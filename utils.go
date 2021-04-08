@@ -148,7 +148,7 @@ func formatArgsForPrintln(args []interface{}) (message string) {
 // }
 
 func debugf(f string, v ...interface{}) {
-	if debugMode == "on" {
+	if debugMode {
 		fmt.Print("COLOR_DEBUG: ")
 		fmt.Printf(f, v...)
 		fmt.Println()

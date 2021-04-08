@@ -153,6 +153,15 @@ func Bit4(code uint8) Color {
  * Color render methods
  *************************************************************/
 
+// Name get color code name.
+func (c Color) Name() string {
+	name, ok := Basic2name[uint8(c)]
+	if ok {
+		return name
+	}
+	return "unknown"
+}
+
 // Text render a text message
 func (c Color) Text(message string) string {
 	return RenderString(c.String(), message)
@@ -236,6 +245,16 @@ func (c Color) Darken() Color {
 
 	// don't change
 	return c
+}
+
+// C256 convert to 256-color code.
+// func (c Color) C256() Color256 {
+//
+// }
+
+// RGB convert to 256-color code.
+func (c Color) RGB() RGBColor {
+	return HEX(Basic2hex(uint8(c)))
 }
 
 // Code convert to code string. eg "35"
@@ -324,4 +343,34 @@ var AllOptions = map[string]Color{
 	"blink":      OpBlink,
 	"reverse":    OpReverse,
 	"concealed":  OpConcealed,
+}
+
+// Basic2name basic color code to name
+var Basic2name = map[uint8]string{
+	30: "black",
+	31: "red",
+	32: "green",
+	33: "yellow",
+	34: "blue",
+	35: "magenta",
+	36: "cyan",
+	37: "white",
+	// hi color code
+	90: "lightBlack",
+	91: "lightRed",
+	92: "lightGreen",
+	93: "lightYellow",
+	94: "lightBlue",
+	95: "lightMagenta",
+	96: "lightCyan",
+	97: "lightWhite",
+	// options
+	0: "reset",
+	1: "bold",
+	2: "fuzzy",
+	3: "italic",
+	4: "underscore",
+	5: "blink",
+	7: "reverse",
+	8: "concealed",
 }

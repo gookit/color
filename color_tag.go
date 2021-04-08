@@ -45,24 +45,91 @@ var colorTags = map[string]string{
 	// basic tags
 	"red":      "0;31",
 	"red1":     "1;31", // with bold
+	"redB":     "1;31",
+	"red_b":    "1;31",
 	"blue":     "0;34",
 	"blue1":    "1;34", // with bold
+	"blueB":    "1;34",
+	"blue_b":   "1;34",
 	"cyan":     "0;36",
 	"cyan1":    "1;36", // with bold
-	"black":    "0;30",
+	"cyanB":    "1;36",
+	"cyan_b":   "1;36",
 	"green":    "0;32",
 	"green1":   "1;32", // with bold
+	"greenB":   "1;32",
+	"green_b":  "1;32",
+	"black":    "0;30",
 	"white":    "1;37",
 	"default":  "0;39", // no color
 	"normal":   "0;39", // no color
-	"ylw0":     "0;33",
-	"ylw1":     "1;33", // with bold
 	"brown":    "0;33", // #A52A2A
-	"yellow":   "1;33",
-	"mga":      "0;35", // short name
+	"yellow":   "0;33",
+	"ylw0":     "0;33",
+	"yellowB":  "1;33", // with bold
+	"ylw1":     "1;33",
+	"ylwB":     "1;33",
 	"magenta":  "0;35",
-	"mgb":      "1;35", // short name, with bold
-	"magentaB": "1;35", // add bold
+	"mga":      "0;35", // short name
+	"magentaB": "1;35", // with bold
+	"mgb":      "1;35",
+	"mgaB":     "1;35",
+
+	// light/hi tags
+
+	"gray":          "0;90",
+	"darkGray":      "0;90",
+	"dark_gray":     "0;90",
+	"lightYellow":   "0;93",
+	"light_yellow":  "0;93",
+	"hiYellow":      "0;93",
+	"hi_yellow":     "0;93",
+	"hiYellowB":     "1;93", // with bold
+	"hi_yellow_b":   "1;93",
+	"lightMagenta":  "0;95",
+	"light_magenta": "0;95",
+	"hiMagenta":     "0;95",
+	"hi_magenta":    "0;95",
+	"lightMagentaB": "1;95", // with bold
+	"hiMagentaB":    "1;95", // with bold
+	"hi_magenta_b":  "1;95",
+	"lightRed":      "0;91",
+	"light_red":     "0;91",
+	"hiRed":         "0;91",
+	"hi_red":        "0;91",
+	"lightRedB":     "1;91", // with bold
+	"light_red_b":   "1;91",
+	"hi_red_b":      "1;91",
+	"lightGreen":    "0;92",
+	"light_green":   "0;92",
+	"hiGreen":       "0;92",
+	"hi_green":      "0;92",
+	"lightGreenB":   "1;92",
+	"light_green_b": "1;92",
+	"hi_green_b":    "1;92",
+	"lightBlue":     "0;94",
+	"light_blue":    "0;94",
+	"hiBlue":        "0;94",
+	"hi_blue":       "0;94",
+	"lightBlueB":    "1;94",
+	"light_blue_b":  "1;94",
+	"hi_blue_b":     "1;94",
+	"lightCyan":     "0;96",
+	"light_cyan":    "0;96",
+	"hiCyan":        "0;96",
+	"hi_cyan":       "0;96",
+	"lightCyanB":    "1;96",
+	"light_cyan_b":  "1;96",
+	"hi_cyan_b":     "1;96",
+	"lightWhite":    "0;97;40",
+	"light_white":   "0;97;40",
+
+	// option
+	"bold":       "1",
+	"b":          "1",
+	"underscore": "4",
+	"us":         "4", // short name for 'underscore'
+	"reverse":    "7",
 
 	// alert tags, like bootstrap's alert
 	"suc":     "1;32", // same "green" and "bold"
@@ -77,45 +144,6 @@ var colorTags = map[string]string{
 	"danger":  "1;31", // same "red" but add bold
 	"err":     "97;41",
 	"error":   "97;41", // fg light white; bg red
-
-	// more tags
-	"lightRed":      "1;31",
-	"light_red":     "1;31",
-	"lightGreen":    "1;32",
-	"light_green":   "1;32",
-	"lightBlue":     "1;34",
-	"light_blue":    "1;34",
-	"lightCyan":     "1;36",
-	"light_cyan":    "1;36",
-	"lightDray":     "0;37",
-	"light_gray":    "0;37",
-	"gray":          "0;90",
-	"darkGray":      "0;90",
-	"dark_gray":     "0;90",
-	"lightYellow":   "0;93",
-	"light_yellow":  "0;93",
-	"lightMagenta":  "0;95",
-	"light_magenta": "0;95",
-
-	// extra
-	"lightRedEx":       "0;91",
-	"light_red_ex":     "0;91",
-	"lightGreenEx":     "0;92",
-	"light_green_ex":   "0;92",
-	"lightBlueEx":      "0;94",
-	"light_blue_ex":    "0;94",
-	"lightMagentaEx":   "0;95",
-	"light_magenta_ex": "0;95",
-	"lightCyanEx":      "0;96",
-	"light_cyan_ex":    "0;96",
-	"whiteEx":          "0;97;40",
-	"white_ex":         "0;97;40",
-
-	// option
-	"bold":       "1",
-	"us":         "4", // short name for 'underscore'
-	"underscore": "4",
-	"reverse":    "7",
 }
 
 /*************************************************************

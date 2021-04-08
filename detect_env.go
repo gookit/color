@@ -83,7 +83,7 @@ func detectColorLevelFromEnv(termVal string, isWin bool) (terminfo.ColorLevel, e
 	// check for overriding environment variables
 	colorTerm, termProg, forceColor := os.Getenv("COLORTERM"), os.Getenv("TERM_PROGRAM"), os.Getenv("FORCE_COLOR")
 	switch {
-	case strings.Contains(colorTerm, "truecolor") || strings.Contains(colorTerm, "24bit") || termProg == "Hyper":
+	case strings.Contains(colorTerm, "truecolor") || strings.Contains(colorTerm, "24bit"):
 		if termVal == "screen" { // on TERM=screen: not support true-color
 			return terminfo.ColorLevelHundreds, nil
 		}
@@ -92,7 +92,7 @@ func detectColorLevelFromEnv(termVal string, isWin bool) (terminfo.ColorLevel, e
 		return terminfo.ColorLevelBasic, nil
 	case termProg == "Apple_Terminal":
 		return terminfo.ColorLevelHundreds, nil
-	case termProg == "Terminus":
+	case termProg == "Terminus" || termProg == "Hyper":
 		if termVal == "screen" { // on TERM=screen: not support true-color
 			return terminfo.ColorLevelHundreds, nil
 		}

@@ -251,76 +251,102 @@ func TestPrinter(t *testing.T) {
 func TestColor16(t *testing.T) {
 	buf := forceOpenColorRender()
 	defer resetColorRender()
-	at := assert.New(t)
+	is := assert.New(t)
 
-	at.True(Bold.IsValid())
+	is.True(Bold.IsValid())
 	r := Bold.Render("text")
-	at.Equal("\x1b[1mtext\x1b[0m", r)
+	is.Equal("\x1b[1mtext\x1b[0m", r)
 	r = LightYellow.Text("text")
-	at.Equal("\x1b[93mtext\x1b[0m", r)
+	is.Equal("\x1b[93mtext\x1b[0m", r)
 	r = LightWhite.Sprint("text")
-	at.Equal("\x1b[97mtext\x1b[0m", r)
+	is.Equal("\x1b[97mtext\x1b[0m", r)
 	r = White.Render("test", "spaces")
-	at.Equal("\x1b[37mtestspaces\x1b[0m", r)
+	is.Equal("\x1b[37mtestspaces\x1b[0m", r)
 	r = Black.Renderln("test", "spaces")
-	at.Equal("\x1b[30mtest spaces\x1b[0m", r)
+	is.Equal("\x1b[30mtest spaces\x1b[0m", r)
 
 	str := Red.Sprintf("A %s", "MSG")
-	at.Equal("\x1b[31mA MSG\x1b[0m", str)
+	is.Equal("red", Red.Name())
+	is.Equal("\x1b[31mA MSG\x1b[0m", str)
 
 	// Color.Print
 	FgGray.Print("MSG")
 	str = buf.String()
-	at.Equal("\x1b[90mMSG\x1b[0m", str)
+	is.Equal("\x1b[90mMSG\x1b[0m", str)
 	buf.Reset()
 
 	// Color.Printf
 	BgGray.Printf("A %s", "MSG")
 	str = buf.String()
-	at.Equal("\x1b[100mA MSG\x1b[0m", str)
+	is.Equal("\x1b[100mA MSG\x1b[0m", str)
 	buf.Reset()
 
 	// Color.Println
 	LightMagenta.Println("MSG")
 	str = buf.String()
-	at.Equal("\x1b[95mMSG\x1b[0m\n", str)
+	is.Equal("\x1b[95mMSG\x1b[0m\n", str)
+	is.Equal("lightMagenta", LightMagenta.Name())
 	buf.Reset()
 
 	LightMagenta.Println()
 	str = buf.String()
-	at.Equal("\n", str)
+	is.Equal("\n", str)
 	buf.Reset()
 
 	LightCyan.Print("msg")
 	LightRed.Printf("m%s", "sg")
 	LightGreen.Println("msg")
 	str = buf.String()
-	at.Equal("\x1b[96mmsg\x1b[0m\x1b[91mmsg\x1b[0m\x1b[92mmsg\x1b[0m\n", str)
+	is.Equal("\x1b[96mmsg\x1b[0m\x1b[91mmsg\x1b[0m\x1b[92mmsg\x1b[0m\n", str)
 	buf.Reset()
 
 	// Color.Darken
 	blue := LightBlue.Darken()
-	at.Equal(94, int(LightBlue))
-	at.Equal(34, int(blue))
+	is.Equal(94, int(LightBlue))
+	is.Equal(34, int(blue))
 	c := Color(120).Darken()
-	at.Equal(120, int(c))
+	is.Equal(120, int(c))
 
 	// Color.Light
 	lightCyan := Cyan.Light()
-	at.Equal(36, int(Cyan))
-	at.Equal(96, int(lightCyan))
+	is.Equal(36, int(Cyan))
+	is.Equal(96, int(lightCyan))
 	c = Bit4(120).Light()
-	at.Equal(120, int(c))
+	is.Equal(120, int(c))
 
 	// Colors vars
 	_, ok := FgColors["red"]
-	at.True(ok)
+	is.True(ok)
 	_, ok = ExFgColors["lightRed"]
-	at.True(ok)
+	is.True(ok)
 	_, ok = BgColors["red"]
-	at.True(ok)
+	is.True(ok)
 	_, ok = ExBgColors["lightRed"]
-	at.True(ok)
+	is.True(ok)
+}
+
+func TestColor_RGB(t *testing.T) {
+	fmt.Println("------- 16-color code:")
+	for u, s := range Basic2name {
+		if u < 10 { // is option
+			continue
+		}
+
+		fmt.Println(s, Color(u).RGB().Hex(), Color(u).RGB().Color())
+	}
+
+	fmt.Println("------- 256-color code:")
+	for u, s := range Basic2name {
+		if u < 10 { // is option
+			continue
+		}
+
+		fmt.Println(s, Color(u).RGB().Hex(), Color(u).RGB().C256().Value())
+	}
+}
+
+func TestColor_C256(t *testing.T) {
+
 }
 
 func TestPrintBasicColor(t *testing.T) {
@@ -351,6 +377,17 @@ func TestPrintBasicColor(t *testing.T) {
 
 	fmt.Println()
 	fmt.Println()
+}
+
+func TestQuickFunc(t *testing.T) {
+	// inline func
+	testFuncs := []func(...interface{}) {
+		Redp,
+		Greenp,
+	}
+	for _, fn := range testFuncs {
+		fn("inline message,")
+	}
 }
 
 /*************************************************************
@@ -501,196 +538,6 @@ func TestPrint256color(t *testing.T) {
 	}
 	fmt.Println()
 	fmt.Println()
-}
-
-/*************************************************************
- * test rgb color
- *************************************************************/
-
-func TestRGBColor(t *testing.T) {
-	buf := forceOpenColorRender()
-	defer resetColorRender()
-	is := assert.New(t)
-
-	// empty
-	c := RGBColor{3: 99}
-	is.True(c.IsEmpty())
-	is.Equal("", c.String())
-
-	// bg
-	c = RGB(204, 204, 204, true)
-	is.False(c.IsEmpty())
-	is.Equal("48;2;204;204;204", c.String())
-
-	// fg
-	c = RGB(204, 204, 204)
-	is.False(c.IsEmpty())
-	is.Equal("38;2;204;204;204", c.String())
-
-	// RGBColor.Sprint
-	str := c.Sprint("msg")
-	is.Equal("\x1b[38;2;204;204;204mmsg\x1b[0m", str)
-
-	// RGBColor.Sprintf
-	str = c.Sprintf("msg")
-	is.Equal("\x1b[38;2;204;204;204mmsg\x1b[0m", str)
-	is.Equal("[204 204 204]", fmt.Sprint(c.Values()))
-	is.Equal("#cccccc", c.Hex())
-
-	// RGBColor.Print
-	c.Print("msg")
-	str = buf.String()
-	buf.Reset()
-	is.Equal("\x1b[38;2;204;204;204mmsg\x1b[0m", str)
-
-	// RGBColor.Printf
-	c.Printf("m%s", "sg")
-	str = buf.String()
-	buf.Reset()
-	is.Equal("\x1b[38;2;204;204;204mmsg\x1b[0m", str)
-
-	// RGBColor.Println
-	c.Println("msg")
-	str = buf.String()
-	buf.Reset()
-	is.Equal("\x1b[38;2;204;204;204mmsg\x1b[0m\n", str)
-}
-
-func TestRGBFromString(t *testing.T) {
-	forceOpenColorRender()
-	defer resetColorRender()
-	is := assert.New(t)
-
-	c := RGBFromString("170,187,204")
-	is.Equal("\x1b[38;2;170;187;204mmsg\x1b[0m", c.Sprint("msg"))
-
-	c = RGBFromString("170,187,204", true)
-	is.Equal("\x1b[48;2;170;187;204mmsg\x1b[0m", c.Sprint("msg"))
-
-	c = RGBFromString("170,187,")
-	is.Equal("msg", c.Sprint("msg"))
-
-	c = RGBFromString("")
-	is.Equal("msg", c.Sprint("msg"))
-
-	c = RGBFromString("170,187,error")
-	is.Equal("msg", c.Sprint("msg"))
-}
-
-func TestHexToRGB(t *testing.T) {
-	is := assert.New(t)
-	c := HEX("ccc") // rgb: [204 204 204]
-	is.False(c.IsEmpty())
-	is.Equal("38;2;204;204;204", c.String())
-	is.Equal("#cccccc", c.Hex())
-
-	c = HEX("aabbcc") // rgb: [170 187 204]
-	is.Equal("38;2;170;187;204", c.String())
-	is.Equal("#aabbcc", c.Hex())
-
-	c = Hex("#aabbcc") // rgb: [170 187 204]
-	is.Equal("38;2;170;187;204", c.String())
-
-	c = HEX("0xad99c0") // rgb: [170 187 204]
-	is.Equal("38;2;173;153;192", c.String())
-
-	c = HEX(" ")
-	is.True(c.IsEmpty())
-	is.Equal("", c.String())
-
-	c = HEX("!#$bbcc")
-	is.Equal("", c.String())
-
-	c = HEX("#invalid")
-	is.Equal("", c.String())
-
-	c = HEX("invalid code")
-	is.Equal("", c.String())
-}
-
-func TestRGBStyle(t *testing.T) {
-	is := assert.New(t)
-
-	ForceColor()
-	fg := RGB(20, 144, 234)
-	bg := RGB(234, 78, 23)
-
-	s := &RGBStyle{}
-	is.True(s.IsEmpty())
-	is.Equal("", s.String())
-
-	s.Set(fg, bg)
-	is.False(s.IsEmpty())
-	is.Equal("38;2;20;144;234;48;2;234;78;23", s.String())
-
-	s = &RGBStyle{}
-	s.Set(fg, bg, OpUnderscore)
-	is.False(s.IsEmpty())
-	is.Equal("38;2;20;144;234;48;2;234;78;23;4", s.String())
-
-	s.SetOpts(Opts{OpBold, OpBlink})
-	is.Equal("38;2;20;144;234;48;2;234;78;23;1;5", s.String())
-
-	s.AddOpts(OpItalic)
-	is.Equal("38;2;20;144;234;48;2;234;78;23;1;5;3", s.String())
-
-	// NewRGBStyle
-	s = NewRGBStyle(RGB(20, 144, 234))
-	is.False(s.IsEmpty())
-	is.Equal("38;2;20;144;234", s.String())
-
-	s = NewRGBStyle(RGB(20, 144, 234), RGB(234, 78, 23))
-	is.False(s.IsEmpty())
-	is.Equal("38;2;20;144;234;48;2;234;78;23", s.String())
-
-	// HEXStyle
-	s = HEXStyle("555", "eee")
-	is.False(s.IsEmpty())
-	is.Equal("38;2;85;85;85;48;2;238;238;238", s.String())
-
-	// RGBStyleFromString
-	s = RGBStyleFromString("20, 144, 234", "234, 78, 23")
-	is.False(s.IsEmpty())
-	is.Equal("38;2;20;144;234;48;2;234;78;23", s.String())
-
-	// RGBColor.Sprint
-	is.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m", s.Sprint("msg"))
-	// RGBColor.Sprintf
-	is.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m", s.Sprintf("m%s", "sg"))
-
-	s.Println("hello, this is use RGB color")
-	fmt.Println("\x1b[38;2;20;144;234;48;2;234;78;23mTEXT\x1b[0m")
-	// add option: OpItalic
-	fmt.Println("\x1b[38;2;20;144;234;48;2;234;78;23;3mTEXT\x1b[0m")
-
-	buf := forceOpenColorRender()
-	defer resetColorRender()
-
-	// RGBColor.Print
-	s.Print("msg")
-	str := buf.String()
-	buf.Reset()
-	is.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m", str)
-
-	// RGBColor.Printf
-	s.Printf("m%s", "sg")
-	str = buf.String()
-	buf.Reset()
-	is.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m", str)
-
-	// RGBColor.Println
-	s.Println("msg")
-	str = buf.String()
-	buf.Reset()
-	is.Equal("\x1b[38;2;20;144;234;48;2;234;78;23mmsg\x1b[0m\n", str)
-}
-
-func TestPrintRGBColor(t *testing.T) {
-	RGB(30, 144, 255).Println("message. use RGB number")
-	HEX("#1976D2").Println("blue-darken")
-	RGBStyleFromString("213,0,0").Println("red-accent. use RGB number")
-	// foreground: eee, background: D50000
-	HEXStyle("eee", "D50000").Println("deep-purple color")
 }
 
 func TestOpts_Add(t *testing.T) {

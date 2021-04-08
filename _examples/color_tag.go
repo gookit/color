@@ -14,7 +14,7 @@ func main() {
 	fmt.Print("All color tags:\n\n")
 
 	for tag := range color.GetColorTags() {
-		if strings.Contains(tag, "_") {
+		if strings.Contains(tag, "_") || strings.HasPrefix(tag, "hi") {
 			continue
 		}
 
