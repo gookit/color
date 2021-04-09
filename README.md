@@ -34,6 +34,7 @@ Now, 256 colors and RGB colors have also been supported to work in Windows CMD a
   - Basic colors: `Bold`, `Black`, `White`, `Gray`, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`
   - Additional styles: `Info`, `Note`, `Light`, `Error`, `Danger`, `Notice`, `Success`, `Comment`, `Primary`, `Warning`, `Question`, `Secondary`
   - Support by set `NO_COLOR` for disable color or use `FORCE_COLOR` for force open color render.
+  - Support Rgb, 256, 16 color conversion
 
 ## GoDoc
 
@@ -405,9 +406,26 @@ s.Println("style with options")
 s.Printf("style with %s\n", "options")
 ```
 
+## Color convert
+
+Supports conversion between Rgb, 256, 16 colors, `Rgb <=> 256 <=> 16`
+
+```go
+basic := color.Red
+basic.Println("basic color")
+
+c256 := color.Red.C256()
+c256.Println("256 color")
+c256.C16().Println("basic color")
+
+rgb := color.Red.RGB()
+rgb.Println("rgb color")
+rgb.C256().Println("256 color")
+```
+
 ## Func refer
 
-there are some useful functions reference
+There are some useful functions reference
 
 - `Disable()` disable color render
 - `SetOutput(io.Writer)` custom set the colored text output writer

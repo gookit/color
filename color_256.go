@@ -2,6 +2,7 @@ package color
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -31,6 +32,8 @@ from wikipedia, 256 color:
 const (
 	TplFg256 = "38;5;%d"
 	TplBg256 = "48;5;%d"
+	Fg256Pfx = "38;5;"
+	Bg256Pfx = "48;5;"
 )
 
 /*************************************************************
@@ -108,9 +111,24 @@ func (c Color256) Sprintf(format string, a ...interface{}) string {
 	return RenderString(c.String(), fmt.Sprintf(format, a...))
 }
 
+// C16 convert color-256 to 16 color.
+func (c Color256) C16() Color {
+	return c.Basic()
+}
+
+// Basic convert color-256 to basic 16 color.
+func (c Color256) Basic() Color {
+	return Color(c[0]) // TODO
+}
+
+// RGB convert color-256 to RGB color.
+func (c Color256) RGB() RGBColor {
+	return RGBFromSlice(C256ToRgb(c[0]), c[1] == AsBg)
+}
+
 // RGBColor convert color-256 to RGB color.
 func (c Color256) RGBColor() RGBColor {
-	return RGBFromSlice(C256ToRgb(c[0]), c[1] == AsBg)
+	return c.RGB()
 }
 
 // Value return color value
@@ -126,15 +144,16 @@ func (c Color256) Code() string {
 // String convert to color code string. eg: "38;5;12"
 func (c Color256) String() string {
 	if c[1] == AsFg { // 0 is Fg
-		return fmt.Sprintf(TplFg256, c[0])
+		// return fmt.Sprintf(TplFg256, c[0])
+		return Fg256Pfx + strconv.Itoa(int(c[0]))
 	}
 
 	if c[1] == AsBg { // 1 is Bg
-		return fmt.Sprintf(TplBg256, c[0])
+		// return fmt.Sprintf(TplBg256, c[0])
+		return Bg256Pfx + strconv.Itoa(int(c[0]))
 	}
 
-	// empty
-	return ""
+	return "" // empty
 }
 
 // IsFg color
@@ -142,8 +161,8 @@ func (c Color256) IsFg() bool {
 	return c[1] == AsFg
 }
 
-// AsFg color
-func (c Color256) AsFg() Color256 {
+// ToFg 256 color
+func (c Color256) ToFg() Color256 {
 	c[1] = AsFg
 	return c
 }
@@ -153,8 +172,8 @@ func (c Color256) IsBg() bool {
 	return c[1] == AsBg
 }
 
-// AsBg color
-func (c Color256) AsBg() Color256 {
+// ToBg 256 color
+func (c Color256) ToBg() Color256 {
 	c[1] = AsBg
 	return c
 }

@@ -34,6 +34,7 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
   - 基础色彩: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
   - 扩展风格: `Info` `Note` `Light` `Error` `Danger` `Notice` `Success` `Comment` `Primary` `Warning` `Question` `Secondary`
   - 支持通过设置环境变量 `NO_COLOR` 来禁用色彩，或者使用 `FORCE_COLOR` 来强制使用色彩渲染.
+  - 支持 Rgb, 256, 16 色彩之间的互相转换
   - 支持Linux、Mac，同时兼容Windows系统环境
 
 ## GoDoc
@@ -372,6 +373,23 @@ s.SetOpts(color.Opts{color.OpBold})
 
 s.Println("style with options")
 s.Printf("style with %s\n", "options")
+```
+
+## 颜色转换
+
+支持 Rgb, 256, 16 色彩之间的互相转换 `Rgb <=> 256 <=> 16`
+
+```go
+basic := color.Red
+basic.Println("basic color")
+
+c256 := color.Red.C256()
+c256.Println("256 color")
+c256.C16().Println("basic color")
+
+rgb := color.Red.RGB()
+rgb.Println("rgb color")
+rgb.C256().Println("256 color")
 ```
 
 ## 方法参考

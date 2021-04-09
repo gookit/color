@@ -218,17 +218,20 @@ func (c RGBColor) IsEmpty() bool {
 
 // C256 returns the closest approximate 256 (8 bit) color
 func (c RGBColor) C256() Color256 {
-	return C256(Rgb2short(c[0], c[1], c[2]), c[3] == AsBg)
+	return C256(RgbTo256(c[0], c[1], c[2]), c[3] == AsBg)
 }
 
-// Color returns the closest approximate 16 (4 bit) color
-func (c RGBColor) Color() Color {
+// Basic returns the closest approximate 16 (4 bit) color
+func (c RGBColor) Basic() Color {
 	// return Color(RgbToAnsi(c[0], c[1], c[2], c[3] == AsBg))
 	return Color(Rgb2basic(c[0], c[1], c[2], c[3] == AsBg))
 }
 
+// Color returns the closest approximate 16 (4 bit) color
+func (c RGBColor) Color() Color { return c.Basic() }
+
 // C16 returns the closest approximate 16 (4 bit) color
-func (c RGBColor) C16() Color { return c.Color() }
+func (c RGBColor) C16() Color { return c.Basic() }
 
 /*************************************************************
  * RGB Style

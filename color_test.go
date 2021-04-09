@@ -92,9 +92,10 @@ func TestSet(t *testing.T) {
 	num, err = Set(FgGreen)
 	is.Equal(0, num)
 	is.NoError(err)
-	fmt.Println("set fg is green")
+	fmt.Print("set fg is green")
 	_, err = Reset()
 	is.NoError(err)
+	fmt.Println()
 
 	if runtime.GOOS == "windows" {
 		fd := uintptr(syscall.Stdout)
@@ -441,14 +442,15 @@ func TestQuickFunc(t *testing.T) {
  * test 256 color
  *************************************************************/
 
-func TestColor256(t *testing.T) {
+func TestColor256_Print(t *testing.T) {
 	is := assert.New(t)
 	c := Bit8(132)
 	c.Print("c256 message")
 	is.Equal(uint8(132), c.Value())
 	is.Equal("38;5;132", c.String())
 	rgb := c.RGBColor()
-	rgb.Print(" => to rgb message\n")
+	rgb.Print(" => to rgb message")
+	fmt.Println()
 	is.Equal([]int{175, 95, 135}, rgb.Values())
 	is.Equal("38;2;175;95;135", rgb.String())
 
@@ -499,6 +501,29 @@ func TestColor256(t *testing.T) {
 	str = buf.String()
 	is.Equal("\x1b[38;5;132mMSG TEXT\x1b[0m\n", str)
 	buf.Reset()
+}
+
+func TestColor256_AsBg(t *testing.T) {
+	is := assert.New(t)
+	c := C256(132)
+	c.Println("c256: fg-132")
+	is.False(c.IsBg())
+	is.True(c.IsFg())
+
+	c = c.ToBg()
+	is.True(c.IsBg())
+	is.False(c.IsFg())
+	c.Println("c256: fg-132 to bg")
+
+	c = C256(132, true)
+	c.Println("c256: 132 bg")
+	is.True(c.IsBg())
+	is.False(c.IsFg())
+
+	c = c.ToFg()
+	is.False(c.IsBg())
+	is.True(c.IsFg())
+	c.Println("c256: bg-132 to fg")
 }
 
 func TestStyle256(t *testing.T) {

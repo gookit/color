@@ -361,10 +361,6 @@ func RgbTo256Table() map[string]uint8 {
 	return hexTo256Table
 }
 
-/*************************************************************
- * helper methods for converts
- *************************************************************/
-
 // Colors2code convert colors to code. return like "32;45;3"
 func Colors2code(colors ...Color) string {
 	if len(colors) == 0 {
@@ -379,6 +375,10 @@ func Colors2code(colors ...Color) string {
 	return strings.Join(codes, ";")
 }
 
+/*************************************************************
+ * HEX code <=> RGB/True color code
+ *************************************************************/
+
 // Hex2rgb alias of the HexToRgb()
 func Hex2rgb(hex string) []int { return HexToRgb(hex) }
 
@@ -386,6 +386,7 @@ func Hex2rgb(hex string) []int { return HexToRgb(hex) }
 func HexToRGB(hex string) []int { return HexToRgb(hex) }
 
 // HexToRgb convert hex color string to RGB numbers
+//
 // Usage:
 // 	rgb := HexToRgb("ccc") // rgb: [204 204 204]
 // 	rgb := HexToRgb("aabbcc") // rgb: [170 187 204]
@@ -443,6 +444,10 @@ func RgbToHex(rgb []int) string {
 	}
 	return strings.Join(hexNodes, "")
 }
+
+/*************************************************************
+ * 4bit(16) color <=> RGB/True color
+ *************************************************************/
 
 // Basic2hex convert basic color to hex string.
 func Basic2hex(val uint8) string {
@@ -509,17 +514,20 @@ func RgbToAnsi(r, g, b uint8, isBg bool) uint8 {
 	} else {
 		c += compareVal(b > 0, 4, 0)
 	}
-
 	return base + bright + c
+}
+
+/*************************************************************
+ * 8bit(256) color <=> RGB/True color
+ *************************************************************/
+
+// Rgb2short convert RGB-code to 256-code
+func Rgb2short(r, g, b uint8) uint8 {
+	return RgbTo256(r, g, b)
 }
 
 // RgbTo256 convert RGB-code to 256-code
 func RgbTo256(r, g, b uint8) uint8 {
-	return Rgb2short(r, g, b)
-}
-
-// Rgb2short convert RGB-code to 256-code
-func Rgb2short(r, g, b uint8) uint8 {
 	res := make([]uint8, 3)
 	for partI, part := range [3]uint8{r, g, b} {
 		i := 0
@@ -547,11 +555,7 @@ func Rgb2short(r, g, b uint8) uint8 {
 
 // C256ToRgb convert an 256 color code to RGB numbers
 func C256ToRgb(val uint8) (rgb []uint8) {
-	hex, ok := c256ToHexMap[val]
-	if false == ok {
-		return
-	}
-
+	hex := c256ToHexMap[val]
 	// convert to rgb code
 	rgbInts := Hex2rgb(hex)
 

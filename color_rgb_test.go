@@ -242,7 +242,9 @@ func TestRgbToC256Background(t *testing.T) {
 func TestRGBColor_C16(t *testing.T) {
 	rgb := RGB(57, 187, 226)
 	assert.Equal(t, "36", rgb.C16().String())
+	assert.Equal(t, "36", rgb.Color().String())
 
 	rgb = RGB(57, 187, 226, true)
 	assert.Equal(t, "46", rgb.C16().String())
+	assert.Equal(t, "46", rgb.Color().String())
 }

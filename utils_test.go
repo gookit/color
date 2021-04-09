@@ -418,4 +418,6 @@ func TestRgbToAnsi(t *testing.T) {
 
 func TestRgb2basic(t *testing.T) {
 	assert.Equal(t, uint8(31), Rgb2basic(134, 56, 56, false))
+	assert.Equal(t, uint8(41), Rgb2basic(134, 56, 56, true))
+	assert.Equal(t, uint8(46), Rgb2basic(57, 187, 226, true))
 }
