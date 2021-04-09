@@ -140,21 +140,6 @@ func detectColorLevelFromEnv(termVal string, isWin bool) terminfo.ColorLevel {
 	// return terminfo.ColorLevelBasic
 }
 
-func fallbackCheckTermValue(termVal string) (terminfo.ColorLevel, error) {
-	debugf("terminfo.Load error - fallback detect color by check TERM value")
-	if strings.Contains(termVal, "256color") {
-		return terminfo.ColorLevelHundreds, nil
-	}
-
-	if strings.Contains(termVal, "xterm") {
-		return terminfo.ColorLevelHundreds, nil
-		// return terminfo.ColorLevelBasic, nil
-	}
-
-	// return terminfo.ColorLevelNone, nil
-	return terminfo.ColorLevelBasic, nil
-}
-
 var detectedWSL bool
 var wslContents string
 

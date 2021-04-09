@@ -100,6 +100,13 @@ func TestIsDetectColorLevel_unix(t *testing.T) {
 		is.True(IsSupportColor())
 	})
 
+	mockOsEnvByText("TERM=not-exist-256color", func() {
+		is.Equal(Level256, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.True(IsSupport256Color())
+		is.True(IsSupportColor())
+	})
+
 	// TERM_PROGRAM=Terminus
 	mockOsEnvByText(`
 TERMINUS_PLUGINS=
@@ -187,10 +194,22 @@ func TestIsDetectColorLevel_screen(t *testing.T) {
 	}
 	is := assert.New(t)
 
+	// COLORTERM=truecolor
+	mockOsEnvByText(`
+TERM=screen
+COLORTERM=truecolor
+`, func() {
+		is.Equal(Level256, DetectColorLevel())
+		is.False(IsSupportRGBColor())
+		is.False(IsSupportTrueColor())
+		is.True(IsSupport256Color())
+		is.True(IsSupportColor())
+	})
+
 	// TERM_PROGRAM=Apple_Terminal use screen
 	mockOsEnvByText(`
 TERM_PROGRAM=Apple_Terminal
-TERM=xterm-256color
+TERM=screen
 TERM_PROGRAM_VERSION=433
 TERM_SESSION_ID=F17907FE-DCA5-488D-829B-7AFA8B323753
 ZSH_TMUX_TERM=screen-256color
