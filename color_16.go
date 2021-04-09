@@ -8,6 +8,7 @@ import (
 // Color Color16, 16 color value type
 // 3(2^3=8) OR 4(2^4=16) bite color.
 type Color uint8
+type Basic = Color // alias of Color
 
 // Opts basic color options. code: 0 - 9
 type Opts []Color
@@ -145,6 +146,22 @@ const (
 	LightWhite   = FgLightWhite
 	LightYellow  = FgLightYellow
 	LightMagenta = FgLightMagenta
+
+	HiRed     = FgLightRed
+	HiCyan    = FgLightCyan
+	HiBlue    = FgLightBlue
+	HiGreen   = FgLightGreen
+	HiWhite   = FgLightWhite
+	HiYellow  = FgLightYellow
+	HiMagenta = FgLightMagenta
+
+	BgHiRed     = BgLightRed
+	BgHiCyan    = BgLightCyan
+	BgHiBlue    = BgLightBlue
+	BgHiGreen   = BgLightGreen
+	BgHiWhite   = BgLightWhite
+	BgHiYellow  = BgLightYellow
+	BgHiMagenta = BgLightMagenta
 )
 
 // Bit4 an method for create Color
@@ -258,18 +275,20 @@ func (c Color) C256() Color256 {
 	}
 
 	var isBg uint8
-
-	// basic color
 	if val >= BgBase && val <= 47 { // is bg
-		isBg = 1
+		isBg = AsBg
 		val = val - 10 // to fg code
-	} else if val >= HiBgBase && val <= 107 { // is bg
-		isBg = 1
+	} else if val >= HiBgBase && val <= 107 { // is hi bg
+		isBg = AsBg
 		val = val - 10 // to fg code
 	}
 
-	c256 := basicTo256Map[val]
-	return Color256{c256, isBg}
+	if c256, ok := basicTo256Map[val]; ok {
+		return Color256{c256, isBg}
+	}
+
+	// use raw value direct convert
+	return Color256{val}
 }
 
 // RGB convert 16 color to 256-color code.

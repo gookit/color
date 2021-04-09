@@ -58,6 +58,8 @@ func Example() {
 	Warn.Tips("tips style message")
 }
 
+var buf = new(bytes.Buffer)
+
 /*************************************************************
  * test global methods
  *************************************************************/
@@ -66,7 +68,8 @@ func TestSet(t *testing.T) {
 	is := assert.New(t)
 
 	fmt.Println("support color:", SupportColor())
-	fmt.Println("test color.Set() on OS:", runtime.GOOS)
+	fmt.Println("color level:", TermColorLevel())
+	fmt.Println("current OS:", runtime.GOOS)
 
 	// disable
 	old := Disable()
@@ -81,14 +84,15 @@ func TestSet(t *testing.T) {
 
 	// set enable
 	Enable = true
-	if os.Getenv("GITHUB_ACTION") != "" {
-		fmt.Println("Skip run the tests on Github Action")
-		return
-	}
+	// if os.Getenv("GITHUB_ACTION") != "" {
+	// 	fmt.Println("--- Skip run the tests on Github Action")
+	// 	return
+	// }
 
 	num, err = Set(FgGreen)
-	is.True(num > 0)
+	is.Equal(0, num)
 	is.NoError(err)
+	fmt.Println("set fg is green")
 	_, err = Reset()
 	is.NoError(err)
 
@@ -101,23 +105,25 @@ func TestSet(t *testing.T) {
 			fmt.Println("- IsTerminal return FALSE")
 		}
 	} else {
+		is.True(IsTerminal(os.Stdout.Fd()))
 		is.False(IsLikeInCmd())
 		is.Empty(InnerErrs())
 	}
 
 	// set
-	rewriteStdout()
+	buf.Reset()
+	SetOutput(buf)
 	num, err = Set(FgGreen)
-	str := restoreStdout()
+	str := buf.String()
+	buf.Reset()
 
-	is.True(num > 0)
+	is.Equal(0, num)
 	is.NoError(err)
 	is.Equal("\x1b[32m", str)
 
 	// unset
-	rewriteStdout()
 	_, err = Reset()
-	str = restoreStdout()
+	str = buf.String()
 	is.NoError(err)
 	is.Equal("\x1b[0m", str)
 }
@@ -268,6 +274,7 @@ func TestColor16(t *testing.T) {
 	str := Red.Sprintf("A %s", "MSG")
 	is.Equal("red", Red.Name())
 	is.Equal("\x1b[31mA MSG\x1b[0m", str)
+	is.Equal("unknown", Basic(123).Name())
 
 	// Color.Print
 	FgGray.Print("MSG")
@@ -325,7 +332,26 @@ func TestColor16(t *testing.T) {
 	is.True(ok)
 }
 
+func TestColor_C256(t *testing.T) {
+	assert.True(t, Bold.C256().IsEmpty())
+
+	Red.C256().Println("fg: basic to 256 color")
+	BgRed.C256().Println("bg: basic to 256 color")
+	assert.Equal(t, "38;5;160", Red.C256().Code())
+	assert.Equal(t, "48;5;160", BgRed.C256().Code())
+
+	LightCyan.C256().Println("fg: basic to 256 color")
+	BgHiCyan.C256().Println("bg: basic to 256 color")
+
+	assert.Equal(t, "38;5;203", LightRed.C256().Code())
+	assert.Equal(t, "48;5;203", BgLightRed.C256().Code())
+
+	Basic(167).C256().Println("invalid basic color code to 256")
+}
+
 func TestColor_RGB(t *testing.T) {
+	assert.True(t, Bold.RGB().IsEmpty())
+
 	fmt.Println("------- 16-color code:")
 	for u, s := range Basic2name {
 		if u < 10 { // is option
@@ -343,10 +369,6 @@ func TestColor_RGB(t *testing.T) {
 
 		fmt.Println(s, Color(u).RGB().Hex(), Color(u).RGB().C256().Value())
 	}
-}
-
-func TestColor_C256(t *testing.T) {
-
 }
 
 func TestPrintBasicColor(t *testing.T) {
@@ -381,7 +403,7 @@ func TestPrintBasicColor(t *testing.T) {
 
 func TestQuickFunc(t *testing.T) {
 	// inline func
-	testFuncs := []func(...interface{}) {
+	testFuncs := []func(...interface{}){
 		Redp,
 		Bluep,
 		Cyanp,
@@ -400,7 +422,7 @@ func TestQuickFunc(t *testing.T) {
 	fmt.Println()
 
 	// line func
-	testFuncs = []func(...interface{}) {
+	testFuncs = []func(...interface{}){
 		Redln,
 		Blueln,
 		Cyanln,
@@ -463,20 +485,20 @@ func TestColor256(t *testing.T) {
 	// Color256.Print
 	c.Print("MSG")
 	str = buf.String()
-	buf.Reset()
 	is.Equal("\x1b[38;5;132mMSG\x1b[0m", str)
+	buf.Reset()
 
 	// Color256.Printf
 	c.Printf("A %s", "MSG")
 	str = buf.String()
-	buf.Reset()
 	is.Equal("\x1b[38;5;132mA MSG\x1b[0m", str)
+	buf.Reset()
 
 	// Color256.Println
 	c.Println("MSG", "TEXT")
 	str = buf.String()
-	buf.Reset()
 	is.Equal("\x1b[38;5;132mMSG TEXT\x1b[0m\n", str)
+	buf.Reset()
 }
 
 func TestStyle256(t *testing.T) {
@@ -596,7 +618,6 @@ func forceOpenColorRender() *bytes.Buffer {
 	// set output for test
 	buf := new(bytes.Buffer)
 	SetOutput(buf)
-
 	return buf
 }
 

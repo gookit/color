@@ -118,6 +118,11 @@ func (c Color256) Value() uint8 {
 	return c[0]
 }
 
+// Code convert to color code string. eg: "38;5;12"
+func (c Color256) Code() string {
+	return c.String()
+}
+
 // String convert to color code string. eg: "38;5;12"
 func (c Color256) String() string {
 	if c[1] == AsFg { // 0 is Fg
@@ -137,9 +142,21 @@ func (c Color256) IsFg() bool {
 	return c[1] == AsFg
 }
 
+// AsFg color
+func (c Color256) AsFg() Color256 {
+	c[1] = AsFg
+	return c
+}
+
 // IsBg color
 func (c Color256) IsBg() bool {
 	return c[1] == AsBg
+}
+
+// AsBg color
+func (c Color256) AsBg() Color256 {
+	c[1] = AsBg
+	return c
 }
 
 // IsEmpty value

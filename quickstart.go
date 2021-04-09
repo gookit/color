@@ -5,72 +5,72 @@ package color
  *************************************************************/
 
 // Redp print message with Red color
-func Redp(a ...interface{})  {
+func Redp(a ...interface{}) {
 	Red.Print(a...)
 }
 
 // Redln print message line with Red color
-func Redln(a ...interface{})  {
+func Redln(a ...interface{}) {
 	Red.Println(a...)
 }
 
 // Bluep print message with Blue color
-func Bluep(a ...interface{})  {
+func Bluep(a ...interface{}) {
 	Blue.Print(a...)
 }
 
 // Blueln print message line with Blue color
-func Blueln(a ...interface{})  {
+func Blueln(a ...interface{}) {
 	Blue.Println(a...)
 }
 
 // Cyanp print message with Cyan color
-func Cyanp(a ...interface{})  {
+func Cyanp(a ...interface{}) {
 	Cyan.Print(a...)
 }
 
 // Cyanln print message line with Cyan color
-func Cyanln(a ...interface{})  {
+func Cyanln(a ...interface{}) {
 	Cyan.Println(a...)
 }
 
 // Grayp print message with Gray color
-func Grayp(a ...interface{})  {
+func Grayp(a ...interface{}) {
 	Gray.Print(a...)
 }
 
 // Grayln print message line with Gray color
-func Grayln(a ...interface{})  {
+func Grayln(a ...interface{}) {
 	Gray.Println(a...)
 }
 
 // Greenp print message with Green color
-func Greenp(a ...interface{})  {
+func Greenp(a ...interface{}) {
 	Green.Print(a...)
 }
 
 // Greenln print message line with Green color
-func Greenln(a ...interface{})  {
+func Greenln(a ...interface{}) {
 	Green.Println(a...)
 }
 
 // Yellowp print message with Yellow color
-func Yellowp(a ...interface{})  {
+func Yellowp(a ...interface{}) {
 	Yellow.Print(a...)
 }
 
 // Yellowln print message line with Yellow color
-func Yellowln(a ...interface{})  {
+func Yellowln(a ...interface{}) {
 	Yellow.Println(a...)
 }
 
 // Magentap print message with Magenta color
-func Magentap(a ...interface{})  {
+func Magentap(a ...interface{}) {
 	Magenta.Print(a...)
 }
 
 // Magentaln print message line with Magenta color
-func Magentaln(a ...interface{})  {
+func Magentaln(a ...interface{}) {
 	Magenta.Println(a...)
 }
 

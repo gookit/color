@@ -13,7 +13,7 @@ func SetTerminal(code string) error {
 		return nil
 	}
 
-	_,err := fmt.Fprintf(output, SettingTpl, code)
+	_, err := fmt.Fprintf(output, SettingTpl, code)
 	return err
 }
 
@@ -23,7 +23,7 @@ func ResetTerminal() error {
 		return nil
 	}
 
-	_,err := fmt.Fprint(output, ResetSet)
+	_, err := fmt.Fprint(output, ResetSet)
 	return err
 }
 

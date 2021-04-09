@@ -163,6 +163,7 @@ func ForceOpenColor() terminfo.ColorLevel {
 }
 
 // IsLikeInCmd check result
+// Deprecated
 func IsLikeInCmd() bool {
 	return isLikeInCmd
 }

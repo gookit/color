@@ -49,12 +49,12 @@ var (
 		97: "ffffff", // lightWhite
 	}
 	// will convert data from basic2hexMap
-	hex2basicMap = initHex2basic()
+	hex2basicMap = initHex2basicMap()
 
 	// ---------- 256 <=> RGB color convert ----------
 	// adapted from https://gist.github.com/MicahElliott/719710
 
-	c256ToRgb = map[uint8]string{}
+	c256ToHexMap = init256ToHexMap()
 
 	// rgb to 256 color look-up table
 	// RGB hex => 256 code
@@ -338,6 +338,24 @@ var (
 	incs = []uint8{0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff}
 )
 
+func initHex2basicMap() map[string]uint8 {
+	h2b := make(map[string]uint8, len(basic2hexMap))
+	// ini data map
+	for u, s := range basic2hexMap {
+		h2b[s] = u
+	}
+	return h2b
+}
+
+func init256ToHexMap() map[uint8]string {
+	c256toh := make(map[uint8]string, len(hexTo256Table))
+	// ini data map
+	for hex, c256 := range hexTo256Table {
+		c256toh[c256] = hex
+	}
+	return c256toh
+}
+
 // RgbTo256Table mapping data
 func RgbTo256Table() map[string]uint8 {
 	return hexTo256Table
@@ -450,15 +468,6 @@ func Rgb2basic(r, g, b uint8, isBg bool) uint8 {
 	return RgbToAnsi(r, g, b, isBg)
 }
 
-func initHex2basic() map[string]uint8 {
-	h2b := make(map[string]uint8, len(basic2hexMap))
-	// ini data map
-	for u, s := range basic2hexMap {
-		h2b[s] = u
-	}
-	return h2b
-}
-
 // Rgb2ansi alias of the RgbToAnsi()
 func Rgb2ansi(r, g, b uint8, isBg bool) uint8 {
 	return RgbToAnsi(r, g, b, isBg)
@@ -504,7 +513,7 @@ func RgbToAnsi(r, g, b uint8, isBg bool) uint8 {
 	return base + bright + c
 }
 
-// Rgb2short convert RGB-code to 256-code
+// RgbTo256 convert RGB-code to 256-code
 func RgbTo256(r, g, b uint8) uint8 {
 	return Rgb2short(r, g, b)
 }
@@ -538,14 +547,7 @@ func Rgb2short(r, g, b uint8) uint8 {
 
 // C256ToRgb convert an 256 color code to RGB numbers
 func C256ToRgb(val uint8) (rgb []uint8) {
-	// TODO use sync.Once
-	if len(c256ToRgb) == 0 {
-		for hex, c256 := range hexTo256Table {
-			c256ToRgb[c256] = hex
-		}
-	}
-
-	hex, ok := c256ToRgb[val]
+	hex, ok := c256ToHexMap[val]
 	if false == ok {
 		return
 	}

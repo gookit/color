@@ -29,7 +29,6 @@ func DetectColorLevel() terminfo.ColorLevel {
 //
 // refer https://github.com/Delta456/box-cli-maker
 func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
-	var err error
 	// on windows WSL:
 	// - runtime.GOOS == "Linux"
 	// - support true-color
@@ -50,6 +49,7 @@ func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
 	if termVal != "screen" {
 		// On JetBrains Terminal
 		// - support true-color
+		// env:
 		// 	TERMINAL_EMULATOR=JetBrains-JediTerm
 		val := os.Getenv("TERMINAL_EMULATOR")
 		if val == "JetBrains-JediTerm" {
@@ -59,17 +59,14 @@ func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
 	}
 
 	// level, err = terminfo.ColorLevelFromEnv()
-	level, err = detectColorLevelFromEnv(termVal, isWin)
-	if err != nil {
-		return
-	}
-
+	level = detectColorLevelFromEnv(termVal, isWin)
 	debugf("color level by detectColorLevelFromEnv: %s", level.String())
 
-	// on Windows: enable VTP as it has True Color support
-	if level == terminfo.ColorLevelNone && isWin {
-		debugf("level none - fallback check term color on windows")
-		level, needVTP = detectSpecialTermColor()
+	// fallback: simple detect by TERM value string.
+	if level == terminfo.ColorLevelNone {
+		debugf("level none - fallback check special term color support")
+		// on Windows: enable VTP as it has True Color support
+		level, needVTP = detectSpecialTermColor(termVal)
 	}
 	return
 }
@@ -79,81 +76,68 @@ func detectTermColorLevel() (level terminfo.ColorLevel, needVTP bool) {
 //
 // refer the terminfo.ColorLevelFromEnv()
 // https://en.wikipedia.org/wiki/Terminfo
-func detectColorLevelFromEnv(termVal string, isWin bool) (terminfo.ColorLevel, error) {
+func detectColorLevelFromEnv(termVal string, isWin bool) terminfo.ColorLevel {
 	// check for overriding environment variables
 	colorTerm, termProg, forceColor := os.Getenv("COLORTERM"), os.Getenv("TERM_PROGRAM"), os.Getenv("FORCE_COLOR")
 	switch {
 	case strings.Contains(colorTerm, "truecolor") || strings.Contains(colorTerm, "24bit"):
 		if termVal == "screen" { // on TERM=screen: not support true-color
-			return terminfo.ColorLevelHundreds, nil
+			return terminfo.ColorLevelHundreds
 		}
-		return terminfo.ColorLevelMillions, nil
+		return terminfo.ColorLevelMillions
 	case colorTerm != "" || forceColor != "":
-		return terminfo.ColorLevelBasic, nil
+		return terminfo.ColorLevelBasic
 	case termProg == "Apple_Terminal":
-		return terminfo.ColorLevelHundreds, nil
+		return terminfo.ColorLevelHundreds
 	case termProg == "Terminus" || termProg == "Hyper":
 		if termVal == "screen" { // on TERM=screen: not support true-color
-			return terminfo.ColorLevelHundreds, nil
+			return terminfo.ColorLevelHundreds
 		}
-		return terminfo.ColorLevelMillions, nil
+		return terminfo.ColorLevelMillions
 	case termProg == "iTerm.app":
 		if termVal == "screen" { // on TERM=screen: not support true-color
-			return terminfo.ColorLevelHundreds, nil
+			return terminfo.ColorLevelHundreds
 		}
 
-		// check version
+		// check iTerm version
 		ver := os.Getenv("TERM_PROGRAM_VERSION")
-		if ver == "" {
-			return terminfo.ColorLevelHundreds, nil
+		if ver != "" {
+			i, err := strconv.Atoi(strings.Split(ver, ".")[0])
+			if err != nil {
+				saveInternalError(terminfo.ErrInvalidTermProgramVersion)
+				// return terminfo.ColorLevelNone
+				return terminfo.ColorLevelHundreds
+			}
+			if i == 3 {
+				return terminfo.ColorLevelMillions
+			}
 		}
-		i, err := strconv.Atoi(strings.Split(ver, ".")[0])
-		if err != nil {
-			return terminfo.ColorLevelNone, terminfo.ErrInvalidTermProgramVersion
-		}
-		if i == 3 {
-			return terminfo.ColorLevelMillions, nil
-		}
-		return terminfo.ColorLevelHundreds, nil
+		return terminfo.ColorLevelHundreds
 	}
 
 	// otherwise determine from TERM's max_colors capability
 	if !isWin && termVal != "" {
 		debugf("TERM=%s - check color level by load terminfo file", termVal)
 		ti, err := terminfo.Load(termVal)
-
-		// fallback: simple detect by TERM value string.
 		if err != nil {
 			saveInternalError(err)
-			return fallbackCheckTermValue(termVal)
+			return terminfo.ColorLevelNone
 		}
 
 		debugf("the loaded term info file is: %s", ti.File)
-
-		// on TERM=screen:
-		// - support 256, not support true-color. test on macOS
-		if termVal == "screen" {
-			return terminfo.ColorLevelHundreds, nil
-		}
-
 		v, ok := ti.Nums[terminfo.MaxColors]
-		// switch {
-		// case !ok || v <= 16:
-		// 	return terminfo.ColorLevelNone, nil
-		// case ok && v >= 256:
-		// 	return terminfo.ColorLevelHundreds, nil
-		// }
-		// return terminfo.ColorLevelBasic, nil
-
-		if ok && v >= 256 {
-			return terminfo.ColorLevelHundreds, nil
+		switch {
+		case !ok || v <= 16:
+			return terminfo.ColorLevelNone
+		case ok && v >= 256:
+			return terminfo.ColorLevelHundreds
 		}
-		return fallbackCheckTermValue(termVal)
+		return terminfo.ColorLevelBasic
 	}
 
 	// no TERM env value. default return none level
-	return terminfo.ColorLevelNone, nil
-	// return terminfo.ColorLevelBasic, nil
+	return terminfo.ColorLevelNone
+	// return terminfo.ColorLevelBasic
 }
 
 func fallbackCheckTermValue(termVal string) (terminfo.ColorLevel, error) {

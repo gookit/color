@@ -44,6 +44,14 @@ func TestDetectColorLevel(t *testing.T) {
 		is.True(IsSupportTrueColor())
 	})
 
+	// "FORCE_COLOR=on"
+	mockOsEnvByText("FORCE_COLOR=on", func() {
+		is.True(IsSupportColor())
+		is.Equal(Level16, DetectColorLevel())
+		is.False(IsSupportRGBColor())
+		is.False(IsSupportTrueColor())
+	})
+
 	// TERMINAL_EMULATOR=JetBrains-JediTerm
 	mockOsEnvByText(`
 TERM=xterm-256color
@@ -62,6 +70,21 @@ func TestIsDetectColorLevel_unix(t *testing.T) {
 		return
 	}
 	is := assert.New(t)
+
+	// no TERM env
+	mockOsEnvByText("NO=none", func() {
+		is.Equal(LevelNo, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.False(IsSupport256Color())
+		is.False(IsSupportColor())
+	})
+
+	mockOsEnvByText("TERM=not-exist-value", func() {
+		is.Equal(Level16, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.False(IsSupport256Color())
+		is.True(IsSupportColor())
+	})
 
 	mockOsEnvByText("TERM=xterm", func() {
 		is.Equal(Level256, DetectColorLevel())
@@ -110,18 +133,46 @@ ZSH_TMUX_TERM=screen-256color
 
 	// TERM_PROGRAM=iTerm.app
 	mockOsEnvByText(`
-LC_TERMINAL_VERSION=3.4.5beta1
 ITERM_PROFILE=Default
 TERM_PROGRAM_VERSION=3.4.5beta1
 TERM_PROGRAM=iTerm.app
 LC_TERMINAL=iTerm2
-COLORTERM=truecolor
 TERM=xterm-256color
-ITERM_SESSION_ID=w0t2p0:3A53303E-BD72-4F1D-897D-EC15E3B4FDB5
 ZSH_TMUX_TERM=screen-256color
 `, func() {
 		is.Equal(LevelRgb, DetectColorLevel())
 		is.True(IsSupportTrueColor())
+		is.True(IsSupport256Color())
+		is.True(IsSupport16Color())
+		is.True(IsSupportColor())
+	})
+
+	// TERM_PROGRAM=iTerm.app invalid version
+	mockOsEnvByText(`
+ITERM_PROFILE=Default
+TERM_PROGRAM_VERSION=xx.beta
+TERM_PROGRAM=iTerm.app
+LC_TERMINAL=iTerm2
+TERM=xterm-256color
+ZSH_TMUX_TERM=screen-256color
+`, func() {
+		is.Equal(Level256, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.True(IsSupport256Color())
+		is.True(IsSupport16Color())
+		is.True(IsSupportColor())
+	})
+
+	// TERM_PROGRAM=iTerm.app no version env
+	mockOsEnvByText(`
+ITERM_PROFILE=Default
+TERM_PROGRAM=iTerm.app
+LC_TERMINAL=iTerm2
+TERM=xterm-256color
+ZSH_TMUX_TERM=screen-256color
+`, func() {
+		is.Equal(Level256, DetectColorLevel())
+		is.False(IsSupportTrueColor())
 		is.True(IsSupport256Color())
 		is.True(IsSupport16Color())
 		is.True(IsSupportColor())
@@ -156,14 +207,11 @@ ZSH_TMUX_TERM=screen-256color
 	mockOsEnvByText(`
 TERM=screen
 TERMCAP=SC|screen|VT 100/ANSI X3.64 virtual terminal:\
-TERM_SESSION_ID=w0t2p0:3A53303E-BD72-4F1D-897D-EC15E3B4FDB5
 LC_TERMINAL_VERSION=3.4.5beta1
 ITERM_PROFILE=Default
 TERM_PROGRAM_VERSION=3.4.5beta1
 TERM_PROGRAM=iTerm.app
 LC_TERMINAL=iTerm2
-COLORTERM=truecolor
-ITERM_SESSION_ID=w0t2p0:3A53303E-BD72-4F1D-897D-EC15E3B4FDB5
 ZSH_TMUX_TERM=screen
 `, func() {
 		is.Equal(Level256, DetectColorLevel())
@@ -243,6 +291,8 @@ func TestRgbTo256Table(t *testing.T) {
 		}
 	}
 	fmt.Println()
+
+	assert.Equal(t, uint8(0x92), RgbTo256(170, 187, 204))
 }
 
 func TestC256ToRgbV1(t *testing.T) {

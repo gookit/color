@@ -114,7 +114,7 @@ var (
 //  https://github.com/Delta456/box-cli-maker/blob/7b5a1ad8a016ce181e7d8b05e24b54ff60b4b38a/detect_windows.go#L30-L57
 //  https://github.com/gookit/color/issues/25#issuecomment-738727917
 // detects the Color Level Supported on windows: cmd, powerShell
-func detectSpecialTermColor() (tl terminfo.ColorLevel, needVTP bool) {
+func detectSpecialTermColor(termVal string) (tl terminfo.ColorLevel, needVTP bool) {
 	if os.Getenv("ConEmuANSI") == "ON" {
 		debugf("support True Color by ConEmuANSI=ON")
 		// ConEmuANSI is "ON" for generic ANSI support
