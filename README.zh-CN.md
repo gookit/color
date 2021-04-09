@@ -63,6 +63,13 @@ import (
 
 func main() {
 	// 简单快速的使用，跟 fmt.Print* 类似
+	color.Redp("Simple to use color")
+	color.Redln("Simple to use color")
+	color.Greenp("Simple to use color\n")
+	color.Cyanln("Simple to use color")
+	color.Yellowln("Simple to use color")
+
+	// 简单快速的使用，跟 fmt.Print* 类似
 	color.Red.Println("Simple to use color")
 	color.Green.Print("Simple to use color\n")
 	color.Cyan.Printf("Simple to use %s\n", "color")

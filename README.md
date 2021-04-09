@@ -59,6 +59,13 @@ import (
 )
 
 func main() {
+	// quick use package func
+	color.Redp("Simple to use color")
+	color.Redln("Simple to use color")
+	color.Greenp("Simple to use color\n")
+	color.Cyanln("Simple to use color")
+	color.Yellowln("Simple to use color")
+
 	// quick use like fmt.Print*
 	color.Red.Println("Simple to use color")
 	color.Green.Print("Simple to use color\n")
