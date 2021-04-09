@@ -23,14 +23,15 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
 
 ## 功能特色
 
-  - 使用简单方便，无其他依赖
+  - 使用简单方便
   - 支持丰富的颜色输出, 16色(4bit)，256色(8bit)，RGB色彩(24bit, RGB)
     - 16色(4bit)是最常用和支持最广的，支持Windows `cmd.exe`
     - 自 `v1.2.4` 起 **256色(8bit)，RGB色彩(24bit)均支持Windows CMD和PowerShell终端**
     - 请查看 [this gist](https://gist.github.com/XVilka/8346728) 了解支持RGB色彩的终端
-  - 通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
-  - 同时支持html标签式的颜色渲染.
+  - 实现通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
+  - 同时支持html标签式的颜色渲染，除了使用内置标签，同时支持自定义颜色属性
     - 例如: `this an <green>message</>` 标签内部的文本将会渲染为绿色字体
+    - 自定义颜色属性: 支持使用16色彩名称，256色彩值，rgb色彩值以及hex色彩值
   - 基础色彩: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
   - 扩展风格: `Info` `Note` `Light` `Error` `Danger` `Notice` `Success` `Comment` `Primary` `Warning` `Question` `Secondary`
   - 支持通过设置环境变量 `NO_COLOR` 来禁用色彩，或者使用 `FORCE_COLOR` 来强制使用色彩渲染.
@@ -91,8 +92,10 @@ func main() {
 	color.Warn.Println("message")
 	color.Error.Println("message")
 	
-	// 使用颜色标签
+	// 使用内置颜色标签
 	color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
+	// 自定义标签: 支持使用16色彩名称，256色彩值，rgb色彩值以及hex色彩值
+	color.Println("<fg=11aa23>he</><bg=120,35,156>llo</>, <fg=167;bg=232>wel</><fg=red>come</>")
 
 	// apply a style tag
 	color.Tag("info").Println("info style text")
@@ -234,6 +237,8 @@ Run demo: `go run ./_examples/theme_block.go`
 
 使用内置的颜色标签，可以非常方便简单的构建自己需要的任何格式
 
+> 同时支持自定义颜色属性: 支持使用16色彩名称，256色彩值，rgb色彩值以及hex色彩值
+
 ```go
 // 使用内置的 color tag
 color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>")
@@ -243,6 +248,9 @@ color.Println("<warning>hello</>")
 
 // 自定义颜色属性
 color.Print("<fg=yellow;bg=black;op=underscore;>hello, welcome</>\n")
+
+// 自定义颜色属性: 支持使用16色彩名称，256色彩值，rgb色彩值以及hex色彩值
+color.Println("<fg=11aa23>he</><bg=120,35,156>llo</>, <fg=167;bg=232>wel</><fg=red>come</>")
 ```
 
   - 使用 `color.Tag`

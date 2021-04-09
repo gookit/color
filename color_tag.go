@@ -166,10 +166,10 @@ func NewTagParser() *TagParser {
 	return &TagParser{}
 }
 
-func (tp *TagParser) Disable() *TagParser {
-	tp.disable = true
-	return tp
-}
+// func (tp *TagParser) Disable() *TagParser {
+// 	tp.disable = true
+// 	return tp
+// }
 
 // ParseByEnv parse given string. will check package setting.
 func (tp *TagParser) ParseByEnv(str string) string {

@@ -62,19 +62,21 @@ def <info>info text
 	is.Equal("", s)
 }
 
-func TestTagParser_Parse_c256(t *testing.T) {
-}
-
-func TestTagParser_Parse_hex_rgb(t *testing.T) {
+func TestTagParser_Parse_hex_rgb_c256(t *testing.T) {
 	is := assert.New(t)
 	p := NewTagParser()
 
-	// "e7b2a1"
 	s := "custom tag: <fg=e7b2a1>hello, welcome</>"
 	r := p.Parse(s)
 	is.NotContains(r, "<")
 	is.NotContains(r, ">")
-	is.Equal(">", t)
+	is.Equal("custom tag: \x1B[38;2;231;178;161mhello, welcome\x1B[0m", r)
+
+	s = "custom tag: <fg=e7b2a1;bg=176;op=bold>hello, welcome</>"
+	r = p.Parse(s)
+	is.NotContains(r, "<")
+	is.NotContains(r, ">")
+	is.Equal("custom tag: \x1b[38;2;231;178;161;48;5;176;1mhello, welcome\x1b[0m", r)
 }
 
 func TestParseCodeFromAttr_basic(t *testing.T) {

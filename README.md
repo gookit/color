@@ -30,7 +30,9 @@ Now, 256 colors and RGB colors have also been supported to work in Windows CMD a
     - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
   - Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
   - Supports HTML tag-style color rendering, such as `<green>message</>`.
-    - Support working on Windows `cmd` `powerShell` terminal
+    - In addition to using built-in tags, it also supports custom color attributes
+    - Custom color attributes support the use of 16 color names, 256 color values, rgb color values and hex color values
+    - Support working on Windows `cmd` and `powerShell` terminal
   - Basic colors: `Bold`, `Black`, `White`, `Gray`, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`
   - Additional styles: `Info`, `Note`, `Light`, `Error`, `Danger`, `Notice`, `Success`, `Comment`, `Primary`, `Warning`, `Question`, `Secondary`
   - Support by set `NO_COLOR` for disable color or use `FORCE_COLOR` for force open color render.
