@@ -425,7 +425,6 @@ func HexToRgb(hex string) (rgb []int) {
 		rgb[1] = (color & 0x00FF00) >> 8
 		rgb[2] = color & 0x0000FF
 	}
-
 	return
 }
 

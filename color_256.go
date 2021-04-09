@@ -136,12 +136,17 @@ func (c Color256) Value() uint8 {
 	return c[0]
 }
 
-// Code convert to color code string. eg: "38;5;12"
+// Code convert to color code string. eg: "12"
 func (c Color256) Code() string {
+	return strconv.Itoa(int(c[0]))
+}
+
+// FullCode convert to color code string with prefix. eg: "38;5;12"
+func (c Color256) FullCode() string {
 	return c.String()
 }
 
-// String convert to color code string. eg: "38;5;12"
+// String convert to color code string with prefix. eg: "38;5;12"
 func (c Color256) String() string {
 	if c[1] == AsFg { // 0 is Fg
 		// return fmt.Sprintf(TplFg256, c[0])

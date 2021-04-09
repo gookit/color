@@ -25,6 +25,8 @@ import (
 const (
 	TplFgRGB = "38;2;%d;%d;%d"
 	TplBgRGB = "48;2;%d;%d;%d"
+	FgRGBPfx = "38;2;"
+	BgRGBPfx = "48;2;"
 )
 
 // mark color is fg or bg.
@@ -174,7 +176,7 @@ func (c RGBColor) Sprint(a ...interface{}) string {
 
 // Sprintf returns format and rendered message
 func (c RGBColor) Sprintf(format string, a ...interface{}) string {
-	return RenderString(c.Code(), fmt.Sprintf(format, a...))
+	return RenderString(c.String(), fmt.Sprintf(format, a...))
 }
 
 // Values to RGB values
@@ -182,9 +184,9 @@ func (c RGBColor) Values() []int {
 	return []int{int(c[0]), int(c[1]), int(c[2])}
 }
 
-// Code to color code string
+// Code to color code string without prefix. eg: "204;123;56"
 func (c RGBColor) Code() string {
-	return c.String()
+	return fmt.Sprintf("%d;%d;%d", c[0], c[1], c[2])
 }
 
 // Hex color rgb to hex string. as in "ff0080".
@@ -192,7 +194,12 @@ func (c RGBColor) Hex() string {
 	return fmt.Sprintf("%02x%02x%02x", c[0], c[1], c[2])
 }
 
-// String to color code string. eg: "38;2;204;123;56"
+// FullCode to color code string with prefix
+func (c RGBColor) FullCode() string {
+	return c.String()
+}
+
+// String to color code string with prefix. eg: "38;2;204;123;56"
 func (c RGBColor) String() string {
 	if c[3] == AsFg {
 		return fmt.Sprintf(TplFgRGB, c[0], c[1], c[2])
@@ -202,7 +209,7 @@ func (c RGBColor) String() string {
 		return fmt.Sprintf(TplBgRGB, c[0], c[1], c[2])
 	}
 
-	// >1 is empty
+	// c[3] > 1 is empty
 	return ""
 }
 
@@ -346,11 +353,16 @@ func (s *RGBStyle) Sprint(a ...interface{}) string {
 
 // Sprintf returns format and rendered message
 func (s *RGBStyle) Sprintf(format string, a ...interface{}) string {
-	return RenderString(s.Code(), fmt.Sprintf(format, a...))
+	return RenderString(s.String(), fmt.Sprintf(format, a...))
 }
 
 // Code convert to color code string
 func (s *RGBStyle) Code() string {
+	return s.String()
+}
+
+// FullCode convert to color code string
+func (s *RGBStyle) FullCode() string {
 	return s.String()
 }
 

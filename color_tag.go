@@ -150,16 +150,47 @@ var colorTags = map[string]string{
  * parse color tags
  *************************************************************/
 
-// ReplaceTag parse string, replace color tag and return rendered string
-func ReplaceTag(str string) string {
-	// disable handler TAG OR not contains color tag
-	if !RenderTag || !strings.Contains(str, "</>") {
+var (
+	tagParser = TagParser{}
+	rxNumStr  = regexp.MustCompile("^[0-9]{1,3}$")
+	rxHexCode = regexp.MustCompile("^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
+)
+
+// TagParser struct
+type TagParser struct {
+	disable bool
+}
+
+// NewTagParser create
+func NewTagParser() *TagParser {
+	return &TagParser{}
+}
+
+func (tp *TagParser) Disable() *TagParser {
+	tp.disable = true
+	return tp
+}
+
+// ParseByEnv parse given string. will check package setting.
+func (tp *TagParser) ParseByEnv(str string) string {
+	// disable handler TAG
+	if !RenderTag {
 		return str
 	}
 
-	// disabled OR not support color
+	// disable OR not support color
 	if !Enable || !SupportColor() {
 		return ClearTag(str)
+	}
+
+	return tp.Parse(str)
+}
+
+// Parse parse given string, replace color tag and return rendered string
+func (tp *TagParser) Parse(str string) string {
+	// not contains color tag
+	if !strings.Contains(str, "</>") {
+		return str
 	}
 
 	// find color tags by regex. str eg: "<fg=white;bg=blue;op=bold>content</>"
@@ -169,17 +200,21 @@ func ReplaceTag(str string) string {
 	for _, item := range matched {
 		full, tag, content := item[0], item[1], item[2]
 
-		// custom color in tag: "fg=white;bg=blue;op=bold"
-		if code := ParseCodeFromAttr(tag); len(code) > 0 {
-			now := RenderString(code, content)
-			str = strings.Replace(str, full, now, 1)
+		// use defined tag name: "<info>content</>" -> tag: "info"
+		if !strings.ContainsRune(tag, '=') {
+			code := colorTags[tag]
+			if len(code) > 0 {
+				now := RenderString(code, content)
+				// old := WrapTag(content, tag) is equals to var 'full'
+				str = strings.Replace(str, full, now, 1)
+			}
 			continue
 		}
 
-		// use defined tag: "<tagName>content</>" => "tagName"
-		if code := GetTagCode(tag); len(code) > 0 {
+		// custom color in tag
+		// - basic: "fg=white;bg=blue;op=bold"
+		if code := ParseCodeFromAttr(tag); len(code) > 0 {
 			now := RenderString(code, content)
-			// old := WrapTag(content, tag) is equals to var 'full'
 			str = strings.Replace(str, full, now, 1)
 		}
 	}
@@ -187,15 +222,37 @@ func ReplaceTag(str string) string {
 	return str
 }
 
+// func (tp *TagParser) ParseAttr(attr string) (code string) {
+// 	return
+// }
+
+// ReplaceTag parse string, replace color tag and return rendered string
+func ReplaceTag(str string) string {
+	return tagParser.ParseByEnv(str)
+}
+
 // ParseCodeFromAttr parse color attributes.
-// attr like:
-// 		"fg=VALUE;bg=VALUE;op=VALUE" // VALUE please see var: FgColors, BgColors, AllOptions
-// eg:
-// 		"fg=yellow"
-// 		"bg=red"
-// 		"op=bold,underscore" option is allow multi value
-// 		"fg=white;bg=blue;op=bold"
-// 		"fg=white;op=bold,underscore"
+//
+// attr format:
+// 	// VALUE please see var: FgColors, BgColors, AllOptions
+// 	"fg=VALUE;bg=VALUE;op=VALUE"
+// 16 color:
+// 	"fg=yellow"
+// 	"bg=red"
+// 	"op=bold,underscore" option is allow multi value
+// 	"fg=white;bg=blue;op=bold"
+// 	"fg=white;op=bold,underscore"
+// 256 color:
+//	"fg=167"
+//	"fg=167;bg=23"
+//	"fg=167;bg=23;op=bold"
+// true color:
+// 	// hex
+//	"fg=fc1cac"
+//	"fg=fc1cac;bg=c2c3c4"
+// 	// r,g,b
+//	"fg=23,45,214"
+//	"fg=23,45,214;bg=109,99,88"
 func ParseCodeFromAttr(attr string) (code string) {
 	if !strings.ContainsRune(attr, '=') {
 		return
@@ -206,39 +263,63 @@ func ParseCodeFromAttr(attr string) (code string) {
 		return
 	}
 
-	var colors []Color
-
+	var codes []string
 	matched := attrRegex.FindAllStringSubmatch(attr, -1)
+
 	for _, item := range matched {
 		pos, val := item[1], item[2]
 		switch pos {
 		case "fg":
-			if c, ok := FgColors[val]; ok { // basic fg
-				colors = append(colors, c)
-			} else if c, ok := ExFgColors[val]; ok { // extra fg
-				colors = append(colors, c)
+			if c, ok := FgColors[val]; ok { // basic
+				codes = append(codes, c.String())
+			} else if c, ok := ExFgColors[val]; ok { // extra
+				codes = append(codes, c.String())
+			} else if code := rgbHex256toCode(val, false); code != "" {
+				codes = append(codes, code)
 			}
 		case "bg":
 			if c, ok := BgColors[val]; ok { // basic bg
-				colors = append(colors, c)
+				codes = append(codes, c.String())
 			} else if c, ok := ExBgColors[val]; ok { // extra bg
-				colors = append(colors, c)
+				codes = append(codes, c.String())
+			} else if code := rgbHex256toCode(val, true); code != "" {
+				codes = append(codes, code)
 			}
 		case "op": // options allow multi value
 			if strings.Contains(val, ",") {
 				ns := strings.Split(val, ",")
 				for _, n := range ns {
 					if c, ok := AllOptions[n]; ok {
-						colors = append(colors, c)
+						codes = append(codes, c.String())
 					}
 				}
 			} else if c, ok := AllOptions[val]; ok {
-				colors = append(colors, c)
+				codes = append(codes, c.String())
 			}
 		}
 	}
 
-	return Colors2code(colors...)
+	return strings.Join(codes, ";")
+}
+
+func rgbHex256toCode(val string, isBg bool) (code string) {
+	if len(val) == 6 && rxHexCode.MatchString(val) { // hex: "fc1cac"
+		code = HEX(val, isBg).String()
+	} else if strings.ContainsRune(val, ',') { // rgb: "231,178,161"
+		code = strings.ReplaceAll(val, ",", ";")
+		if isBg {
+			code = BgRGBPfx + code
+		} else {
+			code = FgRGBPfx + code
+		}
+	} else if len(val) < 4 && rxNumStr.MatchString(val) { // 256 code
+		if isBg {
+			code = Bg256Pfx + val
+		} else {
+			code = Fg256Pfx + val
+		}
+	}
+	return
 }
 
 // ClearTag clear all tag for a string
@@ -256,11 +337,7 @@ func ClearTag(s string) string {
 
 // GetTagCode get color code by tag name
 func GetTagCode(name string) string {
-	if code, ok := colorTags[name]; ok {
-		return code
-	}
-
-	return ""
+	return colorTags[name]
 }
 
 // ApplyTag for messages

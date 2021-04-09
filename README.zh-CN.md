@@ -256,7 +256,7 @@ color.Tag("info").Printf("%s style text", "info")
 color.Tag("info").Println("info style text")
 ```
 
-> 运行 demo: `go run ./_examples/colortag.go`
+> 运行 demo: `go run ./_examples/color_tag.go`
 
 ![color-tags](_examples/images/color-tags.png)
 
@@ -300,7 +300,7 @@ s.Println("style with options")
 s.Printf("style with %s\n", "options")
 ```
 
-> 运行 demo: `go run ./_examples/color256.go`
+> 运行 demo: `go run ./_examples/color_256.go`
 
 ![color-tags](_examples/images/color-256.png)
 

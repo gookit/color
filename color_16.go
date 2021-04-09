@@ -175,7 +175,7 @@ func Bit4(code uint8) Color {
 
 // Name get color code name.
 func (c Color) Name() string {
-	name, ok := Basic2name[uint8(c)]
+	name, ok := basic2nameMap[uint8(c)]
 	if ok {
 		return name
 	}
@@ -389,32 +389,52 @@ var AllOptions = map[string]Color{
 	"concealed":  OpConcealed,
 }
 
-// Basic2name basic color code to name
-var Basic2name = map[uint8]string{
-	30: "black",
-	31: "red",
-	32: "green",
-	33: "yellow",
-	34: "blue",
-	35: "magenta",
-	36: "cyan",
-	37: "white",
-	// hi color code
-	90: "lightBlack",
-	91: "lightRed",
-	92: "lightGreen",
-	93: "lightYellow",
-	94: "lightBlue",
-	95: "lightMagenta",
-	96: "lightCyan",
-	97: "lightWhite",
-	// options
-	0: "reset",
-	1: "bold",
-	2: "fuzzy",
-	3: "italic",
-	4: "underscore",
-	5: "blink",
-	7: "reverse",
-	8: "concealed",
+var (
+	// TODO basic name alias
+	// basicNameAlias = map[string]string{}
+
+	// basic color name to code
+	name2basicMap = initName2basicMap()
+	// basic2nameMap basic color code to name
+	basic2nameMap = map[uint8]string{
+		30: "black",
+		31: "red",
+		32: "green",
+		33: "yellow",
+		34: "blue",
+		35: "magenta",
+		36: "cyan",
+		37: "white",
+		// hi color code
+		90: "lightBlack",
+		91: "lightRed",
+		92: "lightGreen",
+		93: "lightYellow",
+		94: "lightBlue",
+		95: "lightMagenta",
+		96: "lightCyan",
+		97: "lightWhite",
+		// options
+		0: "reset",
+		1: "bold",
+		2: "fuzzy",
+		3: "italic",
+		4: "underscore",
+		5: "blink",
+		7: "reverse",
+		8: "concealed",
+	}
+)
+
+// Basic2nameMap data
+func Basic2nameMap() map[uint8]string {
+	return basic2nameMap
+}
+
+func initName2basicMap() map[string]uint8 {
+	n2b := make(map[string]uint8, len(basic2nameMap))
+	for u, s := range basic2nameMap {
+		n2b[s] = u
+	}
+	return n2b
 }

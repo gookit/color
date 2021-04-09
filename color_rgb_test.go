@@ -24,11 +24,13 @@ func TestRGBColor(t *testing.T) {
 	// bg
 	c = RGB(204, 204, 204, true)
 	is.False(c.IsEmpty())
+	is.Equal("48;2;204;204;204", c.FullCode())
 	is.Equal("48;2;204;204;204", c.String())
 
 	// fg
 	c = RGB(204, 204, 204)
 	is.False(c.IsEmpty())
+	is.Equal("38;2;204;204;204", c.FullCode())
 	is.Equal("38;2;204;204;204", c.String())
 
 	// RGBColor.Sprint
@@ -38,8 +40,10 @@ func TestRGBColor(t *testing.T) {
 	// RGBColor.Sprintf
 	str = c.Sprintf("msg")
 	is.Equal("\x1b[38;2;204;204;204mmsg\x1b[0m", str)
-	is.Equal("[204 204 204]", fmt.Sprint(c.Values()))
 	is.Equal("cccccc", c.Hex())
+	is.Equal("204;204;204", c.Code())
+	is.Equal("38;2;204;204;204", c.FullCode())
+	is.Equal("[204 204 204]", fmt.Sprint(c.Values()))
 
 	// RGBColor.Print
 	c.Print("msg")
@@ -130,9 +134,11 @@ func TestRGBStyle(t *testing.T) {
 	s = &RGBStyle{}
 	s.Set(fg, bg, OpUnderscore)
 	is.False(s.IsEmpty())
+	is.Equal("38;2;20;144;234;48;2;234;78;23;4", s.FullCode())
 	is.Equal("38;2;20;144;234;48;2;234;78;23;4", s.String())
 
 	s.SetOpts(Opts{OpBold, OpBlink})
+	is.Equal("38;2;20;144;234;48;2;234;78;23;1;5", s.Code())
 	is.Equal("38;2;20;144;234;48;2;234;78;23;1;5", s.String())
 
 	s.AddOpts(OpItalic)

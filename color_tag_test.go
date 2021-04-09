@@ -57,11 +57,27 @@ def <info>info text
 	is.NotContains(r, "<")
 	is.NotContains(r, ">")
 
+	// empty
 	s = Render()
 	is.Equal("", s)
 }
 
-func TestParseCodeFromAttr_tagName(t *testing.T) {
+func TestTagParser_Parse_c256(t *testing.T) {
+}
+
+func TestTagParser_Parse_hex_rgb(t *testing.T) {
+	is := assert.New(t)
+	p := NewTagParser()
+
+	// "e7b2a1"
+	s := "custom tag: <fg=e7b2a1>hello, welcome</>"
+	r := p.Parse(s)
+	is.NotContains(r, "<")
+	is.NotContains(r, ">")
+	is.Equal(">", t)
+}
+
+func TestParseCodeFromAttr_basic(t *testing.T) {
 	is := assert.New(t)
 
 	s := ParseCodeFromAttr("=")
@@ -80,23 +96,37 @@ func TestParseCodeFromAttr_tagName(t *testing.T) {
 	is.Equal("91;101;1;5", s)
 }
 
-func TestParseCodeFromAttr_rgbCode(t *testing.T) {
+func TestParseCodeFromAttr_c256(t *testing.T) {
 	is := assert.New(t)
 
-	s := ParseCodeFromAttr("=")
-	is.Equal("", s)
+	s := ParseCodeFromAttr("fg=34")
+	is.Equal("38;5;34", s)
 
-	s = ParseCodeFromAttr("fg=lightRed;bg=lightRed;op=bold,blink")
-	is.Equal("91;101;1;5", s)
+	s = ParseCodeFromAttr("bg=56")
+	is.Equal("48;5;56", s)
 
-	s = ParseCodeFromAttr("fg= lightRed;bg=lightRed;op=bold,")
-	is.Equal("91;101;1", s)
+	s = ParseCodeFromAttr("fg=175; bg=56")
+	is.Equal("38;5;175;48;5;56", s)
+}
 
-	s = ParseCodeFromAttr("fg =lightRed;bg=lightRed;op=bold,blink")
-	is.Equal("91;101;1;5", s)
+func TestParseCodeFromAttr_hex_rgb(t *testing.T) {
+	is := assert.New(t)
 
-	s = ParseCodeFromAttr("fg = lightRed;bg=lightRed;op=bold,blink")
-	is.Equal("91;101;1;5", s)
+	// --- hex code
+
+	s := ParseCodeFromAttr("fg=e7b2a1")
+	is.Equal("38;2;231;178;161", s)
+
+	s = ParseCodeFromAttr("fg=e7b2a1;bg=c2c2c2")
+	is.Equal("38;2;231;178;161;48;2;194;194;194", s)
+
+	// --- rgb code
+
+	s = ParseCodeFromAttr("fg=231,178,161")
+	is.Equal("38;2;231;178;161", s)
+
+	s = ParseCodeFromAttr("bg=231,178,161")
+	is.Equal("48;2;231;178;161", s)
 }
 
 func TestPrint(t *testing.T) {

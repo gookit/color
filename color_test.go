@@ -338,14 +338,17 @@ func TestColor_C256(t *testing.T) {
 
 	Red.C256().Println("fg: basic to 256 color")
 	BgRed.C256().Println("bg: basic to 256 color")
-	assert.Equal(t, "38;5;160", Red.C256().Code())
-	assert.Equal(t, "48;5;160", BgRed.C256().Code())
+	assert.Equal(t, "160", Red.C256().Code())
+	assert.Equal(t, "38;5;160", Red.C256().FullCode())
+	assert.Equal(t, "48;5;160", BgRed.C256().FullCode())
 
 	LightCyan.C256().Println("fg: basic to 256 color")
 	BgHiCyan.C256().Println("bg: basic to 256 color")
 
-	assert.Equal(t, "38;5;203", LightRed.C256().Code())
-	assert.Equal(t, "48;5;203", BgLightRed.C256().Code())
+	assert.Equal(t, "203", LightRed.C256().Code())
+	assert.Equal(t, "38;5;203", LightRed.C256().FullCode())
+	assert.Equal(t, "203", BgLightRed.C256().Code())
+	assert.Equal(t, "48;5;203", BgLightRed.C256().FullCode())
 
 	Basic(167).C256().Println("invalid basic color code to 256")
 }
@@ -354,7 +357,7 @@ func TestColor_RGB(t *testing.T) {
 	assert.True(t, Bold.RGB().IsEmpty())
 
 	fmt.Println("------- 16-color code:")
-	for u, s := range Basic2name {
+	for u, s := range Basic2nameMap() {
 		if u < 10 { // is option
 			continue
 		}
@@ -363,7 +366,7 @@ func TestColor_RGB(t *testing.T) {
 	}
 
 	fmt.Println("------- 256-color code:")
-	for u, s := range Basic2name {
+	for u, s := range basic2nameMap {
 		if u < 10 { // is option
 			continue
 		}

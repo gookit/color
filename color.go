@@ -232,8 +232,7 @@ func RenderString(code string, str string) string {
 }
 
 // ClearCode clear color codes.
-// eg:
-// 		"\033[36;1mText\x1b[0m" -> "Text"
+// eg: "\033[36;1mText\x1b[0m" -> "Text"
 func ClearCode(str string) string {
 	return codeRegex.ReplaceAllString(str, "")
 }
