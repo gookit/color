@@ -107,6 +107,13 @@ func TestIsDetectColorLevel_unix(t *testing.T) {
 		is.True(IsSupportColor())
 	})
 
+	mockOsEnvByText("WSL_DISTRO_NAME=Debian", func() {
+		is.Equal(LevelNo, DetectColorLevel())
+		is.False(IsSupportTrueColor())
+		is.False(IsSupport256Color())
+		is.False(IsSupportColor())
+	})
+
 	// TERM_PROGRAM=Terminus
 	mockOsEnvByText(`
 TERMINUS_PLUGINS=

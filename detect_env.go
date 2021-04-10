@@ -146,6 +146,8 @@ var wslContents string
 // https://github.com/Microsoft/WSL/issues/423#issuecomment-221627364
 func detectWSL() bool {
 	if !detectedWSL {
+		detectedWSL = true
+
 		b := make([]byte, 1024)
 		// `cat /proc/version`
 		// on mac:
@@ -164,10 +166,10 @@ func detectWSL() bool {
 			}
 
 			wslContents = string(b)
+			return strings.Contains(wslContents, "Microsoft")
 		}
-		detectedWSL = true
 	}
-	return strings.Contains(wslContents, "Microsoft")
+	return false
 }
 
 // refer
