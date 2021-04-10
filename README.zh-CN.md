@@ -28,7 +28,7 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
     - 16色(4bit)是最常用和支持最广的，支持Windows `cmd.exe`
     - 自 `v1.2.4` 起 **256色(8bit)，RGB色彩(24bit)均支持Windows CMD和PowerShell终端**
     - 请查看 [this gist](https://gist.github.com/XVilka/8346728) 了解支持RGB色彩的终端
-  - 实现通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
+  - 提供通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
   - 同时支持html标签式的颜色渲染，除了使用内置标签，同时支持自定义颜色属性
     - 例如: `this an <green>message</>` 标签内部的文本将会渲染为绿色字体
     - 自定义颜色属性: 支持使用16色彩名称，256色彩值，rgb色彩值以及hex色彩值
@@ -114,7 +114,34 @@ func main() {
 
 ![colored-out](_examples/images/color-demo.jpg)
 
-## 构建风格
+## 基础颜色(16-color)
+
+提供通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
+
+> 支持在windows `cmd.exe`  `powerShell` 等终端使用
+
+```go
+color.Bold.Println("bold message")
+color.Black.Println("bold message")
+color.White.Println("bold message")
+color.Gray.Println("bold message")
+color.Red.Println("yellow message")
+color.Blue.Println("yellow message")
+color.Cyan.Println("yellow message")
+color.Yellow.Println("yellow message")
+color.Magenta.Println("yellow message")
+
+// Only use foreground color
+color.FgCyan.Printf("Simple to use %s\n", "color")
+// Only use background color
+color.BgRed.Printf("Simple to use %s\n", "color")
+```
+
+> 运行demo: `go run ./_examples/color_16.go`
+
+![basic-color](_examples/images/basic-color.png)
+
+### 构建风格
 
 ```go
 // 仅设置前景色
@@ -145,130 +172,80 @@ color.Reset()
 
 > 当然，color已经内置丰富的色彩风格支持
 
-## 基础颜色方法
+### 扩展风格方法 
+
+提供通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
 
 > 支持在windows `cmd.exe`  `powerShell` 等终端使用
 
-  - `color.Bold`
-  - `color.Black`
-  - `color.White`
-  - `color.Gray`
-  - `color.Red`
-  - `color.Green`
-  - `color.Yellow`
-  - `color.Blue`
-  - `color.Magenta`
-  - `color.Cyan`
-
-```go
-color.Bold.Println("bold message")
-color.Yellow.Println("yellow message")
-```
-
-> 运行demo: `go run ./_examples/color_16.go`
-
-![basic-color](_examples/images/basic-color.png)
-
-## 扩展风格方法 
-
-> 支持在windows `cmd.exe`  `powerShell` 等终端使用
-
-  - `color.Info`
-  - `color.Note`
-  - `color.Light`
-  - `color.Error`
-  - `color.Danger`
-  - `color.Notice`
-  - `color.Success`
-  - `color.Comment`
-  - `color.Primary`
-  - `color.Warning`
-  - `color.Question`
-  - `color.Secondary`
-
-### 基础风格
+基础使用：
 
 ```go
 // print message
 color.Info.Println("Info message")
-color.Success.Println("Success message")
+color.Note.Println("Note message")
+color.Notice.Println("Notice message")
+color.Error.Println("Error message")
+color.Danger.Println("Danger message")
+color.Warn.Println("Warn message")
+color.Debug.Println("Debug message")
+color.Primary.Println("Primary message")
+color.Question.Println("Question message")
+color.Secondary.Println("Secondary message")
 ```
 
 Run demo: `go run ./_examples/theme_basic.go`
 
 ![theme-basic](_examples/images/theme-basic.png)
 
-### 简约提示风格
+**简约提示风格**
 
 ```go
-color.Info.Tips("tips style message")
-color.Warn.Tips("tips style message")
+color.Info.Tips("Info tips message")
+color.Note.Tips("Note tips message")
+color.Notice.Tips("Notice tips message")
+color.Error.Tips("Error tips message")
+color.Danger.Tips("Danger tips message")
+color.Warn.Tips("Warn tips message")
+color.Debug.Tips("Debug tips message")
+color.Primary.Tips("Primary tips message")
+color.Question.Tips("Question tips message")
+color.Secondary.Tips("Secondary tips message")
 ```
 
 Run demo: `go run ./_examples/theme_tips.go`
 
 ![theme-tips](_examples/images/theme-tips.png)
 
-### 着重提示风格
+**着重提示风格**
 
 ```go
-color.Info.Prompt("prompt style message")
-color.Warn.Prompt("prompt style message")
+color.Info.Prompt("Info prompt message")
+color.Note.Prompt("Note prompt message")
+color.Notice.Prompt("Notice prompt message")
+color.Error.Prompt("Error prompt message")
+color.Danger.Prompt("Danger prompt message")
 ```
 
 Run demo: `go run ./_examples/theme_prompt.go`
 
 ![theme-prompt](_examples/images/theme-prompt.png)
 
-### 强调提示风格
+**强调提示风格**
 
 ```go
-color.Info.Block("prompt style message")
-color.Warn.Block("prompt style message")
+color.Warn.Block("Warn block message")
+color.Debug.Block("Debug block message")
+color.Primary.Block("Primary block message")
+color.Question.Block("Question block message")
+color.Secondary.Block("Secondary block message")
 ```
 
 Run demo: `go run ./_examples/theme_block.go`
 
 ![theme-block](_examples/images/theme-block.png)
 
-### 使用颜色标签
-
-> **支持** 在windows `cmd.exe` `PowerShell` 使用
-
-使用内置的颜色标签，可以非常方便简单的构建自己需要的任何格式
-
-> 同时支持自定义颜色属性: 支持使用16色彩名称，256色彩值，rgb色彩值以及hex色彩值
-
-```go
-// 使用内置的 color tag
-color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>")
-color.Println("<suc>hello</>")
-color.Println("<error>hello</>")
-color.Println("<warning>hello</>")
-
-// 自定义颜色属性
-color.Print("<fg=yellow;bg=black;op=underscore;>hello, welcome</>\n")
-
-// 自定义颜色属性: 支持使用16色彩名称，256色彩值，rgb色彩值以及hex色彩值
-color.Println("<fg=11aa23>he</><bg=120,35,156>llo</>, <fg=167;bg=232>wel</><fg=red>come</>")
-```
-
-  - 使用 `color.Tag`
-
-给后面输出的文本信息加上给定的颜色风格标签
-
-```go
-// set a style tag
-color.Tag("info").Print("info style text")
-color.Tag("info").Printf("%s style text", "info")
-color.Tag("info").Println("info style text")
-```
-
-> 运行 demo: `go run ./_examples/color_tag.go`
-
-![color-tags](_examples/images/color-tags.png)
-
-## 256色使用
+## 256 色彩使用
 
 > 256色彩在 `v1.2.4` 后支持Windows CMD,PowerShell 环境
 
@@ -286,7 +263,7 @@ c.Println("message")
 c.Printf("format %s", "message")
 ```
 
-### 使用风格
+### 使用256 色彩风格
 
 > 可同时设置前景和背景色
  
@@ -312,7 +289,7 @@ s.Printf("style with %s\n", "options")
 
 ![color-tags](_examples/images/color-256.png)
 
-## RGB色彩使用
+## RGB/True色彩使用
 
 > RGB色彩在 `v1.2.4` 后支持 Windows `CMD`, `PowerShell` 环境
 
@@ -360,7 +337,7 @@ c.Println("message")
 c.Printf("format %s", "message")
 ```
 
-### 使用风格
+### 使用RGB风格
 
 > 可同时设置前景和背景色
 
@@ -389,6 +366,43 @@ s.SetOpts(color.Opts{color.OpBold})
 s.Println("style with options")
 s.Printf("style with %s\n", "options")
 ```
+
+## 使用颜色标签
+
+> **支持** 在windows `cmd.exe` `PowerShell` 使用
+
+使用内置的颜色标签，可以非常方便简单的构建自己需要的任何格式
+
+> 同时支持自定义颜色属性: 支持使用16色彩名称，256色彩值，rgb色彩值以及hex色彩值
+
+```go
+// 使用内置的 color tag
+color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>")
+color.Println("<suc>hello</>")
+color.Println("<error>hello</>")
+color.Println("<warning>hello</>")
+
+// 自定义颜色属性
+color.Print("<fg=yellow;bg=black;op=underscore;>hello, welcome</>\n")
+
+// 自定义颜色属性: 支持使用16色彩名称，256色彩值，rgb色彩值以及hex色彩值
+color.Println("<fg=11aa23>he</><bg=120,35,156>llo</>, <fg=167;bg=232>wel</><fg=red>come</>")
+```
+
+- 使用 `color.Tag`
+
+给后面输出的文本信息加上给定的颜色风格标签
+
+```go
+// set a style tag
+color.Tag("info").Print("info style text")
+color.Tag("info").Printf("%s style text", "info")
+color.Tag("info").Println("info style text")
+```
+
+> 运行 demo: `go run ./_examples/color_tag.go`
+
+![color-tags](_examples/images/color-tags.png)
 
 ## 颜色转换
 

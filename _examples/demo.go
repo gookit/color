@@ -38,6 +38,7 @@ func colorUsage() {
 
 	// use custom color tag
 	color.Print("custom color tag: <fg=yellow;bg=black;op=underscore;>hello, welcome</>\n")
+	color.Println("<fg=11aa23>he</><bg=120,35,156>llo</>, <fg=167;bg=232>wel</><fg=red>come</>")
 
 	// apply a color tag
 	color.Tag("info").Println("info style message")
