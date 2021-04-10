@@ -306,7 +306,7 @@ func rgbHex256toCode(val string, isBg bool) (code string) {
 	if len(val) == 6 && rxHexCode.MatchString(val) { // hex: "fc1cac"
 		code = HEX(val, isBg).String()
 	} else if strings.ContainsRune(val, ',') { // rgb: "231,178,161"
-		code = strings.ReplaceAll(val, ",", ";")
+		code = strings.Replace(val, ",", ";", -1)
 		if isBg {
 			code = BgRGBPfx + code
 		} else {
