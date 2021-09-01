@@ -436,11 +436,17 @@ rgb.C256().Println("256 color")
 - `RgbToHex(rgb []int) string` Convert RGB to hex code
 - 更多请查看文档 https://pkg.go.dev/github.com/gookit/color
 
-## 使用color的项目
+## 使用Color的项目
 
 看看这些使用了 https://github.com/gookit/color 的项目:
 
 - https://github.com/Delta456/box-cli-maker Make Highly Customized Boxes for your CLI
+- https://github.com/flipped-aurora/gin-vue-admin 基于gin+vue搭建的（中）后台系统框架
+- https://github.com/jesseduffield/lazygit Simple terminal UI for git commands
+- https://github.com/olivia-ai/olivia 💁‍♀️Your new best friend powered by an artificial neural network
+- https://github.com/pterm/pterm PTerm is a modern Go module to beautify console output. Featuring charts, progressbars, tables, trees, etc.
+- https://github.com/TNK-Studio/lazykube ⎈ The lazier way to manage kubernetes.
+- [+ See More](https://pkg.go.dev/github.com/gookit/color?tab=importedby)
 
 ## Gookit 工具包
 
