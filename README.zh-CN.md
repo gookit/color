@@ -442,6 +442,7 @@ rgb.C256().Println("256 color")
 
 - https://github.com/Delta456/box-cli-maker Make Highly Customized Boxes for your CLI
 - https://github.com/flipped-aurora/gin-vue-admin 基于gin+vue搭建的（中）后台系统框架
+- https://github.com/JanDeDobbeleer/oh-my-posh A prompt theme engine for any shell.
 - https://github.com/jesseduffield/lazygit Simple terminal UI for git commands
 - https://github.com/olivia-ai/olivia 💁‍♀️Your new best friend powered by an artificial neural network
 - https://github.com/pterm/pterm PTerm is a modern Go module to beautify console output. Featuring charts, progressbars, tables, trees, etc.
