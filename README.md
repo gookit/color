@@ -442,6 +442,7 @@ Check out these projects, which use https://github.com/gookit/color :
 - https://github.com/jesseduffield/lazygit Simple terminal UI for git commands
 - https://github.com/olivia-ai/olivia 💁‍♀️Your new best friend powered by an artificial neural network  
 - https://github.com/pterm/pterm PTerm is a modern Go module to beautify console output. Featuring charts, progressbars, tables, trees, etc.
+- https://github.com/securego/gosec Golang security checker
 - https://github.com/TNK-Studio/lazykube ⎈ The lazier way to manage kubernetes.
 - [+ See More](https://pkg.go.dev/github.com/gookit/color?tab=importedby)
 
