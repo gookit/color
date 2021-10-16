@@ -607,3 +607,13 @@ func C256ToRgbV1(val uint8) (rgb []uint8) {
 
 	return []uint8{r, g, b}
 }
+
+/**************************************************************
+ * hsl color <=> RGB/True color
+ ************************************************************
+ * refers
+ *  https://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
+ *	https://github.com/less/less.js/blob/master/packages/less/src/less/functions/color.js
+ *  https://github.com/d3/d3-color/blob/v3.0.1/README.md#hsl
+ */
+
