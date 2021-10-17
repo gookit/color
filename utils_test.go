@@ -428,3 +428,9 @@ func TestRgb2basic(t *testing.T) {
 	assert.Equal(t, uint8(41), Rgb2basic(134, 56, 56, true))
 	assert.Equal(t, uint8(46), Rgb2basic(57, 187, 226, true))
 }
+
+func TestHslToRgb(t *testing.T) {
+	HslToRgbByInt(120, 100, 50)
+	HslToRgbByInt(120, 100, 25)
+	HslToRgb(0.33, 1, 0.5)
+}

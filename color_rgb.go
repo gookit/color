@@ -97,12 +97,8 @@ func Rgb(r, g, b uint8, isBg ...bool) RGBColor { return RGB(r, g, b, isBg...) }
 // Bit24 alias of the RGB()
 func Bit24(r, g, b uint8, isBg ...bool) RGBColor { return RGB(r, g, b, isBg...) }
 
-// RGBFromSlice quick RGBColor from slice
-func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor {
-	return RGB(rgb[0], rgb[1], rgb[2], isBg...)
-}
-
 // HEX create RGB color from a HEX color string.
+//
 // Usage:
 // 	c := HEX("ccc") // rgb: [204 204 204]
 // 	c := HEX("aabbcc") // rgb: [170 187 204]
@@ -121,11 +117,40 @@ func HEX(hex string, isBg ...bool) RGBColor {
 // Hex alias of the HEX()
 func Hex(hex string, isBg ...bool) RGBColor { return HEX(hex, isBg...) }
 
+// HSL create RGB color from a hsl value.
+func HSL(h, s, l float32, isBg ...bool) RGBColor {
+	if rgb := HslToRgb(h, s, l); len(rgb) > 0 {
+		return RGB(rgb[0], rgb[1], rgb[2], isBg...)
+	}
+
+	// mark is empty
+	return emptyRGBColor
+}
+
+// Hsl alias of the HSL()
+func Hsl(h, s, l float32, isBg ...bool) RGBColor { return HSL(h, s, l, isBg...) }
+
+// RGBFromSlice quick RGBColor from slice
+func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor {
+	return RGB(rgb[0], rgb[1], rgb[2], isBg...)
+}
+
 // RGBFromString create RGB color from a string.
+// support use color name in the {namedRgbColor}
+//
 // Usage:
 // 	c := RGBFromString("170,187,204")
 // 	c.Print("message")
+//
+// 	c := RGBFromString("brown")
+// 	c.Print("message with color brown")
 func RGBFromString(rgb string, isBg ...bool) RGBColor {
+	// use color name in the {namedRgbColor}
+	if rgbVal, ok := namedRgbColor[rgb]; ok {
+		rgb = rgbVal
+	}
+
+	// use rgb string.
 	ss := stringToArr(rgb, ",")
 	if len(ss) != 3 {
 		return emptyRGBColor

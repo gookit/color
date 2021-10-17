@@ -75,6 +75,9 @@ func TestRGBFromString(t *testing.T) {
 	c = RGBFromString("170,187,204", true)
 	is.Equal("\x1b[48;2;170;187;204mmsg\x1b[0m", c.Sprint("msg"))
 
+	c = RGBFromString("brown")
+	is.Equal("\x1b[38;2;165;42;42mmsg\x1b[0m", c.Sprint("msg"))
+
 	c = RGBFromString("170,187,")
 	is.Equal("msg", c.Sprint("msg"))
 
@@ -253,4 +256,10 @@ func TestRGBColor_C16(t *testing.T) {
 	rgb = RGB(57, 187, 226, true)
 	assert.Equal(t, "46", rgb.C16().String())
 	assert.Equal(t, "46", rgb.Color().String())
+}
+
+func TestHSL(t *testing.T) {
+	hsl := HSL(0.33, 1, 0.5)
+
+	hsl.Println("rgb color create by HSL")
 }
