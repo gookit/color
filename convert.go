@@ -3,6 +3,7 @@ package color
 import (
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -628,15 +629,17 @@ func C256ToRgbV1(val uint8) (rgb []uint8) {
  *  color: hsl(120, 75%, 75%)  // pastel green, and so on
  */
 
-// HslToRgbByInt Converts an HSL color value to RGB
+// HslIntToRgb Converts an HSL color value to RGB
 // Assumes h: 0-360, s: 0-100, l: 0-100
 // returns r, g, and b in the set [0, 255].
 //
 // Usage:
-//	HslToRgbByInt(120, 100, 50)
-//	HslToRgbByInt(120, 100, 25)
-func HslToRgbByInt(h, s, l int) (rgb []uint8) {
-	return HslToRgb(float32(h)/360, float32(s)/100, float32(l)/100)
+//	HslIntToRgb(0, 100, 50) // red
+//	HslIntToRgb(120, 100, 50) // lime
+//	HslIntToRgb(120, 100, 25) // dark green
+//	HslIntToRgb(120, 100, 75) // light green
+func HslIntToRgb(h, s, l int) (rgb []uint8) {
+	return HslToRgb(float64(h)/360, float64(s)/100, float64(l)/100)
 }
 
 // HslToRgb Converts an HSL color value to RGB. Conversion formula
@@ -645,50 +648,110 @@ func HslToRgbByInt(h, s, l int) (rgb []uint8) {
 // returns r, g, and b in the set [0, 255].
 //
 // Usage:
-//	rgbVals := HslToRgb(0.33, 1, 0.5)
-func HslToRgb(h, s, l float32) (rgb []uint8) {
-	var r, g, b float32
+//	rgbVals := HslToRgb(0, 1, 0.5) // red
+func HslToRgb(h, s, l float64) (rgb []uint8) {
+	var r, g, b float64
 
 	if s == 0 { // achromatic
 		r, g, b = l, l, l
 	} else {
-		var hue2rgb = func(p, q, t float32) float32 {
-			if t < 0 {
+		var hue2rgb = func(p, q, t float64) float64 {
+			if t < 0.0 {
 				t += 1
 			}
-			if t > 1 {
+			if t > 1.0 {
 				t -= 1
 			}
-			if t < 1/6 {
-				return p + (q-p)*6*t
+
+			if t < 1.0/6.0 {
+				return p + (q-p)*6.0*t
 			}
 
-			if t < 1/2 {
+			if t < 1.0/2.0 {
 				return q
 			}
-			if t < 2/3 {
-				return p + (q-p)*(2/3-t)*6
+
+			if t < 2.0/3.0 {
+				return p + (q-p)*(2.0/3.0-t)*6.0
 			}
 			return p
 		}
 
 		// q = l < 0.5 ? l * (1 + s) : l + s - l*s
-		var q float32
+		var q float64
 		if l < 0.5 {
-			q = l * (1 + s)
+			q = l * (1.0 + s)
 		} else {
 			q = l + s - l*s
 		}
 
-		var p = 2*l - q
+		var p = 2.0*l - q
 
-		r = hue2rgb(p, q, h+1/3)
+		r = hue2rgb(p, q, h+1.0/3.0)
 		g = hue2rgb(p, q, h)
-		b = hue2rgb(p, q, h-1/3)
+		b = hue2rgb(p, q, h-1.0/3.0)
 	}
 
-	// return [math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
-	return []uint8{uint8(r * 255 / 100), uint8(g * 255 / 100), uint8(b * 255 / 100)}
+	// return []uint8{uint8(r * 255), uint8(g * 255), uint8(b * 255)}
+	return []uint8{
+		uint8(math.Round(r * 255)),
+		uint8(math.Round(g * 255)),
+		uint8(math.Round(b * 255)),
+	}
+}
+
+// RgbToHslInt Converts an RGB color value to HSL. Conversion formula
+// Assumes r, g, and b are contained in the set [0, 255] and
+// returns [h,s,l] h: 0-360, s: 0-100, l: 0-100.
+func RgbToHslInt(r, g, b uint8) []int {
+	f64s := RgbToHsl(r, g, b)
+
+	return []int{int(f64s[0] * 360), int(f64s[1] * 100), int(f64s[2] * 100)}
+}
+
+// RgbToHsl Converts an RGB color value to HSL. Conversion formula
+// adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+// Assumes r, g, and b are contained in the set [0, 255] and
+// returns h, s, and l in the set [0, 1].
+func RgbToHsl(r, g, b uint8) []float64 {
+	// to float64
+	fr, fg, fb := float64(r), float64(g), float64(b)
+	// percentage
+	pr, pg, pb := float64(r)/255.0, float64(g)/255.0, float64(b)/255.0
+
+	ps := []float64{pr, pg, pb}
+	sort.Float64s(ps)
+
+	min, max := ps[0], ps[2]
+	// max := math.Max(math.Max(pr, pg), pb)
+	// min := math.Min(math.Min(pr, pg), pb)
+
+	mid := (max + min) / 2
+
+	h, s, l := mid, mid, mid
+
+	if max == min {
+		h, s = 0, 0 // achromatic
+	} else {
+		var d = max - min
+		// s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+		s = compareF64Val(l > 0.5, d/(2-max-min), d/(max+min))
+
+		switch max {
+		case fr:
+			// h = (g - b) / d + (g < b ? 6 : 0)
+			h = (fg - fb) / d
+			h += compareF64Val(g < b, 6, 0)
+		case fg:
+			h = (fb-fr)/d + 2
+		case fb:
+			h = (fr-fg)/d + 4
+		}
+
+		h /= 6
+	}
+
+	return []float64{h, s, l}
 }
 
 /**************************************************************
@@ -707,12 +770,13 @@ func HslToRgb(h, s, l float32) (rgb []uint8) {
 // Assumes h: 0-360, s: 0-100, l: 0-100
 // returns r, g, and b in the set [0, 255].
 func HsvToRgb(h, s, v int) (rgb []uint8) {
+	// TODO ...
 	return
 }
 
 // Named rgb colors
 // https://www.w3.org/TR/css-color-3/#svg-color
-var namedRgbColor = map[string]string{
+var namedRgbMap = map[string]string{
 	"aliceblue":            "240,248,255", // #F0F8FF
 	"antiquewhite":         "250,235,215", // #FAEBD7
 	"aqua":                 "0,255,255",   // #00FFFF

@@ -417,6 +417,16 @@ rgb.Println("rgb color")
 rgb.C256().Println("256 color")
 ```
 
+**More converts functions**:
+
+convert to rgb:
+
+- `func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor`
+- `func RGBFromString(rgb string, isBg ...bool) RGBColor`
+- `func HEX(hex string, isBg ...bool) RGBColor`
+- `func HSL(h, s, l float32, isBg ...bool) RGBColor`
+- `func HSLInt(h, s, l int, isBg ...bool) RGBColor`
+
 ## Func refer
 
 There are some useful functions reference

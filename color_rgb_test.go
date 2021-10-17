@@ -206,6 +206,14 @@ func TestPrintRGBColor(t *testing.T) {
 	HEXStyle("eee", "D50000").Println("deep-purple color")
 }
 
+func TestRGBStyle_SetOpts(t *testing.T) {
+	s := NewRGBStyle(RGB(234, 78, 23), RGB(20, 144, 234))
+	s.Println("rgb style message")
+
+	s.SetOpts(Opts{OpItalic, OpBold, OpUnderscore})
+	s.Println("RGB style message with options")
+}
+
 func testRgbToC256Color(t *testing.T, name string, c RGBColor, expected uint8) {
 	t.Log("RGB Color:", c.Sprint(name))
 	t.Log("256 Color:", c.C256().Sprint(name))
@@ -215,21 +223,13 @@ func testRgbToC256Color(t *testing.T, name string, c RGBColor, expected uint8) {
 	}
 }
 
-func TestRGBStyle_SetOpts(t *testing.T) {
-	s := NewRGBStyle(RGB(234, 78, 23), RGB(20, 144, 234))
-	s.Println("rgb style message")
-
-	s.SetOpts(Opts{OpItalic, OpBold, OpUnderscore})
-	s.Println("RGB style message with options")
-}
-
 func TestRgbToC256(t *testing.T) {
 	testRgbToC256Color(t, "white", RGB(255, 255, 255), 15)
 	testRgbToC256Color(t, "red", RGB(255, 0, 0), 9)
 	testRgbToC256Color(t, "yellow", RGB(255, 255, 0), 11)
-	testRgbToC256Color(t, "greenBg", RGB(0, 255, 0, true), 10)
+	testRgbToC256Color(t, "greenBg", RgbFromInt(0, 255, 0, true), 10)
 	testRgbToC256Color(t, "blueBg", RGB(0, 0, 255, true), 12)
-	testRgbToC256Color(t, "light blue", RGB(57, 187, 226), 74)
+	testRgbToC256Color(t, "light blue", RgbFromInts([]int{57, 187, 226}), 74)
 }
 
 func TestRgbToC256Background(t *testing.T) {
@@ -259,7 +259,21 @@ func TestRGBColor_C16(t *testing.T) {
 }
 
 func TestHSL(t *testing.T) {
-	hsl := HSL(0.33, 1, 0.5)
+	// red #ff0000	255, 0, 0
+	rgb := HSL(0, 1, 0.5)
+	rgb.Println("rgb color create by HSL; hex:", rgb.Hex(), "rgb:", rgb.RgbString())
 
-	hsl.Println("rgb color create by HSL")
+	rgb = Hsl(0, 1, 0.5)
+	rgb.Println("rgb color create by HSL; hex:", rgb.Hex(), "rgb:", rgb.RgbString())
+
+	rgb = HslInt(0, 100, 50)
+	rgb.Println("rgb color create by HSL int; hex:", rgb.Hex(), "rgb:", rgb.RgbString())
+
+	// maroon #800000  128,0,0  0,100%,25%
+	rgb = HslInt(0, 100, 25)
+	rgb.Println("rgb color create by HSL int; hex:", rgb.Hex(), "rgb:", rgb.RgbString())
+
+	// darkgray	 #a9a9a9 169,169,169 0,0%,66%
+	rgb = HslInt(0, 0, 66)
+	rgb.Println("rgb color create by HSL int; hex:", rgb.Hex(), "rgb:", rgb.RgbString())
 }

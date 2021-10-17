@@ -119,6 +119,15 @@ func Text(s string) string {
 	return ReplaceTag(s)
 }
 
+// Uint8sToInts convert []uint8 to []int
+func Uint8sToInts(u8s []uint8 ) []int {
+	ints := make([]int, len(u8s))
+	for i, u8 := range u8s {
+		ints[i] = int(u8)
+	}
+	return ints
+}
+
 /*************************************************************
  * helper methods for print
  *************************************************************/
@@ -144,7 +153,7 @@ func doPrintlnV2(code string, args []interface{}) {
 	saveInternalError(err)
 }
 
-// if use Println, will add spaces for each arg
+// use Println, will add spaces for each arg
 func formatArgsForPrintln(args []interface{}) (message string) {
 	if ln := len(args); ln == 0 {
 		message = ""
@@ -177,6 +186,14 @@ func debugf(f string, v ...interface{}) {
 
 // equals: return ok ? val1 : val2
 func compareVal(ok bool, val1, val2 uint8) uint8 {
+	if ok {
+		return val1
+	}
+	return val2
+}
+
+// equals: return ok ? val1 : val2
+func compareF64Val(ok bool, val1, val2 float64) float64 {
 	if ok {
 		return val1
 	}

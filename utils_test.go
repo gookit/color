@@ -319,6 +319,7 @@ func TestRgbTo256Table(t *testing.T) {
 	fmt.Println()
 
 	assert.Equal(t, uint8(0x92), RgbTo256(170, 187, 204))
+	assert.Equal(t, uint8(0x92), Rgb2short(170, 187, 204))
 }
 
 func TestC256ToRgbV1(t *testing.T) {
@@ -421,16 +422,4 @@ func TestRgbToAnsi(t *testing.T) {
 		)
 		assert.Equal(t, item.want, Rgb2ansi(r, g, b, item.isBg))
 	}
-}
-
-func TestRgb2basic(t *testing.T) {
-	assert.Equal(t, uint8(31), Rgb2basic(134, 56, 56, false))
-	assert.Equal(t, uint8(41), Rgb2basic(134, 56, 56, true))
-	assert.Equal(t, uint8(46), Rgb2basic(57, 187, 226, true))
-}
-
-func TestHslToRgb(t *testing.T) {
-	HslToRgbByInt(120, 100, 50)
-	HslToRgbByInt(120, 100, 25)
-	HslToRgb(0.33, 1, 0.5)
 }
