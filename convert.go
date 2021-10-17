@@ -40,14 +40,15 @@ var (
 		35:  "c839c5", // magenta
 		36:  "20c5c6", // cyan
 		37:  "c7c7c7", // white
-		40:  "000000", // black
-		41:  "c51e14", // red
-		42:  "1dc121", // green
-		43:  "c7c329", // yellow
-		44:  "0a2fc4", // blue
-		45:  "c839c5", // magenta
-		46:  "20c5c6", // cyan
-		47:  "c7c7c7", // white
+		// - don't add bg color
+		// 40:  "000000", // black
+		// 41:  "c51e14", // red
+		// 42:  "1dc121", // green
+		// 43:  "c7c329", // yellow
+		// 44:  "0a2fc4", // blue
+		// 45:  "c839c5", // magenta
+		// 46:  "20c5c6", // cyan
+		// 47:  "c7c7c7", // white
 		90:  "686868", // lightBlack/darkGray
 		91:  "fd6f6b", // lightRed
 		92:  "67f86f", // lightGreen
@@ -56,14 +57,15 @@ var (
 		95:  "fd7cfc", // lightMagenta
 		96:  "68fdfe", // lightCyan
 		97:  "ffffff", // lightWhite
-		100: "686868", // lightBlack/darkGray
-		101: "fd6f6b", // lightRed
-		102: "67f86f", // lightGreen
-		103: "fffa72", // lightYellow
-		104: "6a76fb", // lightBlue
-		105: "fd7cfc", // lightMagenta
-		106: "68fdfe", // lightCyan
-		107: "ffffff", // lightWhite
+		// - don't add bg color
+		// 100: "686868", // lightBlack/darkGray
+		// 101: "fd6f6b", // lightRed
+		// 102: "67f86f", // lightGreen
+		// 103: "fffa72", // lightYellow
+		// 104: "6a76fb", // lightBlue
+		// 105: "fd7cfc", // lightMagenta
+		// 106: "68fdfe", // lightCyan
+		// 107: "ffffff", // lightWhite
 	}
 	// will convert data from basic2hexMap
 	hex2basicMap = initHex2basicMap()
@@ -467,12 +469,18 @@ func RgbToHex(rgb []int) string {
 
 // Basic2hex convert basic color to hex string.
 func Basic2hex(val uint8) string {
+	val = Fg2Bg(val)
 	return basic2hexMap[val]
 }
 
 // Hex2basic convert hex string to basic color code.
-func Hex2basic(hex string) uint8 {
-	return hex2basicMap[hex]
+func Hex2basic(hex string, asBg ...bool) uint8 {
+	val := hex2basicMap[hex]
+
+	if len(asBg) > 0 && asBg[0] {
+		return Fg2Bg(val)
+	}
+	return val
 }
 
 // Rgb2basic alias of the RgbToAnsi()

@@ -333,6 +333,17 @@ func TestColor16(t *testing.T) {
 	is.True(ok)
 }
 
+func TestColor_convert(t *testing.T) {
+	assert.Equal(t, "36", Cyan.ToFg().Code())
+	assert.Equal(t, "46", Cyan.ToBg().Code())
+	assert.Equal(t, "46", BgCyan.ToBg().Code())
+	assert.Equal(t, "36", BgCyan.ToFg().Code())
+
+	assert.Equal(t, "106", HiCyan.ToBg().Code())
+	assert.Equal(t, "93", BgHiYellow.ToFg().Code())
+	assert.Equal(t, "105", BgHiMagenta.ToBg().Code())
+}
+
 func TestColor_C256(t *testing.T) {
 	assert.True(t, Bold.C256().IsEmpty())
 

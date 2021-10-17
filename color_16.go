@@ -42,10 +42,12 @@ func (o Opts) String() string {
  *************************************************************/
 
 // Base value for foreground/background color
+// base: fg 30~37, bg 40~47
+// light: fg 90~97, bg 100~107
 const (
 	FgBase uint8 = 30
 	BgBase uint8 = 40
-	// hi color base code
+
 	HiFgBase uint8 = 90
 	HiBgBase uint8 = 100
 )
@@ -240,6 +242,7 @@ func (c Color) Println(a ...interface{}) {
 }
 
 // Light current color. eg: 36(FgCyan) -> 96(FgLightCyan).
+//
 // Usage:
 // 	lightCyan := Cyan.Light()
 // 	lightCyan.Print("message")
@@ -254,6 +257,7 @@ func (c Color) Light() Color {
 }
 
 // Darken current color. eg. 96(FgLightCyan) -> 36(FgCyan)
+//
 // Usage:
 // 	cyan := LightCyan.Darken()
 // 	cyan.Print("message")
@@ -289,6 +293,26 @@ func (c Color) C256() Color256 {
 
 	// use raw value direct convert
 	return Color256{val}
+}
+
+// ToFg always convert fg
+func (c Color) ToFg() Color {
+	val := uint8(c)
+	// is option code, don't change
+	if val < 10 {
+		return c
+	}
+	return Color(Bg2Fg(val))
+}
+
+// ToBg always convert bg
+func (c Color) ToBg() Color {
+	val := uint8(c)
+	// is option code, don't change
+	if val < 10 {
+		return c
+	}
+	return Color(Fg2Bg(val))
 }
 
 // RGB convert 16 color to 256-color code.
@@ -425,6 +449,26 @@ var (
 		8: "concealed",
 	}
 )
+
+// Bg2Fg bg color value to fg value
+func Bg2Fg(val uint8) uint8 {
+	if val >= BgBase && val <= 47 { // is bg
+		val = val - 10
+	} else if val >= HiBgBase && val <= 107 { // is hi bg
+		val = val - 10
+	}
+	return val
+}
+
+// Fg2Bg fg color value to bg value
+func Fg2Bg(val uint8) uint8 {
+	if val >= FgBase && val <= 37 { // is fg
+		val = val + 10
+	} else if val >= HiFgBase && val <= 97 { // is hi fg
+		val = val + 10
+	}
+	return val
+}
 
 // Basic2nameMap data
 func Basic2nameMap() map[uint8]string {

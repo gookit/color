@@ -120,13 +120,13 @@ func Text(s string) string {
 }
 
 // Uint8sToInts convert []uint8 to []int
-func Uint8sToInts(u8s []uint8 ) []int {
-	ints := make([]int, len(u8s))
-	for i, u8 := range u8s {
-		ints[i] = int(u8)
-	}
-	return ints
-}
+// func Uint8sToInts(u8s []uint8 ) []int {
+// 	ints := make([]int, len(u8s))
+// 	for i, u8 := range u8s {
+// 		ints[i] = int(u8)
+// 	}
+// 	return ints
+// }
 
 /*************************************************************
  * helper methods for print
