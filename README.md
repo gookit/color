@@ -28,6 +28,7 @@ Now, 256 colors and RGB colors have also been supported to work in Windows CMD a
     - 16-color output is the most commonly used and most widely supported, working on any Windows version
     - Since `v1.2.4` **the 256-color (8-bit), true color (24-bit) support windows CMD and PowerShell**
     - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
+  - Support converts `HEX` `HSL` value to RGB color
   - Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
   - Supports HTML tag-style color rendering, such as `<green>message</>`.
     - In addition to using built-in tags, it also supports custom color attributes
@@ -417,14 +418,12 @@ rgb.Println("rgb color")
 rgb.C256().Println("256 color")
 ```
 
-**More converts functions**:
-
-convert to rgb:
+**More functions for convert to `RGBColor`**:
 
 - `func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor`
 - `func RGBFromString(rgb string, isBg ...bool) RGBColor`
 - `func HEX(hex string, isBg ...bool) RGBColor`
-- `func HSL(h, s, l float32, isBg ...bool) RGBColor`
+- `func HSL(h, s, l float64, isBg ...bool) RGBColor`
 - `func HSLInt(h, s, l int, isBg ...bool) RGBColor`
 
 ## Func refer

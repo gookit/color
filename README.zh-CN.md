@@ -28,6 +28,7 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
     - 16色(4bit)是最常用和支持最广的，支持Windows `cmd.exe`
     - 自 `v1.2.4` 起 **256色(8bit)，RGB色彩(24bit)均支持Windows CMD和PowerShell终端**
     - 请查看 [this gist](https://gist.github.com/XVilka/8346728) 了解支持RGB色彩的终端
+  - 支持转换 `HEX` `HSL` 等为RGB色彩
   - 提供通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
   - 同时支持html标签式的颜色渲染，除了使用内置标签，同时支持自定义颜色属性
     - 例如: `this an <green>message</>` 标签内部的文本将会渲染为绿色字体
@@ -420,6 +421,14 @@ rgb := color.Red.RGB()
 rgb.Println("rgb color")
 rgb.C256().Println("256 color")
 ```
+
+**更多转换方法转换为 `RGBColor`**:
+
+- `func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor`
+- `func RGBFromString(rgb string, isBg ...bool) RGBColor`
+- `func HEX(hex string, isBg ...bool) RGBColor`
+- `func HSL(h, s, l float64, isBg ...bool) RGBColor`
+- `func HSLInt(h, s, l int, isBg ...bool) RGBColor`
 
 ## 方法参考
 
