@@ -13,6 +13,10 @@ func TestRgb2basic(t *testing.T) {
 	assert.Equal(t, uint8(46), Rgb2basic(57, 187, 226, true))
 }
 
+func TestHex2basic(t *testing.T) {
+	assert.Equal(t, uint8(105), Hex2basic("fd7cfc"))
+}
+
 func TestHslToRgb(t *testing.T) {
 	// red #ff0000	255,0,0  0,100%,50%
 	rgbVal := HslToRgb(0, 1, 0.5)
