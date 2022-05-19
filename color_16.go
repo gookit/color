@@ -167,9 +167,7 @@ const (
 )
 
 // Bit4 an method for create Color
-func Bit4(code uint8) Color {
-	return Color(code)
-}
+func Bit4(code uint8) Color { return Color(code) }
 
 /*************************************************************
  * Color render methods
@@ -185,33 +183,27 @@ func (c Color) Name() string {
 }
 
 // Text render a text message
-func (c Color) Text(message string) string {
-	return RenderString(c.String(), message)
-}
+func (c Color) Text(message string) string { return RenderString(c.String(), message) }
 
 // Render messages by color setting
 // Usage:
 // 		green := color.FgGreen.Render
 // 		fmt.Println(green("message"))
-func (c Color) Render(a ...interface{}) string {
-	return RenderCode(c.String(), a...)
-}
+func (c Color) Render(a ...interface{}) string { return RenderCode(c.String(), a...) }
 
 // Renderln messages by color setting.
 // like Println, will add spaces for each argument
+//
 // Usage:
 // 		green := color.FgGreen.Renderln
 // 		fmt.Println(green("message"))
-func (c Color) Renderln(a ...interface{}) string {
-	return RenderWithSpaces(c.String(), a...)
-}
+func (c Color) Renderln(a ...interface{}) string { return RenderWithSpaces(c.String(), a...) }
 
 // Sprint render messages by color setting. is alias of the Render()
-func (c Color) Sprint(a ...interface{}) string {
-	return RenderCode(c.String(), a...)
-}
+func (c Color) Sprint(a ...interface{}) string { return RenderCode(c.String(), a...) }
 
 // Sprintf format and render message.
+//
 // Usage:
 // 	green := color.Green.Sprintf
 //  colored := green("message")
@@ -220,6 +212,7 @@ func (c Color) Sprintf(format string, args ...interface{}) string {
 }
 
 // Print messages.
+//
 // Usage:
 // 		color.Green.Print("message")
 // OR:
@@ -230,6 +223,7 @@ func (c Color) Print(args ...interface{}) {
 }
 
 // Printf format and print messages.
+//
 // Usage:
 // 		color.Cyan.Printf("string %s", "arg0")
 func (c Color) Printf(format string, a ...interface{}) {
@@ -237,9 +231,7 @@ func (c Color) Printf(format string, a ...interface{}) {
 }
 
 // Println messages with new line
-func (c Color) Println(a ...interface{}) {
-	doPrintlnV2(c.String(), a)
-}
+func (c Color) Println(a ...interface{}) { doPrintlnV2(c.String(), a) }
 
 // Light current color. eg: 36(FgCyan) -> 96(FgLightCyan).
 //
@@ -326,21 +318,13 @@ func (c Color) RGB() RGBColor {
 }
 
 // Code convert to code string. eg "35"
-func (c Color) Code() string {
-	// return fmt.Sprintf("%d", c)
-	return strconv.Itoa(int(c))
-}
+func (c Color) Code() string { return strconv.Itoa(int(c)) }
 
 // String convert to code string. eg "35"
-func (c Color) String() string {
-	// return fmt.Sprintf("%d", c)
-	return strconv.Itoa(int(c))
-}
+func (c Color) String() string { return strconv.Itoa(int(c)) }
 
 // IsValid color value
-func (c Color) IsValid() bool {
-	return c < 107
-}
+func (c Color) IsValid() bool { return c < 107 }
 
 /*************************************************************
  * basic color maps

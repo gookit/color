@@ -28,15 +28,17 @@ const (
 )
 
 // color render templates
+//
 // ESC 操作的表示:
 // 	"\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
 const (
-	SettingTpl   = "\x1b[%sm"
+	StartSet = "\x1b["
+	// ResetSet close all properties.
+	ResetSet   = "\x1b[0m"
+	SettingTpl = "\x1b[%sm"
+	// FullColorTpl for build color code
 	FullColorTpl = "\x1b[%sm%s\x1b[0m"
 )
-
-// ResetSet Close all properties.
-const ResetSet = "\x1b[0m"
 
 // CodeExpr regex to clear color codes eg "\033[1;36mText\x1b[0m"
 const CodeExpr = `\033\[[\d;?]+m`
@@ -144,7 +146,7 @@ func ResetOptions() {
 	output = os.Stdout
 }
 
-// ForceColor force open color render
+// ForceSetColorLevel force open color render
 func ForceSetColorLevel(level terminfo.ColorLevel) terminfo.ColorLevel {
 	oldLevelVal := colorLevel
 	colorLevel = level
@@ -178,6 +180,7 @@ func InnerErrs() []error {
  *************************************************************/
 
 // RenderCode render message by color code.
+//
 // Usage:
 // 	msg := RenderCode("3;32;45", "some", "message")
 func RenderCode(code string, args ...interface{}) string {
@@ -196,7 +199,8 @@ func RenderCode(code string, args ...interface{}) string {
 		return ClearCode(message)
 	}
 
-	return fmt.Sprintf(FullColorTpl, code, message)
+	// return fmt.Sprintf(FullColorTpl, code, message)
+	return StartSet + code + "m" + message + ResetSet
 }
 
 // RenderWithSpaces Render code with spaces.
@@ -212,10 +216,12 @@ func RenderWithSpaces(code string, args ...interface{}) string {
 		return ClearCode(message)
 	}
 
-	return fmt.Sprintf(FullColorTpl, code, message)
+	// return fmt.Sprintf(FullColorTpl, code, message)
+	return StartSet + code + "m" + message + ResetSet
 }
 
 // RenderString render a string with color code.
+//
 // Usage:
 // 	msg := RenderString("3;32;45", "a message")
 func RenderString(code string, str string) string {
@@ -228,10 +234,12 @@ func RenderString(code string, str string) string {
 		return ClearCode(str)
 	}
 
-	return fmt.Sprintf(FullColorTpl, code, str)
+	// return fmt.Sprintf(FullColorTpl, code, str)
+	return StartSet + code + "m" + str + ResetSet
 }
 
 // ClearCode clear color codes.
+//
 // eg: "\033[36;1mText\x1b[0m" -> "Text"
 func ClearCode(str string) string {
 	return codeRegex.ReplaceAllString(str, "")
