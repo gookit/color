@@ -436,6 +436,25 @@ func TestQuickFunc(t *testing.T) {
 	}
 	fmt.Println()
 
+	// format func
+	testFuncs2 := []func(tpl string, vs ...interface{}){
+		Redf,
+		Bluef,
+		Cyanf,
+		Grayf,
+		Greenf,
+		Yellowf,
+		Magentaf,
+	}
+	fmt.Println("--- quick format message print:")
+	for i, fn := range testFuncs2 {
+		if i == 3 {
+			fmt.Println()
+		}
+		fn("format %s,", "message")
+	}
+	fmt.Println()
+
 	// line func
 	testFuncs = []func(...interface{}){
 		Redln,
