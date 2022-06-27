@@ -1,5 +1,5 @@
 /*
-Package color is Command line color library.
+Package color is command line color library.
 Support rich color rendering output, universal API method, compatible with Windows system
 
 Source code and other details for the project are available at GitHub:

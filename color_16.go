@@ -116,7 +116,7 @@ const (
 	OpItalic                     // 3 斜体(不是所有的终端仿真器都支持)
 	OpUnderscore                 // 4 下划线
 	OpBlink                      // 5 闪烁
-	OpFastBlink                  // 5 快速闪烁(未广泛支持)
+	OpFastBlink                  // 6 快速闪烁(未广泛支持)
 	OpReverse                    // 7 颠倒的 交换背景色与前景色
 	OpConcealed                  // 8 隐匿的
 	OpStrikethrough              // 9 删除的，删除线(未广泛支持)
@@ -166,7 +166,7 @@ const (
 	BgHiMagenta = BgLightMagenta
 )
 
-// Bit4 an method for create Color
+// Bit4 a method for create Color
 func Bit4(code uint8) Color { return Color(code) }
 
 /*************************************************************
@@ -186,6 +186,7 @@ func (c Color) Name() string {
 func (c Color) Text(message string) string { return RenderString(c.String(), message) }
 
 // Render messages by color setting
+//
 // Usage:
 // 		green := color.FgGreen.Render
 // 		fmt.Println(green("message"))
@@ -318,10 +319,14 @@ func (c Color) RGB() RGBColor {
 }
 
 // Code convert to code string. eg "35"
-func (c Color) Code() string { return strconv.Itoa(int(c)) }
+func (c Color) Code() string {
+	return strconv.FormatInt(int64(c), 10)
+}
 
 // String convert to code string. eg "35"
-func (c Color) String() string { return strconv.Itoa(int(c)) }
+func (c Color) String() string {
+	return strconv.FormatInt(int64(c), 10)
+}
 
 // IsValid color value
 func (c Color) IsValid() bool { return c < 107 }
@@ -381,8 +386,8 @@ var ExBgColors = map[string]Color{
 }
 
 // Options color options map
-// Deprecated
-// NOTICE: please use AllOptions instead.
+//
+// Deprecated: please use AllOptions instead.
 var Options = AllOptions
 
 // AllOptions color options map
@@ -400,6 +405,7 @@ var AllOptions = map[string]Color{
 var (
 	// TODO basic name alias
 	// basicNameAlias = map[string]string{}
+	// optionWithAlias = buildOpWithAlias()
 
 	// basic color name to code
 	name2basicMap = initName2basicMap()
@@ -466,3 +472,6 @@ func initName2basicMap() map[string]uint8 {
 	}
 	return n2b
 }
+
+// func buildOpWithAlias() map[string]uint8 {
+// }

@@ -84,6 +84,7 @@ func Lprint(l *log.Logger, a ...interface{}) {
 }
 
 // Render parse color tags, return rendered string.
+//
 // Usage:
 //	text := Render("<info>hello</> <cyan>world</>!")
 //	fmt.Println(text)
@@ -91,7 +92,6 @@ func Render(a ...interface{}) string {
 	if len(a) == 0 {
 		return ""
 	}
-
 	return ReplaceTag(fmt.Sprint(a...))
 }
 
