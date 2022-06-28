@@ -154,6 +154,10 @@ func TestStyleFunc(t *testing.T) {
 	buf := forceOpenColorRender()
 	defer resetColorRender()
 
+	Infop("color message")
+	assert.Equal(t, "\x1b[0;32mcolor message\x1b[0m", buf.String())
+	buf.Reset()
+
 	Infoln("color message")
 	assert.Equal(t, "\x1b[0;32mcolor message\x1b[0m\n", buf.String())
 	buf.Reset()
@@ -162,12 +166,32 @@ func TestStyleFunc(t *testing.T) {
 	assert.Equal(t, "\x1b[0;32mcolor message\x1b[0m", buf.String())
 	buf.Reset()
 
+	Successp("color message")
+	assert.Equal(t, "\x1b[1;32mcolor message\x1b[0m", buf.String())
+	buf.Reset()
+
+	Successln("color message")
+	assert.Equal(t, "\x1b[1;32mcolor message\x1b[0m\n", buf.String())
+	buf.Reset()
+
+	Successf("color %s", "message")
+	assert.Equal(t, "\x1b[1;32mcolor message\x1b[0m", buf.String())
+	buf.Reset()
+
+	Warnp("color message")
+	assert.Equal(t, "\x1b[1;33mcolor message\x1b[0m", buf.String())
+	buf.Reset()
+
 	Warnln("color message")
 	assert.Equal(t, "\x1b[1;33mcolor message\x1b[0m\n", buf.String())
 	buf.Reset()
 
 	Warnf("color %s", "message")
 	assert.Equal(t, "\x1b[1;33mcolor message\x1b[0m", buf.String())
+	buf.Reset()
+
+	Errorp("color message")
+	assert.Equal(t, "\x1b[97;41mcolor message\x1b[0m", buf.String())
 	buf.Reset()
 
 	Errorln("color message")

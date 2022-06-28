@@ -423,3 +423,9 @@ func TestRgbToAnsi(t *testing.T) {
 		assert.Equal(t, item.want, Rgb2ansi(r, g, b, item.isBg))
 	}
 }
+
+func TestEnv_COLOR_DEBUG_MODE(t *testing.T) {
+	mockEnvValue("COLOR_DEBUG_MODE", "on", func(_ string) {
+		debugf("print debug message")
+	})
+}

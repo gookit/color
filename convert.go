@@ -756,11 +756,9 @@ func RgbToHsl(r, g, b uint8) []float64 {
 	min, max := ps[0], ps[2]
 	// max := math.Max(math.Max(pr, pg), pb)
 	// min := math.Min(math.Min(pr, pg), pb)
-
 	mid := (max + min) / 2
 
 	h, s, l := mid, mid, mid
-
 	if max == min {
 		h, s = 0, 0 // achromatic
 	} else {

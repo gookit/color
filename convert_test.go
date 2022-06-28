@@ -46,5 +46,10 @@ func TestHslToRgb(t *testing.T) {
 	assert.Equal(t, []int{0, 0, 66}, hslVal)
 
 	hslFVal := RgbToHsl(rgbVal[0], rgbVal[1], rgbVal[2])
-	fmt.Println(hslFVal)
+	fmt.Println("rgb:", rgbVal, "=> hsl:", hslFVal)
+	assert.NotEmpty(t, hslFVal)
+
+	hslFVal = RgbToHsl(57, 187, 226)
+	fmt.Println("rgb: 57, 187, 226 => hsl:", hslFVal)
+	assert.NotEmpty(t, hslFVal)
 }

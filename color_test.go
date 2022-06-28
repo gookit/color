@@ -342,6 +342,9 @@ func TestColor_convert(t *testing.T) {
 	assert.Equal(t, "106", HiCyan.ToBg().Code())
 	assert.Equal(t, "93", BgHiYellow.ToFg().Code())
 	assert.Equal(t, "105", BgHiMagenta.ToBg().Code())
+
+	assert.Equal(t, "5", OpBlink.ToFg().Code())
+	assert.Equal(t, "5", OpBlink.ToBg().Code())
 }
 
 func TestColor_C256(t *testing.T) {
@@ -534,6 +537,25 @@ func TestColor256_Print(t *testing.T) {
 	str = buf.String()
 	is.Equal("\x1b[38;5;132mMSG TEXT\x1b[0m\n", str)
 	buf.Reset()
+}
+
+func TestColor256_conv(t *testing.T) {
+	is := assert.New(t)
+	c := C256(132)
+
+	is.Equal("132", c.C16().Code())
+}
+
+func TestColor256_set_reset(t *testing.T) {
+	_, err := Reset()
+	assert.NoError(t, err)
+
+	c := C256(132)
+
+	assert.NoError(t, c.Set())
+	fmt.Println("a message on color 256 set.")
+	assert.NoError(t, c.Reset())
+	fmt.Println()
 }
 
 func TestColor256_AsBg(t *testing.T) {

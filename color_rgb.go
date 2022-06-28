@@ -57,6 +57,7 @@ type RGBColor [4]uint8
 var emptyRGBColor = RGBColor{3: 99}
 
 // RGB color create.
+//
 // Usage:
 // 	c := RGB(30,144,255)
 // 	c := RGB(30,144,255, true)
@@ -106,15 +107,14 @@ func HEX(hex string, isBg ...bool) RGBColor {
 // Hex alias of the HEX()
 func Hex(hex string, isBg ...bool) RGBColor { return HEX(hex, isBg...) }
 
+// RGBFromHEX quick RGBColor from hex string, alias of HEX()
+func RGBFromHEX(hex string, isBg ...bool) RGBColor { return HEX(hex, isBg...) }
+
 // HSL create RGB color from a hsl value.
 // more see HslToRgb()
 func HSL(h, s, l float64, isBg ...bool) RGBColor {
-	if rgb := HslToRgb(h, s, l); len(rgb) > 0 {
-		return RGB(rgb[0], rgb[1], rgb[2], isBg...)
-	}
-
-	// mark is empty
-	return emptyRGBColor
+	rgb := HslToRgb(h, s, l)
+	return RGB(rgb[0], rgb[1], rgb[2], isBg...)
 }
 
 // Hsl alias of the HSL()
@@ -123,12 +123,8 @@ func Hsl(h, s, l float64, isBg ...bool) RGBColor { return HSL(h, s, l, isBg...) 
 // HSLInt create RGB color from a hsl int value.
 // more see HslIntToRgb()
 func HSLInt(h, s, l int, isBg ...bool) RGBColor {
-	if rgb := HslIntToRgb(h, s, l); len(rgb) > 0 {
-		return RGB(rgb[0], rgb[1], rgb[2], isBg...)
-	}
-
-	// mark is empty
-	return emptyRGBColor
+	rgb := HslIntToRgb(h, s, l)
+	return RGB(rgb[0], rgb[1], rgb[2], isBg...)
 }
 
 // HslInt alias of the HSLInt()
@@ -140,7 +136,7 @@ func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor {
 }
 
 // RGBFromString create RGB color from a string.
-// support use color name in the {namedRgbMap}
+// Support use color name in the {namedRgbMap}
 //
 // Usage:
 // 	c := RGBFromString("170,187,204")
@@ -278,13 +274,13 @@ func (c RGBColor) C16() Color { return c.Basic() }
  * RGB Style
  *************************************************************/
 
-// RGBStyle definition.
+// RGBStyle supports set foreground and background color
 //
-// Foreground/Background color
 // All are composed of 4 digits uint8, the first three digits are the color value;
 // The last bit is different from RGBColor, here it indicates whether the value is set.
-// - 1  Has been set
-// - ^1 Not set
+//
+// 	1    Has been set
+// 	^1   Not set
 type RGBStyle struct {
 	// Name of the style
 	Name string
@@ -305,6 +301,7 @@ func NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle {
 }
 
 // HEXStyle create a RGBStyle from HEX color string.
+//
 // Usage:
 // 	s := HEXStyle("aabbcc", "eee")
 // 	s.Print("message")
@@ -317,11 +314,11 @@ func HEXStyle(fg string, bg ...string) *RGBStyle {
 	if len(fg) > 0 {
 		s.SetFg(HEX(fg))
 	}
-
 	return s
 }
 
 // RGBStyleFromString create a RGBStyle from color value string.
+//
 // Usage:
 // 	s := RGBStyleFromString("170,187,204", "70,87,4")
 // 	s.Print("message")

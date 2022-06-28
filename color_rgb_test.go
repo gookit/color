@@ -64,6 +64,18 @@ func TestRGBColor(t *testing.T) {
 	is.Equal("\x1b[38;2;204;204;204mmsg\x1b[0m\n", str)
 }
 
+func TestRGBColor_set_reset(t *testing.T) {
+	_, err := Reset()
+	assert.NoError(t, err)
+
+	c := RGBFromHEX("6256CC")
+
+	assert.NoError(t, c.Set())
+	fmt.Println("a message on True color set.")
+	assert.NoError(t, c.Reset())
+	fmt.Println()
+}
+
 func TestRGBFromString(t *testing.T) {
 	forceOpenColorRender()
 	defer resetColorRender()
