@@ -35,8 +35,9 @@ jobs:
 
       - name: Generate changelog
         run: |
-          go install github.com/gookit/gitw/cmd/chlog@latest
-          chlog -config .github/changelog.yml -output changelog.md prev last 
+          curl https://github.com/gookit/gitw/releases/latest/download/chlog-linux-amd64 -L -o /usr/local/bin/chlog
+          chmod a+x /usr/local/bin/chlog
+          chlog -c .github/changelog.yml -o changelog.md prev last 
 
       # https://github.com/softprops/action-gh-release
       - name: Create release and upload assets

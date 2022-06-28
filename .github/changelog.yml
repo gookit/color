@@ -3,7 +3,7 @@ title: '## Change Log'
 style: gh-release
 # group names
 names: [Refactor, Fixed, Feature, Update, Other]
-repo_url: https://github.com/gookit/color
+#repo_url: https://github.com/gookit/color
 
 filters:
   # message length should >= 12
@@ -30,7 +30,7 @@ rules:
     contains: ['fix:']
   - name: Feature
     start_withs: [feat, new]
-    contains: [feature]
+    contains: ['feat:']
   - name: Update
     start_withs: [update, 'up:']
-    contains: [' update']
+    contains: ['update:']
