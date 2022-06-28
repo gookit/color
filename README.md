@@ -9,7 +9,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/gookit/color/badge.svg?branch=master)](https://coveralls.io/github/gookit/color?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gookit/color)](https://goreportcard.com/report/github.com/gookit/color)
 
-A command-line color library with true color support, universal API methods and Windows support.
+A command-line color library with 16/256/True color support, universal API methods and Windows support.
 
 > **[中文说明](README.zh-CN.md)**
 
@@ -30,7 +30,7 @@ Now, 256 colors and RGB colors have also been supported to work in Windows CMD a
     - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
   - Support converts `HEX` `HSL` value to RGB color
   - Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
-  - Supports HTML tag-style color rendering, such as `<green>message</>`.
+  - Supports HTML tag-style color rendering, such as `<green>message</> <fg=red;bg=blue>text</>`.
     - In addition to using built-in tags, it also supports custom color attributes
     - Custom color attributes support the use of 16 color names, 256 color values, rgb color values and hex color values
     - Support working on Windows `cmd` and `powerShell` terminal
@@ -121,11 +121,6 @@ Supported on any Windows version. Provide generic API methods: `Print`, `Printf`
 
 ```go
 color.Bold.Println("bold message")
-color.Black.Println("bold message")
-color.White.Println("bold message")
-color.Gray.Println("bold message")
-color.Red.Println("yellow message")
-color.Blue.Println("yellow message")
 color.Cyan.Println("yellow message")
 color.Yellow.Println("yellow message")
 color.Magenta.Println("yellow message")
@@ -172,15 +167,9 @@ print message use defined style:
 
 ```go
 color.Info.Println("Info message")
-color.Note.Println("Note message")
 color.Notice.Println("Notice message")
 color.Error.Println("Error message")
-color.Danger.Println("Danger message")
-color.Warn.Println("Warn message")
-color.Debug.Println("Debug message")
-color.Primary.Println("Primary message")
-color.Question.Println("Question message")
-color.Secondary.Println("Secondary message")
+// ...
 ```
 
 Run demo: `go run ./_examples/theme_basic.go`
@@ -191,14 +180,8 @@ Run demo: `go run ./_examples/theme_basic.go`
 
 ```go
 color.Info.Tips("Info tips message")
-color.Note.Tips("Note tips message")
 color.Notice.Tips("Notice tips message")
 color.Error.Tips("Error tips message")
-color.Danger.Tips("Danger tips message")
-color.Warn.Tips("Warn tips message")
-color.Debug.Tips("Debug tips message")
-color.Primary.Tips("Primary tips message")
-color.Question.Tips("Question tips message")
 color.Secondary.Tips("Secondary tips message")
 ```
 
@@ -210,15 +193,9 @@ Run demo: `go run ./_examples/theme_tips.go`
 
 ```go
 color.Info.Prompt("Info prompt message")
-color.Note.Prompt("Note prompt message")
 color.Notice.Prompt("Notice prompt message")
 color.Error.Prompt("Error prompt message")
-color.Danger.Prompt("Danger prompt message")
-color.Warn.Prompt("Warn prompt message")
-color.Debug.Prompt("Debug prompt message")
-color.Primary.Prompt("Primary prompt message")
-color.Question.Prompt("Question prompt message")
-color.Secondary.Prompt("Secondary prompt message")
+// ...
 ```
 
 Run demo: `go run ./_examples/theme_prompt.go`
@@ -228,16 +205,9 @@ Run demo: `go run ./_examples/theme_prompt.go`
 **Block Style**
 
 ```go
-color.Info.Block("Info block message")
-color.Note.Block("Note block message")
-color.Notice.Block("Notice block message")
-color.Error.Block("Error block message")
 color.Danger.Block("Danger block message")
 color.Warn.Block("Warn block message")
-color.Debug.Block("Debug block message")
-color.Primary.Block("Primary block message")
-color.Question.Block("Question block message")
-color.Secondary.Block("Secondary block message")
+// ...
 ```
 
 Run demo: `go run ./_examples/theme_block.go`
@@ -372,7 +342,32 @@ s.Printf("style with %s\n", "options")
 
 ## HTML-like tag usage
 
-**Supported** on Windows `cmd.exe` `PowerShell` .
+`Print,Printf,Println` functions support auto parse and render color tags.
+
+```go
+	text := `
+  <mga1>gookit/color:</>
+     A <green>command-line</> 
+     <cyan>color library</> with <fg=167;bg=232>256-color</>
+     and <fg=11aa23;op=bold>True-color</> support,
+     <fg=mga;op=i>universal API</> methods
+     and <cyan>Windows</> support.
+`
+	color.Print(text)
+```
+
+Preview, code please see [_examples/demo_tag.go](_examples/demo_tag.go):
+
+![demo_tag](_examples/images/demo_tag.png)
+
+**Tag formats:**
+
+- Use built in tags: `<TAG_NAME>CONTENT</>` e.g: `<info>message</>`
+- Custom tag attributes: `<fg=VALUE;bg=VALUE;op=VALUES>CONTENT</>` e.g: `<fg=167;bg=232>wel</>`
+
+> **Supported** on Windows `cmd.exe` `PowerShell`.
+
+Examples:
 
 ```go
 // use style tag
@@ -387,8 +382,55 @@ color.Print("<fg=yellow;bg=black;op=underscore;>hello, welcome</>\n")
 // Custom label attr: Supports the use of 16 color names, 256 color values, rgb color values and hex color values
 color.Println("<fg=11aa23>he</><bg=120,35,156>llo</>, <fg=167;bg=232>wel</><fg=red>come</>")
 ```
+ 
+### Tag attributes
 
-- `color.Tag`
+tag attributes format:
+
+```text
+attr format:
+ // VALUE please see var: FgColors, BgColors, AllOptions
+ "fg=VALUE;bg=VALUE;op=VALUE"
+
+16 color:
+ "fg=yellow"
+ "bg=red"
+ "op=bold,underscore" // option is allow multi value
+ "fg=white;bg=blue;op=bold"
+ "fg=white;op=bold,underscore"
+
+256 color:
+ "fg=167"
+ "fg=167;bg=23"
+ "fg=167;bg=23;op=bold"
+ 
+True color:
+ // hex
+ "fg=fc1cac"
+ "fg=fc1cac;bg=c2c3c4"
+ // r,g,b
+ "fg=23,45,214"
+ "fg=23,45,214;bg=109,99,88"
+```
+
+> tag attributes parse please see `func ParseCodeFromAttr()`
+
+### Built-in tags
+
+Built-in tags please see var `colorTags` in [color_tag.go](color_tag.go)
+
+```go
+// use style tag
+color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>")
+color.Println("<suc>hello</>")
+color.Println("<error>hello</>")
+```
+
+Run demo: `go run ./_examples/color_tag.go`
+
+![color-tags](_examples/images/color-tags.png)
+
+**Use `color.Tag` build message**:
 
 ```go
 // set a style tag
@@ -396,10 +438,6 @@ color.Tag("info").Print("info style text")
 color.Tag("info").Printf("%s style text", "info")
 color.Tag("info").Println("info style text")
 ```
-
-Run demo: `go run ./_examples/color_tag.go`
-
-![color-tags](_examples/images/color-tags.png)
 
 ## Color convert
 
@@ -418,7 +456,42 @@ rgb.Println("rgb color")
 rgb.C256().Println("256 color")
 ```
 
-**More functions for convert to `RGBColor`**:
+### Convert utils:
+
+- `HexToRgb(hex string) (rgb []int)` Convert hex color string to RGB numbers
+- `RgbToHex(rgb []int) string` Convert RGB to hex code
+
+```go
+func Basic2hex(val uint8) string
+
+func Bg2Fg(val uint8) uint8
+func Fg2Bg(val uint8) uint8
+
+func C256ToRgb(val uint8) (rgb []uint8)
+func C256ToRgbV1(val uint8) (rgb []uint8)
+
+func Hex2basic(hex string, asBg ...bool) uint8
+func Hex2rgb(hex string) []int
+func HexToRGB(hex string) []int
+func HexToRgb(hex string) (rgb []int)
+
+func HslIntToRgb(h, s, l int) (rgb []uint8)
+func HslToRgb(h, s, l float64) (rgb []uint8)
+func HsvToRgb(h, s, v int) (rgb []uint8)
+
+func Rgb2ansi(r, g, b uint8, isBg bool) uint8
+func Rgb2basic(r, g, b uint8, isBg bool) uint8
+func Rgb2hex(rgb []int) string
+func Rgb2short(r, g, b uint8) uint8
+func RgbTo256(r, g, b uint8) uint8
+func RgbTo256Table() map[string]uint8
+func RgbToAnsi(r, g, b uint8, isBg bool) uint8
+func RgbToHex(rgb []int) string
+func RgbToHsl(r, g, b uint8) []float64
+func RgbToHslInt(r, g, b uint8) []int
+```
+
+**Convert to `RGBColor`**:
 
 - `func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor`
 - `func RGBFromString(rgb string, isBg ...bool) RGBColor`
@@ -426,7 +499,7 @@ rgb.C256().Println("256 color")
 - `func HSL(h, s, l float64, isBg ...bool) RGBColor`
 - `func HSLInt(h, s, l int, isBg ...bool) RGBColor`
 
-## Func refer
+## Util functions
 
 There are some useful functions reference
 
@@ -437,9 +510,8 @@ There are some useful functions reference
 - `ClearCode(str string) string` Use for clear color codes
 - `ClearTag(s string) string` clear all color html-tag for a string
 - `IsConsole(w io.Writer)` Determine whether w is one of stderr, stdout, stdin
-- `HexToRgb(hex string) (rgb []int)` Convert hex color string to RGB numbers
-- `RgbToHex(rgb []int) string` Convert RGB to hex code
-- More useful func please see https://pkg.go.dev/github.com/gookit/color
+
+> More useful func please see https://pkg.go.dev/github.com/gookit/color
 
 ## Projects using color
 

@@ -9,7 +9,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/gookit/color/badge.svg?branch=master)](https://coveralls.io/github/gookit/color?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gookit/color)](https://goreportcard.com/report/github.com/gookit/color)
 
-Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用的API方法，兼容Windows系统
+Golang下的命令行色彩使用库, 拥有丰富的色彩(16/256/True)渲染输出，通用的API方法，兼容Windows系统
 
 > **[EN README](README.md)**
 
@@ -31,7 +31,7 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩渲染输出，通用
   - 支持转换 `HEX` `HSL` 等为RGB色彩
   - 提供通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
   - 同时支持html标签式的颜色渲染，除了使用内置标签，同时支持自定义颜色属性
-    - 例如: `this an <green>message</>` 标签内部的文本将会渲染为绿色字体
+    - 例如: `this an <green>message</> <fg=red;bg=blue>text</>` 标签内部文本将会渲染对应色彩
     - 自定义颜色属性: 支持使用16色彩名称，256色彩值，rgb色彩值以及hex色彩值
   - 基础色彩: `Bold` `Black` `White` `Gray` `Red` `Green` `Yellow` `Blue` `Magenta` `Cyan`
   - 扩展风格: `Info` `Note` `Light` `Error` `Danger` `Notice` `Success` `Comment` `Primary` `Warning` `Question` `Secondary`
@@ -125,12 +125,7 @@ func main() {
 color.Bold.Println("bold message")
 color.Black.Println("bold message")
 color.White.Println("bold message")
-color.Gray.Println("bold message")
-color.Red.Println("yellow message")
-color.Blue.Println("yellow message")
-color.Cyan.Println("yellow message")
-color.Yellow.Println("yellow message")
-color.Magenta.Println("yellow message")
+// ...
 
 // Only use foreground color
 color.FgCyan.Printf("Simple to use %s\n", "color")
@@ -186,13 +181,7 @@ color.Reset()
 color.Info.Println("Info message")
 color.Note.Println("Note message")
 color.Notice.Println("Notice message")
-color.Error.Println("Error message")
-color.Danger.Println("Danger message")
-color.Warn.Println("Warn message")
-color.Debug.Println("Debug message")
-color.Primary.Println("Primary message")
-color.Question.Println("Question message")
-color.Secondary.Println("Secondary message")
+// ...
 ```
 
 Run demo: `go run ./_examples/theme_basic.go`
@@ -203,15 +192,9 @@ Run demo: `go run ./_examples/theme_basic.go`
 
 ```go
 color.Info.Tips("Info tips message")
-color.Note.Tips("Note tips message")
 color.Notice.Tips("Notice tips message")
 color.Error.Tips("Error tips message")
-color.Danger.Tips("Danger tips message")
-color.Warn.Tips("Warn tips message")
-color.Debug.Tips("Debug tips message")
-color.Primary.Tips("Primary tips message")
-color.Question.Tips("Question tips message")
-color.Secondary.Tips("Secondary tips message")
+// ...
 ```
 
 Run demo: `go run ./_examples/theme_tips.go`
@@ -222,8 +205,6 @@ Run demo: `go run ./_examples/theme_tips.go`
 
 ```go
 color.Info.Prompt("Info prompt message")
-color.Note.Prompt("Note prompt message")
-color.Notice.Prompt("Notice prompt message")
 color.Error.Prompt("Error prompt message")
 color.Danger.Prompt("Danger prompt message")
 ```
@@ -237,9 +218,7 @@ Run demo: `go run ./_examples/theme_prompt.go`
 ```go
 color.Warn.Block("Warn block message")
 color.Debug.Block("Debug block message")
-color.Primary.Block("Primary block message")
 color.Question.Block("Question block message")
-color.Secondary.Block("Secondary block message")
 ```
 
 Run demo: `go run ./_examples/theme_block.go`
@@ -252,7 +231,7 @@ Run demo: `go run ./_examples/theme_block.go`
 
 ### 使用前景或后景色
  
-  - `color.C256(val uint8, isBg ...bool) Color256`
+- `color.C256(val uint8, isBg ...bool) Color256`
 
 ```go
 c := color.C256(132) // fg color
@@ -340,7 +319,7 @@ c.Printf("format %s", "message")
 
 ### 使用RGB风格
 
-> 可同时设置前景和背景色
+> TIP: 可同时设置前景和背景色
 
 - `color.NewRGBStyle(fg RGBColor, bg ...RGBColor) *RGBStyle`
 
@@ -370,7 +349,32 @@ s.Printf("style with %s\n", "options")
 
 ## 使用颜色标签
 
+`Print,Printf,Println` 等方法支持自动解析并渲染 HTML 风格的颜色标签
+
 > **支持** 在windows `cmd.exe` `PowerShell` 使用
+
+简单示例:
+
+```go
+	text := `
+  <mga1>gookit/color:</>
+     A <green>command-line</> 
+     <cyan>color library</> with <fg=167;bg=232>256-color</>
+     and <fg=11aa23;op=bold>True-color</> support,
+     <fg=mga;op=i>universal API</> methods
+     and <cyan>Windows</> support.
+`
+	color.Print(text)
+```
+
+输出效果, 示例代码请看 [_examples/demo_tag.go](_examples/demo_tag.go):
+
+![demo_tag](_examples/images/demo_tag.png)
+
+**颜色标签格式:**
+
+- 直接使用内置风格标签: `<TAG_NAME>CONTENT</>` e.g: `<info>message</>`
+- 自定义标签属性: `<fg=VALUE;bg=VALUE;op=VALUES>CONTENT</>` e.g: `<fg=167;bg=232>wel</>`
 
 使用内置的颜色标签，可以非常方便简单的构建自己需要的任何格式
 
@@ -390,9 +394,56 @@ color.Print("<fg=yellow;bg=black;op=underscore;>hello, welcome</>\n")
 color.Println("<fg=11aa23>he</><bg=120,35,156>llo</>, <fg=167;bg=232>wel</><fg=red>come</>")
 ```
 
-- 使用 `color.Tag`
+### 自定义标签属性
 
-给后面输出的文本信息加上给定的颜色风格标签
+标签属性格式:
+
+```text
+attr format:
+ // VALUE please see var: FgColors, BgColors, AllOptions
+ "fg=VALUE;bg=VALUE;op=VALUE"
+
+16 color:
+ "fg=yellow"
+ "bg=red"
+ "op=bold,underscore" // option is allow multi value
+ "fg=white;bg=blue;op=bold"
+ "fg=white;op=bold,underscore"
+
+256 color:
+ "fg=167"
+ "fg=167;bg=23"
+ "fg=167;bg=23;op=bold"
+ 
+True color:
+ // hex
+ "fg=fc1cac"
+ "fg=fc1cac;bg=c2c3c4"
+ // r,g,b
+ "fg=23,45,214"
+ "fg=23,45,214;bg=109,99,88"
+```
+
+> tag attributes parse please see `func ParseCodeFromAttr()`
+
+### 内置标签
+
+内置标签请参见变量 `colorTags` 定义, 源文件 [color_tag.go](color_tag.go)
+
+```go
+// use style tag
+color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>")
+color.Println("<suc>hello</>")
+color.Println("<error>hello</>")
+```
+
+> 运行 demo: `go run ./_examples/color_tag.go`
+
+![color-tags](_examples/images/color-tags.png)
+
+**使用 `color.Tag` 包装标签**:
+
+可以使用通用的输出API方法,给后面输出的文本信息加上给定的颜色风格标签
 
 ```go
 // set a style tag
@@ -400,10 +451,6 @@ color.Tag("info").Print("info style text")
 color.Tag("info").Printf("%s style text", "info")
 color.Tag("info").Println("info style text")
 ```
-
-> 运行 demo: `go run ./_examples/color_tag.go`
-
-![color-tags](_examples/images/color-tags.png)
 
 ## 颜色转换
 
