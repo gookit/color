@@ -69,12 +69,12 @@ var (
 	// supportColor = IsSupportColor()
 )
 
-// TermColorLevel value on current ENV
+// TermColorLevel Get the currently supported color level
 func TermColorLevel() Level {
 	return colorLevel
 }
 
-// SupportColor on the current ENV
+// SupportColor Whether the current environment supports color output
 func SupportColor() bool {
 	return colorLevel > terminfo.ColorLevelNone
 }
@@ -84,12 +84,12 @@ func SupportColor() bool {
 // 	return colorLevel > terminfo.ColorLevelNone
 // }
 
-// Support256Color on the current ENV
+// Support256Color Whether the current environment supports 256-color output
 func Support256Color() bool {
 	return colorLevel > terminfo.ColorLevelBasic
 }
 
-// SupportTrueColor on the current ENV
+// SupportTrueColor Whether the current environment supports (RGB)True-color output
 func SupportTrueColor() bool {
 	return colorLevel > terminfo.ColorLevelHundreds
 }
@@ -98,7 +98,7 @@ func SupportTrueColor() bool {
  * global settings
  *************************************************************/
 
-// Set set console color attributes
+// Set console color attributes
 func Set(colors ...Color) (int, error) {
 	code := Colors2code(colors...)
 	err := SetTerminal(code)
@@ -200,18 +200,17 @@ func RenderCode(code string, args ...interface{}) string {
 // RenderWithSpaces Render code with spaces.
 // If the number of args is > 1, a space will be added between the args
 func RenderWithSpaces(code string, args ...interface{}) string {
-	message := formatArgsForPrintln(args)
+	msg := formatArgsForPrintln(args)
 	if len(code) == 0 {
-		return message
+		return msg
 	}
 
 	// disabled OR not support color
 	if !Enable || !SupportColor() {
-		return ClearCode(message)
+		return ClearCode(msg)
 	}
 
-	// return fmt.Sprintf(FullColorTpl, code, message)
-	return StartSet + code + "m" + message + ResetSet
+	return StartSet + code + "m" + msg + ResetSet
 }
 
 // RenderString render a string with color code.
@@ -234,7 +233,8 @@ func RenderString(code string, str string) string {
 
 // ClearCode clear color codes.
 //
-// eg: "\033[36;1mText\x1b[0m" -> "Text"
+// eg:
+// 	"\033[36;1mText\x1b[0m" -> "Text"
 func ClearCode(str string) string {
 	return codeRegex.ReplaceAllString(str, "")
 }

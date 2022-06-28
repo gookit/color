@@ -469,7 +469,41 @@ rgb.Println("rgb color")
 rgb.C256().Println("256 color")
 ```
 
-**更多转换方法转换为 `RGBColor`**:
+### 颜色转换方法
+
+`color` 内置了许多颜色转换工具方法
+
+```go
+func Basic2hex(val uint8) string
+
+func Bg2Fg(val uint8) uint8
+func Fg2Bg(val uint8) uint8
+
+func C256ToRgb(val uint8) (rgb []uint8)
+func C256ToRgbV1(val uint8) (rgb []uint8)
+
+func Hex2basic(hex string, asBg ...bool) uint8
+func Hex2rgb(hex string) []int
+func HexToRGB(hex string) []int
+func HexToRgb(hex string) (rgb []int)
+
+func HslIntToRgb(h, s, l int) (rgb []uint8)
+func HslToRgb(h, s, l float64) (rgb []uint8)
+func HsvToRgb(h, s, v int) (rgb []uint8)
+
+func Rgb2ansi(r, g, b uint8, isBg bool) uint8
+func Rgb2basic(r, g, b uint8, isBg bool) uint8
+func Rgb2hex(rgb []int) string
+func Rgb2short(r, g, b uint8) uint8
+func RgbTo256(r, g, b uint8) uint8
+func RgbTo256Table() map[string]uint8
+func RgbToAnsi(r, g, b uint8, isBg bool) uint8
+func RgbToHex(rgb []int) string
+func RgbToHsl(r, g, b uint8) []float64
+func RgbToHslInt(r, g, b uint8) []int
+```
+
+**转换为 `RGBColor`**:
 
 - `func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor`
 - `func RGBFromString(rgb string, isBg ...bool) RGBColor`
@@ -477,20 +511,40 @@ rgb.C256().Println("256 color")
 - `func HSL(h, s, l float64, isBg ...bool) RGBColor`
 - `func HSLInt(h, s, l int, isBg ...bool) RGBColor`
 
-## 方法参考
+## 工具方法参考
 
 一些有用的工具方法参考
 
-- `Disable()` disable color render
-- `SetOutput(io.Writer)` custom set the colored text output writer
-- `ForceOpenColor()` force open color render
+- `Disable()` 禁用颜色渲染输出
+- `SetOutput(io.Writer)` 自定义设置渲染后的彩色文本输出位置
+- `ForceOpenColor()` 强制开启颜色渲染
 - `ClearCode(str string) string` Use for clear color codes
 - `Colors2code(colors ...Color) string` Convert colors to code. return like "32;45;3"
 - `ClearTag(s string) string` clear all color html-tag for a string
 - `IsConsole(w io.Writer)` Determine whether w is one of stderr, stdout, stdin
-- `HexToRgb(hex string) (rgb []int)` Convert hex color string to RGB numbers
-- `RgbToHex(rgb []int) string` Convert RGB to hex code
 - 更多请查看文档 https://pkg.go.dev/github.com/gookit/color
+
+### 检测支持的颜色级别
+
+`color` 会自动检查当前环境支持的颜色级别
+
+```go
+// Level is the color level supported by a terminal.
+type Level = terminfo.ColorLevel
+
+// terminal color available level alias of the terminfo.ColorLevel*
+const (
+	LevelNo  = terminfo.ColorLevelNone     // not support color.
+	Level16  = terminfo.ColorLevelBasic    // basic - 3/4 bit color supported
+	Level256 = terminfo.ColorLevelHundreds // hundreds - 8-bit color supported
+	LevelRgb = terminfo.ColorLevelMillions // millions - (24 bit)true color supported
+)
+```
+
+- `func SupportColor() bool` 当前环境是否支持色彩输出
+- `func Support256Color() bool` 当前环境是否支持256色彩输出
+- `func SupportTrueColor() bool` 当前环境是否支持(RGB)True色彩输出
+- `func TermColorLevel() Level` 获取当前支持的颜色级别
 
 ## 使用Color的项目
 

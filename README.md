@@ -456,10 +456,9 @@ rgb.Println("rgb color")
 rgb.C256().Println("256 color")
 ```
 
-### Convert utils:
+### Convert utils
 
-- `HexToRgb(hex string) (rgb []int)` Convert hex color string to RGB numbers
-- `RgbToHex(rgb []int) string` Convert RGB to hex code
+`color` has many built-in color conversion utility functions.
 
 ```go
 func Basic2hex(val uint8) string
@@ -512,6 +511,29 @@ There are some useful functions reference
 - `IsConsole(w io.Writer)` Determine whether w is one of stderr, stdout, stdin
 
 > More useful func please see https://pkg.go.dev/github.com/gookit/color
+
+### Detect color level
+
+`color` automatically checks the color levels supported by the current environment.
+
+```go
+// Level is the color level supported by a terminal.
+type Level = terminfo.ColorLevel
+
+// terminal color available level alias of the terminfo.ColorLevel*
+const (
+	LevelNo  = terminfo.ColorLevelNone     // not support color.
+	Level16  = terminfo.ColorLevelBasic    // basic - 3/4 bit color supported
+	Level256 = terminfo.ColorLevelHundreds // hundreds - 8-bit color supported
+	LevelRgb = terminfo.ColorLevelMillions // millions - (24 bit)true color supported
+)
+```
+
+- `func SupportColor() bool` Whether the current environment supports color output
+- `func Support256Color() bool` Whether the current environment supports 256-color output
+- `func SupportTrueColor() bool` Whether the current environment supports (RGB)True-color output
+- `func TermColorLevel() Level` Get the currently supported color level
+
 
 ## Projects using color
 
