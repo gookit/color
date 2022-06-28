@@ -291,7 +291,7 @@ func (c Color) C256() Color256 {
 // ToFg always convert fg
 func (c Color) ToFg() Color {
 	val := uint8(c)
-	// is option code, don't change
+	// option code, don't change
 	if val < 10 {
 		return c
 	}
@@ -301,7 +301,7 @@ func (c Color) ToFg() Color {
 // ToBg always convert bg
 func (c Color) ToBg() Color {
 	val := uint8(c)
-	// is option code, don't change
+	// option code, don't change
 	if val < 10 {
 		return c
 	}
@@ -406,9 +406,9 @@ var (
 	// TODO basic name alias
 	// basicNameAlias = map[string]string{}
 	// optionWithAlias = buildOpWithAlias()
-
 	// basic color name to code
-	name2basicMap = initName2basicMap()
+	// name2basicMap = initName2basicMap()
+
 	// basic2nameMap basic color code to name
 	basic2nameMap = map[uint8]string{
 		30: "black",
@@ -465,13 +465,13 @@ func Basic2nameMap() map[uint8]string {
 	return basic2nameMap
 }
 
-func initName2basicMap() map[string]uint8 {
-	n2b := make(map[string]uint8, len(basic2nameMap))
-	for u, s := range basic2nameMap {
-		n2b[s] = u
-	}
-	return n2b
-}
+// func initName2basicMap() map[string]uint8 {
+// 	n2b := make(map[string]uint8, len(basic2nameMap))
+// 	for u, s := range basic2nameMap {
+// 		n2b[s] = u
+// 	}
+// 	return n2b
+// }
 
 // func buildOpWithAlias() map[string]uint8 {
 // }
