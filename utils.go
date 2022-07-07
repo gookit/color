@@ -185,6 +185,11 @@ func debugf(f string, v ...interface{}) {
 }
 
 // equals: return ok ? val1 : val2
+func isValidUint8(val int) bool {
+	return val >= 0 && val < 256
+}
+
+// equals: return ok ? val1 : val2
 func compareVal(ok bool, val1, val2 uint8) uint8 {
 	if ok {
 		return val1

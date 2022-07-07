@@ -98,6 +98,9 @@ func TestRGBFromString(t *testing.T) {
 
 	c = RGBFromString("170,187,error")
 	is.Equal("msg", c.Sprint("msg"))
+
+	c = RGBFromString("170,-187,-34")
+	is.Equal("msg", c.Sprint("msg"))
 }
 
 func TestHexToRGB(t *testing.T) {

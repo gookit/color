@@ -156,17 +156,17 @@ func RGBFromString(rgb string, isBg ...bool) RGBColor {
 		return emptyRGBColor
 	}
 
-	var ar [3]int
+	var ar [3]uint8
 	for i, val := range ss {
 		iv, err := strconv.Atoi(val)
-		if err != nil {
+		if err != nil || !isValidUint8(iv) {
 			return emptyRGBColor
 		}
 
-		ar[i] = iv
+		ar[i] = uint8(iv)
 	}
 
-	return RGB(uint8(ar[0]), uint8(ar[1]), uint8(ar[2]), isBg...)
+	return RGB(ar[0], ar[1], ar[2], isBg...)
 }
 
 // Set terminal by rgb/true color code
