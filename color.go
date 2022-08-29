@@ -15,6 +15,7 @@ import (
 	"io"
 	"os"
 	"regexp"
+	"strings"
 
 	"github.com/xo/terminfo"
 )
@@ -22,7 +23,8 @@ import (
 // color render templates
 //
 // ESC 操作的表示:
-// 	"\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
+//
+//	"\033"(Octal 8进制) = "\x1b"(Hexadecimal 16进制) = 27 (10进制)
 const (
 	// StartSet chars
 	StartSet = "\x1b["
@@ -32,6 +34,8 @@ const (
 	SettingTpl = "\x1b[%sm"
 	// FullColorTpl for build color code
 	FullColorTpl = "\x1b[%sm%s\x1b[0m"
+	// CodeSuffix string for color code.
+	CodeSuffix = "[0m"
 )
 
 // CodeExpr regex to clear color codes eg "\033[1;36mText\x1b[0m"
@@ -60,7 +64,7 @@ var (
 	// if not in windows, it's always False.
 	isLikeInCmd bool
 	// the color support level for current terminal
-	// needVTP - need enable VTP, only for windows OS
+	// needVTP - need enable VTP, only for Windows OS
 	colorLevel, needVTP = detectTermColorLevel()
 	// match color codes
 	codeRegex = regexp.MustCompile(CodeExpr)
@@ -159,7 +163,8 @@ func ForceOpenColor() terminfo.ColorLevel {
 }
 
 // IsLikeInCmd check result
-// Deprecated
+//
+// Deprecated: please don't use
 func IsLikeInCmd() bool {
 	return isLikeInCmd
 }
@@ -176,7 +181,8 @@ func InnerErrs() []error {
 // RenderCode render message by color code.
 //
 // Usage:
-// 	msg := RenderCode("3;32;45", "some", "message")
+//
+//	msg := RenderCode("3;32;45", "some", "message")
 func RenderCode(code string, args ...interface{}) string {
 	var message string
 	if ln := len(args); ln == 0 {
@@ -216,7 +222,8 @@ func RenderWithSpaces(code string, args ...interface{}) string {
 // RenderString render a string with color code.
 //
 // Usage:
-// 	msg := RenderString("3;32;45", "a message")
+//
+//	msg := RenderString("3;32;45", "a message")
 func RenderString(code string, str string) string {
 	if len(code) == 0 || str == "" {
 		return str
@@ -234,7 +241,11 @@ func RenderString(code string, str string) string {
 // ClearCode clear color codes.
 //
 // eg:
-// 	"\033[36;1mText\x1b[0m" -> "Text"
+//
+//	"\033[36;1mText\x1b[0m" -> "Text"
 func ClearCode(str string) string {
+	if !strings.Contains(str, CodeSuffix) {
+		return str
+	}
 	return codeRegex.ReplaceAllString(str, "")
 }

@@ -47,6 +47,7 @@ func Println(a ...interface{}) {
 }
 
 // Fprint print rendered messages to writer
+//
 // Notice: will ignore print error
 func Fprint(w io.Writer, a ...interface{}) {
 	_, err := fmt.Fprint(w, Render(a...))
@@ -86,6 +87,7 @@ func Lprint(l *log.Logger, a ...interface{}) {
 // Render parse color tags, return rendered string.
 //
 // Usage:
+//
 //	text := Render("<info>hello</> <cyan>world</>!")
 //	fmt.Println(text)
 func Render(a ...interface{}) string {

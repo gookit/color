@@ -3,7 +3,6 @@ package color
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"runtime"
 	"strings"
@@ -202,13 +201,15 @@ func TestRenderCode(t *testing.T) {
 }
 
 func TestClearCode(t *testing.T) {
-	art := assert.New(t)
-	art.Equal("Text", ClearCode("\033[36;1mText\x1b[0m"))
+	is := assert.New(t)
+
+	is.Equal("Text", ClearCode("Text"))
+	is.Equal("Text", ClearCode("\033[36;1mText\x1b[0m"))
 	// 8bit
-	art.Equal("Text", ClearCode("\x1b[38;5;242mText\x1b[0m"))
+	is.Equal("Text", ClearCode("\x1b[38;5;242mText\x1b[0m"))
 	// 24bit
-	art.Equal("Text", ClearCode("\x1b[38;2;30;144;255mText\x1b[0m"))
-	art.Equal("Text other", ClearCode("\033[36;1mText\x1b[0m other"))
+	is.Equal("Text", ClearCode("\x1b[38;2;30;144;255mText\x1b[0m"))
+	is.Equal("Text other", ClearCode("\033[36;1mText\x1b[0m other"))
 }
 
 /*************************************************************
@@ -707,6 +708,7 @@ func resetColorRender() {
 	ResetOutput()
 }
 
+/*
 var oldStdout, newReader *os.File
 
 // Usage:
@@ -741,6 +743,7 @@ func restoreStdout() string {
 
 	return string(out)
 }
+*/
 
 // mockEnvValue will store old env value, set new val. will restore old value on end.
 func mockEnvValue(key, val string, fn func(nv string)) {
