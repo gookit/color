@@ -1,9 +1,11 @@
-package color
+package color_test
 
 import (
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/gookit/color"
 )
 
 // https://github.com/gookit/color/issues/51
@@ -20,7 +22,30 @@ func TestIssues_51(t *testing.T) {
 	}
 	title := string(titleRs)
 
-	fmt.Printf("topBar:\n%q\n%q\n", topBar, ClearCode(topBar))
-	fmt.Printf("title:\n%q\n%q\n", title, ClearCode(title))
-	fmt.Printf("Split:\n%#v\n", strings.Split(ClearCode(topBar), ClearCode(title)))
+	fmt.Printf("topBar:\n%q\n%q\n", topBar, color.ClearCode(topBar))
+	fmt.Printf("title:\n%q\n%q\n", title, color.ClearCode(title))
+	fmt.Printf("Split:\n%#v\n", strings.Split(color.ClearCode(topBar), color.ClearCode(title)))
+}
+
+// https://github.com/gookit/color/issues/52
+func TestIssues_52(t *testing.T) {
+	test1 := `FAILS:
+one <bg=lightGreen;fg=black>two</> <three>
+foo <bg=lightGreen;fg=black>two</> <four>
+`
+
+	test2 := `WORKS:
+one <bg=lightGreen;fg=black>two <three></>
+foo <bg=lightGreen;fg=black>two <four></>
+`
+
+	test3 := `WORKS:
+one <bg=lightGreen;fg=black>two</> three
+foo <bg=lightGreen;fg=black>two</> four
+`
+
+	// colorp.Info
+	color.Print(test1)
+	color.Print(test2)
+	color.Print(test3)
 }

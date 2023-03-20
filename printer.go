@@ -19,8 +19,9 @@ type PrinterFace interface {
 // Printer a generic color message printer.
 //
 // Usage:
-// 	p := &Printer{Code: "32;45;3"}
-// 	p.Print("message")
+//
+//	p := &Printer{Code: "32;45;3"}
+//	p.Print("message")
 type Printer struct {
 	// NoColor disable color.
 	NoColor bool
@@ -89,6 +90,16 @@ func (s *SimplePrinter) Printf(format string, v ...interface{}) {
 // Println message
 func (s *SimplePrinter) Println(v ...interface{}) {
 	Println(v...)
+}
+
+// Successf message
+func (s *SimplePrinter) Successf(format string, a ...interface{}) {
+	Success.Printf(format, a...)
+}
+
+// Successln message
+func (s *SimplePrinter) Successln(a ...interface{}) {
+	Success.Println(a...)
 }
 
 // Infof message
