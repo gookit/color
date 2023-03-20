@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        go_version: [1.16, 1.17, 1.18, 1.19, '1.20']
+        go_version: [1.17, 1.18, 1.19, '1.20']
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
@@ -40,8 +40,8 @@ jobs:
       env:
         COLOR_DEBUG_MODE: on
       #      run: go test -v -cover ./...
-      #      must add " for profile.cov on windows OS
-      run: go test -v -coverprofile="profile.cov" ./...
+      #      must add " for profile.cov on Windows OS
+      run: go test -coverprofile="profile.cov" ./...
 
     - name: Send coverage
       uses: shogo82148/actions-goveralls@v1
