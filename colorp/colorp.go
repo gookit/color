@@ -4,7 +4,7 @@ package colorp
 import "github.com/gookit/color"
 
 /*************************************************************
- * quick use color print message
+ * quick use color func print message.
  *************************************************************/
 
 // Redp print message with Red color

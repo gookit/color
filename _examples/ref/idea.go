@@ -21,11 +21,11 @@ func NewLog(fields map[string]string) *Logger {
 }
 
 // Info log message
-func (l *Logger) Info(args ...interface{}) {
+func (l *Logger) Info(args ...any) {
 
 }
 
 // Log message
-func (l *Logger) Log(args ...interface{}) {
+func (l *Logger) Log(args ...any) {
 
 }
