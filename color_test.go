@@ -334,6 +334,24 @@ func TestColor16(t *testing.T) {
 	is.True(ok)
 }
 
+func TestColor_check(t *testing.T) {
+	assert.True(t, Cyan.IsValid())
+	assert.True(t, BgCyan.IsValid())
+
+	// is fg
+	assert.True(t, Cyan.IsFg())
+	assert.False(t, BgCyan.IsFg())
+
+	// is bg
+	assert.False(t, Cyan.IsBg())
+	assert.True(t, BgCyan.IsBg())
+
+	// is option
+	assert.False(t, Cyan.IsOption())
+	assert.False(t, BgCyan.IsOption())
+	assert.True(t, Bold.IsOption())
+}
+
 func TestColor_convert(t *testing.T) {
 	assert.Equal(t, "36", Cyan.ToFg().Code())
 	assert.Equal(t, "46", Cyan.ToBg().Code())
@@ -343,6 +361,12 @@ func TestColor_convert(t *testing.T) {
 	assert.Equal(t, "106", HiCyan.ToBg().Code())
 	assert.Equal(t, "93", BgHiYellow.ToFg().Code())
 	assert.Equal(t, "105", BgHiMagenta.ToBg().Code())
+
+	assert.Equal(t, "104;253;254", HiCyan.RGB().Code())
+	assert.Equal(t, "38;2;104;253;254", HiCyan.RGB().FullCode())
+
+	assert.Equal(t, "104;253;254", HiCyan.ToBg().RGB().Code())
+	assert.Equal(t, "48;2;104;253;254", HiCyan.ToBg().RGB().FullCode())
 
 	assert.Equal(t, "5", OpBlink.ToFg().Code())
 	assert.Equal(t, "5", OpBlink.ToBg().Code())
