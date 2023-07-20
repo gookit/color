@@ -26,12 +26,14 @@ func TestRGBColor(t *testing.T) {
 	is.False(c.IsEmpty())
 	is.Equal("48;2;204;204;204", c.FullCode())
 	is.Equal("48;2;204;204;204", c.String())
+	is.Equal("38;2;204;204;204", c.ToFg().FullCode())
 
 	// fg
 	c = RGB(204, 204, 204)
 	is.False(c.IsEmpty())
 	is.Equal("38;2;204;204;204", c.FullCode())
 	is.Equal("38;2;204;204;204", c.String())
+	is.Equal("48;2;204;204;204", c.ToBg().FullCode())
 
 	// RGBColor.Sprint
 	str := c.Sprint("msg")
