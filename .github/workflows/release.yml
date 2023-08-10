@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Go Faster
-        uses: WillAbides/setup-go-faster@v1.9.0
+        uses: WillAbides/setup-go-faster@v1.9.1
         timeout-minutes: 3
         with:
           go-version: ${{ matrix.go_version }}
