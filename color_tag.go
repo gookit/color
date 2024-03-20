@@ -16,7 +16,7 @@ const (
 	//
 	// allow custom attrs, eg: "<fg=white;bg=blue;op=bold>content</>"
 	// (?s:...) s - 让 "." 匹配换行
-	MatchExpr = `<([0-9a-zA-Z_=,;]+)>(?s:(.*?))<\/>`
+	MatchExpr = `<([0-9a-zA-Z_=,;]+)>(?m:(.*?))<\/>`
 
 	// AttrExpr regex to match custom color attributes
 	// eg: "<fg=white;bg=blue;op=bold>content</>"
