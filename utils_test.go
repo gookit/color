@@ -17,7 +17,7 @@ func TestUtilFuncs(t *testing.T) {
 	is.True(IsConsole(os.Stdout))
 	is.True(IsConsole(os.Stderr))
 	is.False(IsConsole(&bytes.Buffer{}))
-	ff, err := os.OpenFile("README.md", os.O_WRONLY, 0)
+	ff, err := os.OpenFile("README.md", os.O_RDONLY, 0)
 	is.NoError(err)
 	is.False(IsConsole(ff))
 
