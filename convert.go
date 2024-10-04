@@ -479,7 +479,7 @@ func Rgb2hex(rgb []int) string { return RgbToHex(rgb) }
 //
 //	hex := RgbToHex([]int{170, 187, 204}) // hex: "aabbcc"
 func RgbToHex(rgb []int) string {
-	hexNodes := make([]string, len(rgb))
+	hexNodes := make([]string, 0, len(rgb))
 
 	for _, v := range rgb {
 		hexNodes = append(hexNodes, strconv.FormatInt(int64(v), 16))
