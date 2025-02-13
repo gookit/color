@@ -347,7 +347,7 @@ func (tp *TagParser) Parse(str string) string {
 
 	// item: 0 full text 1 tag name 2 tag content
 	for _, item := range matched {
-		full, tag, body := item[0], item[1], item[2]
+		full, tag, body := repairMatchedTag(item[0], item[1], item[2])
 
 		// use defined color tag name: "<info>content</>" -> tag: "info"
 		if !strings.ContainsRune(tag, '=') {
@@ -369,6 +369,19 @@ func (tp *TagParser) Parse(str string) string {
 	}
 
 	return str
+}
+
+func repairMatchedTag(full, tag, body string) (string, string, string) {
+	if len(colorTags[tag]) == 0 && len(namedRgbMap[tag]) == 0 && len(ParseCodeFromAttr(tag)) == 0 {
+		if matched := matchRegex.FindAllStringSubmatch(strings.TrimPrefix(full, "<"+tag+">"), -1); len(matched) > 0 {
+			full = matched[0][0]
+			tag = matched[0][1]
+			body = matched[0][2]
+			return repairMatchedTag(full, tag, body)
+		}
+	}
+
+	return full, tag, body
 }
 
 // ReplaceTag parse string, replace color tag and return rendered string
