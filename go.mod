@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/stretchr/testify v1.10.0
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778
-	golang.org/x/sys v0.31.0
+	golang.org/x/sys v0.33.0
 )
 
 require (
