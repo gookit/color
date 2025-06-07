@@ -6,7 +6,7 @@ Source code and other details for the project are available at GitHub:
 
 	https://github.com/gookit/color
 
-More usage please see README and tests.
+For more usage, please see README and tests.
 */
 package color
 
@@ -123,19 +123,13 @@ func Disable() bool {
 }
 
 // NotRenderTag on call color.Xprint, color.PrintX
-func NotRenderTag() {
-	RenderTag = false
-}
+func NotRenderTag() { RenderTag = false }
 
 // SetOutput set default colored text output
-func SetOutput(w io.Writer) {
-	output = w
-}
+func SetOutput(w io.Writer) { output = w }
 
 // ResetOutput reset output
-func ResetOutput() {
-	output = os.Stdout
-}
+func ResetOutput() { output = os.Stdout }
 
 // ResetOptions reset all package option setting
 func ResetOptions() {

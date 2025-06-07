@@ -446,7 +446,7 @@ func TestPrintBasicColor(t *testing.T) {
 
 func TestQuickFunc(t *testing.T) {
 	// inline func
-	testFuncs := []func(...interface{}){
+	testFuncs := []func(...any){
 		Redp,
 		Bluep,
 		Cyanp,
@@ -465,7 +465,7 @@ func TestQuickFunc(t *testing.T) {
 	fmt.Println()
 
 	// format func
-	testFuncs2 := []func(tpl string, vs ...interface{}){
+	testFuncs2 := []func(tpl string, vs ...any){
 		Redf,
 		Bluef,
 		Cyanf,
@@ -484,7 +484,7 @@ func TestQuickFunc(t *testing.T) {
 	fmt.Println()
 
 	// line func
-	testFuncs = []func(...interface{}){
+	testFuncs = []func(...any){
 		Redln,
 		Blueln,
 		Cyanln,

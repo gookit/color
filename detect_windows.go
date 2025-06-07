@@ -1,6 +1,8 @@
 //go:build windows
 // +build windows
 
+package color
+
 // Display color on Windows
 //
 // refer:
@@ -8,8 +10,6 @@
 //	golang.org/x/sys/windows
 //	golang.org/x/crypto/ssh/terminal
 //	https://docs.microsoft.com/en-us/windows/console
-package color
-
 import (
 	"os"
 	"syscall"
@@ -161,7 +161,7 @@ func detectSpecialTermColor(termVal string) (tl Level, needVTP bool) {
 
 // docs https://docs.microsoft.com/zh-cn/windows/console/getconsolemode#parameters
 const (
-	// equals to docs page's ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+	// EnableVirtualTerminalProcessingMode equals to docs page's ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
 	EnableVirtualTerminalProcessingMode uint32 = 0x4
 )
 
@@ -230,7 +230,7 @@ func IsTty(fd uintptr) bool {
 	initKernel32Proc()
 
 	var st uint32
-	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, fd, uintptr(unsafe.Pointer(&st)), 0)
+	r, _, e := syscall.SyscallN(procGetConsoleMode.Addr(), 2, fd, uintptr(unsafe.Pointer(&st)), 0)
 	return r != 0 && e == 0
 }
 
@@ -245,6 +245,6 @@ func IsTerminal(fd uintptr) bool {
 	initKernel32Proc()
 
 	var st uint32
-	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, fd, uintptr(unsafe.Pointer(&st)), 0)
+	r, _, e := syscall.SyscallN(procGetConsoleMode.Addr(), 2, fd, uintptr(unsafe.Pointer(&st)), 0)
 	return r != 0 && e == 0
 }
