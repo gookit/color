@@ -1,11 +1,11 @@
 module github.com/gookit/color
 
-go 1.18
+go 1.23.0
 
 require (
 	github.com/stretchr/testify v1.10.0
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778
-	golang.org/x/sys v0.31.0
+	golang.org/x/sys v0.34.0
 )
 
 require (
