@@ -43,7 +43,8 @@ func detectSpecialTermColor(termVal string) (Level, bool) {
 // IsTerminal returns true if the given file descriptor is a terminal.
 //
 // Usage:
-// 	IsTerminal(os.Stdout.Fd())
+//
+//	IsTerminal(os.Stdout.Fd())
 func IsTerminal(fd uintptr) bool {
 	return fd == uintptr(syscall.Stdout) || fd == uintptr(syscall.Stdin) || fd == uintptr(syscall.Stderr)
 }

@@ -1,6 +1,8 @@
 module github.com/gookit/color
 
-go 1.18
+go 1.23.0
+
+toolchain go1.24.6
 
 require (
 	github.com/stretchr/testify v1.10.0
