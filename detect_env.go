@@ -29,7 +29,8 @@ const (
 // DetectColorLevel for current env
 //
 // NOTICE: The method will detect terminal info each times,
-// 	if only want to get current color level, please direct call SupportColor() or TermColorLevel()
+//
+//	if only want to get current color level, please direct call SupportColor() or TermColorLevel()
 func DetectColorLevel() Level {
 	level, _ := detectTermColorLevel()
 	return level
@@ -246,7 +247,8 @@ func IsMSys() bool {
 // IsSupportColor check current console is support color.
 //
 // NOTICE: The method will detect terminal info each times,
-// 	if only want get current color level, please direct call SupportColor() or TermColorLevel()
+//
+//	if only want get current color level, please direct call SupportColor() or TermColorLevel()
 func IsSupportColor() bool {
 	return IsSupport16Color()
 }
@@ -254,7 +256,8 @@ func IsSupportColor() bool {
 // IsSupport16Color check current console is support color.
 //
 // NOTICE: The method will detect terminal info each times,
-// 	if only want get current color level, please direct call SupportColor() or TermColorLevel()
+//
+//	if only want get current color level, please direct call SupportColor() or TermColorLevel()
 func IsSupport16Color() bool {
 	level, _ := detectTermColorLevel()
 	return level > terminfo.ColorLevelNone
@@ -263,7 +266,8 @@ func IsSupport16Color() bool {
 // IsSupport256Color render check
 //
 // NOTICE: The method will detect terminal info each times,
-// 	if only want to get current color level, please direct call SupportColor() or TermColorLevel()
+//
+//	if only want to get current color level, please direct call SupportColor() or TermColorLevel()
 func IsSupport256Color() bool {
 	level, _ := detectTermColorLevel()
 	return level > terminfo.ColorLevelBasic
@@ -272,7 +276,8 @@ func IsSupport256Color() bool {
 // IsSupportRGBColor check. alias of the IsSupportTrueColor()
 //
 // NOTICE: The method will detect terminal info each times,
-// 	if only want get current color level, please direct call SupportColor() or TermColorLevel()
+//
+//	if only want get current color level, please direct call SupportColor() or TermColorLevel()
 func IsSupportRGBColor() bool {
 	return IsSupportTrueColor()
 }
@@ -280,7 +285,8 @@ func IsSupportRGBColor() bool {
 // IsSupportTrueColor render check.
 //
 // NOTICE: The method will detect terminal info each times,
-// 	if only want get current color level, please direct call SupportColor() or TermColorLevel()
+//
+//	if only want get current color level, please direct call SupportColor() or TermColorLevel()
 //
 // ENV:
 // "COLORTERM=truecolor"
