@@ -124,8 +124,9 @@ func (t *Theme) Save() {
 func (t *Theme) Tips(format string, a ...any) {
 	// Format the message part first
 	message := fmt.Sprintf(format, a...)
-	// Combine styled title and message in a single print operation to avoid race conditions
-	t.Printf("%s: %s\n", strings.ToUpper(t.Name), message)
+	// Create styled title and combine with unstyled message in a single print operation to avoid race conditions
+	styledTitle := t.Style.Render(strings.ToUpper(t.Name) + ": ")
+	Printf("%s%s\n", styledTitle, message)
 }
 
 // Prompt use name as title, and apply style for message
