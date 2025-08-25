@@ -122,9 +122,11 @@ func (t *Theme) Save() {
 
 // Tips use name as title, only apply style for name
 func (t *Theme) Tips(format string, a ...any) {
-	// only apply style for name
-	t.Print(strings.ToUpper(t.Name) + ": ")
-	Printf(format+"\n", a...)
+	// Format the message part first
+	message := fmt.Sprintf(format, a...)
+	// Create styled title and combine with unstyled message in a single print operation to avoid race conditions
+	styledTitle := t.Style.Render(strings.ToUpper(t.Name) + ": ")
+	Printf("%s%s\n", styledTitle, message)
 }
 
 // Prompt use name as title, and apply style for message
