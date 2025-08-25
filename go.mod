@@ -1,8 +1,6 @@
 module github.com/gookit/color
 
-go 1.23.0
-
-toolchain go1.24.6
+go 1.18
 
 require (
 	github.com/gookit/assert v0.1.0
