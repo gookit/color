@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/gookit/assert"
 	"github.com/xo/terminfo"
 )
 

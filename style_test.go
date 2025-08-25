@@ -3,7 +3,7 @@ package color
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/gookit/assert"
 )
 
 func TestNew(t *testing.T) {
