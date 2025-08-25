@@ -23,14 +23,10 @@ type Style []Color
 //	color.New(color.FgGreen).Print("message")
 //	equals to:
 //	color.Style{color.FgGreen}.Print("message")
-func New(colors ...Color) Style {
-	return colors
-}
+func New(colors ...Color) Style { return colors }
 
 // Save to global styles map
-func (s Style) Save(name string) {
-	AddStyle(name, s)
-}
+func (s Style) Save(name string) { AddStyle(name, s) }
 
 // Add to global styles map
 func (s *Style) Add(cs ...Color) {
@@ -43,9 +39,7 @@ func (s *Style) Add(cs ...Color) {
 //
 //	color.New(color.FgGreen).Render("text")
 //	color.New(color.FgGreen, color.BgBlack, color.OpBold).Render("text")
-func (s Style) Render(a ...any) string {
-	return RenderCode(s.String(), a...)
-}
+func (s Style) Render(a ...any) string { return RenderCode(s.String(), a...) }
 
 // Renderln render text with newline.
 // like Println, will add spaces for each argument
@@ -84,19 +78,13 @@ func (s Style) Println(a ...any) {
 }
 
 // Code convert to code string. returns like "32;45;3"
-func (s Style) Code() string {
-	return s.String()
-}
+func (s Style) Code() string { return s.String() }
 
 // String convert to code string. returns like "32;45;3"
-func (s Style) String() string {
-	return Colors2code(s...)
-}
+func (s Style) String() string { return Colors2code(s...) }
 
 // IsEmpty style
-func (s Style) IsEmpty() bool {
-	return len(s) == 0
-}
+func (s Style) IsEmpty() bool { return len(s) == 0 }
 
 /*************************************************************
  * Theme(extended Style)
@@ -116,17 +104,13 @@ func NewTheme(name string, style Style) *Theme {
 }
 
 // Save to themes map
-func (t *Theme) Save() {
-	AddTheme(t.Name, t.Style)
-}
+func (t *Theme) Save() { AddTheme(t.Name, t.Style) }
 
 // Tips use name as title, only apply style for name
 func (t *Theme) Tips(format string, a ...any) {
-	// Format the message part first
-	message := fmt.Sprintf(format, a...)
-	// Create styled title and combine with unstyled message in a single print operation to avoid race conditions
-	styledTitle := t.Style.Render(strings.ToUpper(t.Name) + ": ")
-	Printf("%s%s\n", styledTitle, message)
+	// only apply style for name
+	prefix := RenderString(t.Code(), strings.ToUpper(t.Name)+": ")
+	Printf(prefix+format+"\n", a...)
 }
 
 // Prompt use name as title, and apply style for message
@@ -138,7 +122,6 @@ func (t *Theme) Prompt(format string, a ...any) {
 // Block like Prompt, but will wrap a empty line
 func (t *Theme) Block(format string, a ...any) {
 	title := strings.ToUpper(t.Name) + ":\n"
-
 	t.Println(title, fmt.Sprintf(format, a...))
 }
 
@@ -211,9 +194,7 @@ func AddTheme(name string, style Style) {
 }
 
 // GetTheme get defined theme by name
-func GetTheme(name string) *Theme {
-	return Themes[name]
-}
+func GetTheme(name string) *Theme { return Themes[name] }
 
 /*************************************************************
  * internal styles
@@ -281,7 +262,7 @@ func NewScheme(name string, styles map[string]Style) *Scheme {
 	return &Scheme{Name: name, Styles: styles}
 }
 
-// NewDefaultScheme create an defuault color Scheme
+// NewDefaultScheme create a default color Scheme
 func NewDefaultScheme(name string) *Scheme {
 	return NewScheme(name, map[string]Style{
 		"info":  {OpReset, FgGreen},
@@ -291,9 +272,7 @@ func NewDefaultScheme(name string) *Scheme {
 }
 
 // Style get by name
-func (s *Scheme) Style(name string) Style {
-	return s.Styles[name]
-}
+func (s *Scheme) Style(name string) Style { return s.Styles[name] }
 
 // Infof message print
 func (s *Scheme) Infof(format string, a ...any) {

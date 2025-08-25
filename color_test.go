@@ -57,7 +57,7 @@ func Example() {
 	Warn.Tips("tips style message")
 }
 
-var buf = new(bytes.Buffer)
+var topBuf = new(bytes.Buffer)
 
 /*************************************************************
  * test global methods
@@ -111,11 +111,11 @@ func TestSet(t *testing.T) {
 	}
 
 	// set
-	buf.Reset()
-	SetOutput(buf)
+	topBuf.Reset()
+	SetOutput(topBuf)
 	num, err = Set(FgGreen)
-	str := buf.String()
-	buf.Reset()
+	str := topBuf.String()
+	topBuf.Reset()
 
 	is.Equal(0, num)
 	is.NoError(err)
@@ -123,7 +123,7 @@ func TestSet(t *testing.T) {
 
 	// unset
 	_, err = Reset()
-	str = buf.String()
+	str = topBuf.String()
 	is.NoError(err)
 	is.Equal("\x1b[0m", str)
 }

@@ -104,7 +104,6 @@ func TestThemes(t *testing.T) {
 	// force open color render for testing
 	buf := forceOpenColorRender()
 	defer resetColorRender()
-
 	is := assert.New(t)
 
 	// Theme.Tips
