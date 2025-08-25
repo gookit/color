@@ -183,7 +183,30 @@ func RenderCode(code string, args ...any) string {
 		return ""
 	}
 
-	message = fmt.Sprint(args...)
+	// Fast path optimizations
+	if len(args) == 1 {
+		// Single argument - avoid fmt.Sprint overhead
+		if str, ok := args[0].(string); ok {
+			message = str
+		} else {
+			message = fmt.Sprint(args[0])
+		}
+	} else if len(args) == 2 {
+		// Two arguments - common case, try to optimize if both are strings
+		if str1, ok1 := args[0].(string); ok1 {
+			if str2, ok2 := args[1].(string); ok2 {
+				message = str1 + str2
+			} else {
+				message = fmt.Sprint(args...)
+			}
+		} else {
+			message = fmt.Sprint(args...)
+		}
+	} else {
+		// Multiple arguments - use fmt.Sprint for safety
+		message = fmt.Sprint(args...)
+	}
+
 	if len(code) == 0 {
 		return message
 	}
