@@ -5,9 +5,9 @@ go 1.23.0
 toolchain go1.24.6
 
 require (
-	github.com/stretchr/testify v1.10.0
-	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778
-	golang.org/x/sys v0.31.0
+	github.com/stretchr/testify v1.11.0
+	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e
+	golang.org/x/sys v0.30.0
 )
 
 require (
