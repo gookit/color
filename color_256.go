@@ -65,9 +65,7 @@ type Bit8Color = Color256 // alias
 var emptyC256 = Color256{1: 99}
 
 // Bit8 create a color256
-func Bit8(val uint8, isBg ...bool) Color256 {
-	return C256(val, isBg...)
-}
+func Bit8(val uint8, isBg ...bool) Color256 { return C256(val, isBg...) }
 
 // C256 create a color256
 func C256(val uint8, isBg ...bool) Color256 {
@@ -82,14 +80,10 @@ func C256(val uint8, isBg ...bool) Color256 {
 }
 
 // Set terminal by 256 color code
-func (c Color256) Set() error {
-	return SetTerminal(c.String())
-}
+func (c Color256) Set() error { return SetTerminal(c.String()) }
 
 // Reset terminal. alias of the ResetTerminal()
-func (c Color256) Reset() error {
-	return ResetTerminal()
-}
+func (c Color256) Reset() error { return ResetTerminal() }
 
 // Print print message
 func (c Color256) Print(a ...any) {
@@ -107,9 +101,7 @@ func (c Color256) Println(a ...any) {
 }
 
 // Sprint returns rendered message
-func (c Color256) Sprint(a ...any) string {
-	return RenderCode(c.String(), a...)
-}
+func (c Color256) Sprint(a ...any) string { return RenderCode(c.String(), a...) }
 
 // Sprintf returns format and rendered message
 func (c Color256) Sprintf(format string, a ...any) string {
@@ -117,14 +109,10 @@ func (c Color256) Sprintf(format string, a ...any) string {
 }
 
 // C16 convert color-256 to 16 color.
-func (c Color256) C16() Color {
-	return c.Basic()
-}
+func (c Color256) C16() Color { return c.Basic() }
 
 // Basic convert color-256 to basic 16 color.
-func (c Color256) Basic() Color {
-	return Color(c[0]) // TODO
-}
+func (c Color256) Basic() Color { return Color(c[0]) /* TODO */ }
 
 // RGB convert color-256 to RGB color.
 func (c Color256) RGB() RGBColor {
@@ -132,24 +120,16 @@ func (c Color256) RGB() RGBColor {
 }
 
 // RGBColor convert color-256 to RGB color.
-func (c Color256) RGBColor() RGBColor {
-	return c.RGB()
-}
+func (c Color256) RGBColor() RGBColor { return c.RGB() }
 
 // Value return color value
-func (c Color256) Value() uint8 {
-	return c[0]
-}
+func (c Color256) Value() uint8 { return c[0] }
 
 // Code convert to color code string. eg: "12"
-func (c Color256) Code() string {
-	return strconv.Itoa(int(c[0]))
-}
+func (c Color256) Code() string { return strconv.Itoa(int(c[0])) }
 
 // FullCode convert to color code string with prefix. eg: "38;5;12"
-func (c Color256) FullCode() string {
-	return c.String()
-}
+func (c Color256) FullCode() string { return c.String() }
 
 // String convert to color code string with prefix. eg: "38;5;12"
 func (c Color256) String() string {
@@ -271,9 +251,7 @@ func (s *Style256) Println(a ...any) {
 }
 
 // Sprint returns rendered message
-func (s *Style256) Sprint(a ...any) string {
-	return RenderCode(s.Code(), a...)
-}
+func (s *Style256) Sprint(a ...any) string { return RenderCode(s.Code(), a...) }
 
 // Sprintf returns format and rendered message
 func (s *Style256) Sprintf(format string, a ...any) string {
@@ -281,9 +259,7 @@ func (s *Style256) Sprintf(format string, a ...any) string {
 }
 
 // Code convert to color code string
-func (s *Style256) Code() string {
-	return s.String()
-}
+func (s *Style256) Code() string { return s.String() }
 
 // String convert to color code string
 func (s *Style256) String() string {

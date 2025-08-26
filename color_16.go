@@ -221,8 +221,8 @@ func (c Color) Sprint(a ...any) string { return RenderCode(c.String(), a...) }
 //
 // Usage:
 //
-//		green := color.Green.Sprintf
-//	 colored := green("message")
+// 	green := color.Green.Sprintf
+// 	colored := green("message")
 func (c Color) Sprintf(format string, args ...any) string {
 	return RenderString(c.String(), fmt.Sprintf(format, args...))
 }
@@ -340,14 +340,10 @@ func (c Color) RGB() RGBColor {
 }
 
 // Code convert to code string. eg "35"
-func (c Color) Code() string {
-	return strconv.FormatInt(int64(c), 10)
-}
+func (c Color) Code() string { return strconv.FormatInt(int64(c), 10) }
 
 // String convert to code string. eg "35"
-func (c Color) String() string {
-	return strconv.FormatInt(int64(c), 10)
-}
+func (c Color) String() string { return strconv.FormatInt(int64(c), 10) }
 
 // IsBg check is background color
 func (c Color) IsBg() bool {

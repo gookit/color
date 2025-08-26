@@ -65,7 +65,7 @@ func Fprintf(w io.Writer, format string, a ...any) {
 // Fprintln print rendered messages line to writer
 // Notice: will ignore print error
 func Fprintln(w io.Writer, a ...any) {
-	str := formatArgsForPrintln(a)
+	str := formatLikePrintln(a)
 	_, err := fmt.Fprintln(w, ReplaceTag(str))
 	saveInternalError(err)
 }
@@ -129,17 +129,22 @@ func doPrintV2(code, str string) {
 
 // new implementation, support render full color code on pwsh.exe, cmd.exe
 func doPrintlnV2(code string, args []any) {
-	str := formatArgsForPrintln(args)
+	str := formatLikePrintln(args)
 	_, err := fmt.Fprintln(output, RenderString(code, str))
 	saveInternalError(err)
 }
 
 // use Println, will add spaces for each arg
-func formatArgsForPrintln(args []any) (message string) {
+func formatLikePrintln(args []any) (message string) {
 	if ln := len(args); ln == 0 {
 		message = ""
 	} else if ln == 1 {
-		message = fmt.Sprint(args[0])
+		// Single argument - avoid fmt.Sprint overhead
+		if str, ok := args[0].(string); ok {
+			message = str
+		} else {
+			message = fmt.Sprint(args[0])
+		}
 	} else {
 		message = fmt.Sprintln(args...)
 		// clear last "\n"
@@ -159,9 +164,7 @@ func formatArgsForPrintln(args []any) (message string) {
 
 func debugf(f string, v ...any) {
 	if debugMode {
-		fmt.Print("COLOR_DEBUG: ")
-		fmt.Printf(f, v...)
-		fmt.Println()
+		fmt.Printf("COLOR_DEBUG: "+f+"\n", v...)
 	}
 }
 
@@ -179,7 +182,7 @@ func compareVal(ok bool, val1, val2 uint8) uint8 {
 }
 
 // equals: return ok ? val1 : val2
-func compareF64Val(ok bool, val1, val2 float64) float64 {
+func compareF64(ok bool, val1, val2 float64) float64 {
 	if ok {
 		return val1
 	}

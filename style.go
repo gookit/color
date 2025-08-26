@@ -48,14 +48,10 @@ func (s Style) Render(a ...any) string { return RenderCode(s.String(), a...) }
 //
 //	color.New(color.FgGreen).Renderln("text", "more")
 //	color.New(color.FgGreen, color.BgBlack, color.OpBold).Render("text", "more")
-func (s Style) Renderln(a ...any) string {
-	return RenderWithSpaces(s.String(), a...)
-}
+func (s Style) Renderln(a ...any) string { return RenderWithSpaces(s.String(), a...) }
 
 // Sprint is alias of the 'Render'
-func (s Style) Sprint(a ...any) string {
-	return RenderCode(s.String(), a...)
-}
+func (s Style) Sprint(a ...any) string { return RenderCode(s.String(), a...) }
 
 // Sprintf format and render message.
 func (s Style) Sprintf(format string, a ...any) string {
@@ -229,9 +225,7 @@ var styleAliases = map[string]string{
 }
 
 // AddStyle add a style
-func AddStyle(name string, s Style) {
-	Styles[name] = s
-}
+func AddStyle(name string, s Style) { Styles[name] = s }
 
 // GetStyle get defined style by name
 func GetStyle(name string) Style {

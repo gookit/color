@@ -16,8 +16,6 @@ import (
 	"os"
 	"regexp"
 	"strings"
-
-	"github.com/xo/terminfo"
 )
 
 // color render templates
@@ -74,29 +72,16 @@ var (
 )
 
 // TermColorLevel Get the currently supported color level
-func TermColorLevel() Level {
-	return colorLevel
-}
+func TermColorLevel() Level { return colorLevel }
 
 // SupportColor Whether the current environment supports color output
-func SupportColor() bool {
-	return colorLevel > terminfo.ColorLevelNone
-}
-
-// Support16Color on the current ENV
-// func Support16Color() bool {
-// 	return colorLevel > terminfo.ColorLevelNone
-// }
+func SupportColor() bool { return colorLevel > LevelNo }
 
 // Support256Color Whether the current environment supports 256-color output
-func Support256Color() bool {
-	return colorLevel > terminfo.ColorLevelBasic
-}
+func Support256Color() bool { return colorLevel > Level16 }
 
 // SupportTrueColor Whether the current environment supports (RGB)True-color output
-func SupportTrueColor() bool {
-	return colorLevel > terminfo.ColorLevelHundreds
-}
+func SupportTrueColor() bool { return colorLevel > Level256 }
 
 /*************************************************************
  * global settings
@@ -139,21 +124,19 @@ func ResetOptions() {
 }
 
 // ForceSetColorLevel force open color render
-func ForceSetColorLevel(level terminfo.ColorLevel) terminfo.ColorLevel {
+func ForceSetColorLevel(level Level) Level {
 	oldLevelVal := colorLevel
 	colorLevel = level
 	return oldLevelVal
 }
 
 // ForceColor force open color render
-func ForceColor() terminfo.ColorLevel {
-	return ForceOpenColor()
-}
+func ForceColor() Level { return ForceOpenColor() }
 
 // ForceOpenColor force open color render
-func ForceOpenColor() terminfo.ColorLevel {
+func ForceOpenColor() Level {
 	// TODO should set level to ?
-	return ForceSetColorLevel(terminfo.ColorLevelMillions)
+	return ForceSetColorLevel(LevelRgb)
 }
 
 // IsLikeInCmd check result
@@ -164,9 +147,7 @@ func IsLikeInCmd() bool {
 }
 
 // InnerErrs info
-func InnerErrs() []error {
-	return innerErrs
-}
+func InnerErrs() []error { return innerErrs }
 
 /*************************************************************
  * render color code
@@ -179,19 +160,16 @@ func InnerErrs() []error {
 //	msg := RenderCode("3;32;45", "some", "message")
 func RenderCode(code string, args ...any) string {
 	var message string
-	if ln := len(args); ln == 0 {
-		return ""
-	}
 
 	// Fast path optimizations
-	if len(args) == 1 {
+	if ln := len(args); ln == 1 {
 		// Single argument - avoid fmt.Sprint overhead
 		if str, ok := args[0].(string); ok {
 			message = str
 		} else {
 			message = fmt.Sprint(args[0])
 		}
-	} else if len(args) == 2 {
+	} else if ln == 2 {
 		// Two arguments - common case, try to optimize if both are strings
 		if str1, ok1 := args[0].(string); ok1 {
 			if str2, ok2 := args[1].(string); ok2 {
@@ -202,6 +180,8 @@ func RenderCode(code string, args ...any) string {
 		} else {
 			message = fmt.Sprint(args...)
 		}
+	} else if ln == 0 {
+		return ""
 	} else {
 		// Multiple arguments - use fmt.Sprint for safety
 		message = fmt.Sprint(args...)
@@ -223,7 +203,7 @@ func RenderCode(code string, args ...any) string {
 // RenderWithSpaces Render code with spaces.
 // If the number of args is > 1, a space will be added between the args
 func RenderWithSpaces(code string, args ...any) string {
-	msg := formatArgsForPrintln(args)
+	msg := formatLikePrintln(args)
 	if len(code) == 0 {
 		return msg
 	}

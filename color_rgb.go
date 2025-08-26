@@ -83,9 +83,7 @@ func Rgb(r, g, b uint8, isBg ...bool) RGBColor { return RGB(r, g, b, isBg...) }
 func Bit24(r, g, b uint8, isBg ...bool) RGBColor { return RGB(r, g, b, isBg...) }
 
 // RgbFromInt create instance from int r,g,b value
-func RgbFromInt(r, g, b int, isBg ...bool) RGBColor {
-	return RGB(uint8(r), uint8(g), uint8(b), isBg...)
-}
+func RgbFromInt(r, g, b int, isBg ...bool) RGBColor { return RGB(uint8(r), uint8(g), uint8(b), isBg...) }
 
 // RgbFromInts create instance from []int r,g,b value
 func RgbFromInts(rgb []int, isBg ...bool) RGBColor {
@@ -136,10 +134,8 @@ func HSLInt(h, s, l int, isBg ...bool) RGBColor {
 // HslInt alias of the HSLInt()
 func HslInt(h, s, l int, isBg ...bool) RGBColor { return HSLInt(h, s, l, isBg...) }
 
-// RGBFromSlice quick RGBColor from slice
-func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor {
-	return RGB(rgb[0], rgb[1], rgb[2], isBg...)
-}
+// RGBFromSlice quick RGBColor from slice[3]
+func RGBFromSlice(rgb []uint8, isBg ...bool) RGBColor { return RGB(rgb[0], rgb[1], rgb[2], isBg...) }
 
 // RGBFromString create RGB color from a string.
 // Support use color name in the {namedRgbMap}
@@ -177,14 +173,10 @@ func RGBFromString(rgb string, isBg ...bool) RGBColor {
 }
 
 // Set terminal by rgb/true color code
-func (c RGBColor) Set() error {
-	return SetTerminal(c.String())
-}
+func (c RGBColor) Set() error { return SetTerminal(c.String()) }
 
 // Reset terminal. alias of the ResetTerminal()
-func (c RGBColor) Reset() error {
-	return ResetTerminal()
-}
+func (c RGBColor) Reset() error { return ResetTerminal() }
 
 // Print print message
 func (c RGBColor) Print(a ...any) {
@@ -202,9 +194,7 @@ func (c RGBColor) Println(a ...any) {
 }
 
 // Sprint returns rendered message
-func (c RGBColor) Sprint(a ...any) string {
-	return RenderCode(c.String(), a...)
-}
+func (c RGBColor) Sprint(a ...any) string { return RenderCode(c.String(), a...) }
 
 // Sprintf returns format and rendered message
 func (c RGBColor) Sprintf(format string, a ...any) string {
@@ -217,14 +207,10 @@ func (c RGBColor) Values() []int {
 }
 
 // Code to color code string without prefix. eg: "204;123;56"
-func (c RGBColor) Code() string {
-	return fmt.Sprintf("%d;%d;%d", c[0], c[1], c[2])
-}
+func (c RGBColor) Code() string { return fmt.Sprintf("%d;%d;%d", c[0], c[1], c[2]) }
 
 // Hex color rgb to hex string. as in "ff0080".
-func (c RGBColor) Hex() string {
-	return fmt.Sprintf("%02x%02x%02x", c[0], c[1], c[2])
-}
+func (c RGBColor) Hex() string { return fmt.Sprintf("%02x%02x%02x", c[0], c[1], c[2]) }
 
 // RgbString to color code string without prefix. eg: "204,123,56"
 func (c RGBColor) RgbString() string {
@@ -232,9 +218,7 @@ func (c RGBColor) RgbString() string {
 }
 
 // FullCode to color code string with prefix
-func (c RGBColor) FullCode() string {
-	return c.String()
-}
+func (c RGBColor) FullCode() string { return c.String() }
 
 // String to color code string with prefix. eg: "38;2;204;123;56"
 func (c RGBColor) String() string {
@@ -263,9 +247,7 @@ func (c RGBColor) ToFg() RGBColor {
 }
 
 // IsEmpty value
-func (c RGBColor) IsEmpty() bool {
-	return c[3] > AsBg
-}
+func (c RGBColor) IsEmpty() bool { return c[3] > AsBg }
 
 // IsValid value
 // func (c RGBColor) IsValid() bool {
@@ -399,9 +381,7 @@ func (s *RGBStyle) Println(a ...any) {
 }
 
 // Sprint returns rendered message
-func (s *RGBStyle) Sprint(a ...any) string {
-	return RenderCode(s.String(), a...)
-}
+func (s *RGBStyle) Sprint(a ...any) string { return RenderCode(s.String(), a...) }
 
 // Sprintf returns format and rendered message
 func (s *RGBStyle) Sprintf(format string, a ...any) string {
@@ -409,14 +389,10 @@ func (s *RGBStyle) Sprintf(format string, a ...any) string {
 }
 
 // Code convert to color code string
-func (s *RGBStyle) Code() string {
-	return s.String()
-}
+func (s *RGBStyle) Code() string { return s.String() }
 
 // FullCode convert to color code string
-func (s *RGBStyle) FullCode() string {
-	return s.String()
-}
+func (s *RGBStyle) FullCode() string { return s.String() }
 
 // String convert to color code string
 func (s *RGBStyle) String() string {
@@ -438,6 +414,4 @@ func (s *RGBStyle) String() string {
 }
 
 // IsEmpty style
-func (s *RGBStyle) IsEmpty() bool {
-	return s.fg[3] != 1 && s.bg[3] != 1
-}
+func (s *RGBStyle) IsEmpty() bool { return s.fg[3] != 1 && s.bg[3] != 1 }

@@ -48,18 +48,18 @@ func BenchmarkColorRender_UserPattern(b *testing.B) {
 // Baseline comparisons
 func BenchmarkFmtSprint_SingleString(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		fmt.Sprint("Hello World")
+		_ = fmt.Sprint("Hello World")
 	}
 }
 
 func BenchmarkFmtSprint_TwoStrings(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		fmt.Sprint("Hello", "World")
+		_ = fmt.Sprint("Hello", "World")
 	}
 }
 
 func BenchmarkFmtSprint_UserPattern(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		fmt.Sprint(strconv.Itoa(i)+". ", "test")
+		_ = fmt.Sprint(strconv.Itoa(i)+". ", "test")
 	}
 }

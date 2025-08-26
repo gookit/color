@@ -744,7 +744,6 @@ func HslToRgb(h, s, l float64) (rgb []uint8) {
 // returns [h,s,l] h: 0-360, s: 0-100, l: 0-100.
 func RgbToHslInt(r, g, b uint8) []int {
 	f64s := RgbToHsl(r, g, b)
-
 	return []int{int(f64s[0] * 360), int(f64s[1] * 100), int(f64s[2] * 100)}
 }
 
@@ -763,24 +762,24 @@ func RgbToHsl(r, g, b uint8) []float64 {
 	ps := []float64{pr, pg, pb}
 	sort.Float64s(ps)
 
-	min, max := ps[0], ps[2]
+	min1, max1 := ps[0], ps[2]
 	// max := math.Max(math.Max(pr, pg), pb)
 	// min := math.Min(math.Min(pr, pg), pb)
-	mid := (max + min) / 2
+	mid := (max1 + min1) / 2
 
 	h, s, l := mid, mid, mid
-	if max == min {
+	if max1 == min1 {
 		h, s = 0, 0 // achromatic
 	} else {
-		var d = max - min
-		// s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
-		s = compareF64Val(l > 0.5, d/(2-max-min), d/(max+min))
+		var d = max1 - min1
+		// s = l > 0.5 ? d / (2 - max1 - min1) : d / (max1 + min1)
+		s = compareF64(l > 0.5, d/(2-max1-min1), d/(max1+min1))
 
-		switch max {
+		switch max1 {
 		case fr:
 			// h = (g - b) / d + (g < b ? 6 : 0)
 			h = (fg - fb) / d
-			h += compareF64Val(g < b, 6, 0)
+			h += compareF64(g < b, 6, 0)
 		case fg:
 			h = (fb-fr)/d + 2
 		case fb:
