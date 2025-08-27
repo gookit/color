@@ -9,14 +9,12 @@ package color
 import (
 	"strings"
 	"syscall"
-
-	"github.com/xo/terminfo"
 )
 
 // detect special term color support
 func detectSpecialTermColor(termVal string) (Level, bool) {
 	if termVal == "" {
-		return terminfo.ColorLevelNone, false
+		return LevelNo, false
 	}
 
 	debugf("terminfo check fail - fallback detect color by check TERM value")
@@ -24,20 +22,20 @@ func detectSpecialTermColor(termVal string) (Level, bool) {
 	// on TERM=screen:
 	// - support 256, not support true-color. test on macOS
 	if termVal == "screen" {
-		return terminfo.ColorLevelHundreds, false
+		return Level256, false
 	}
 
 	if strings.Contains(termVal, "256color") {
-		return terminfo.ColorLevelHundreds, false
+		return Level256, false
 	}
 
 	if strings.Contains(termVal, "xterm") {
-		return terminfo.ColorLevelHundreds, false
+		return Level256, false
 		// return terminfo.ColorLevelBasic, false
 	}
 
-	// return terminfo.ColorLevelNone, nil
-	return terminfo.ColorLevelBasic, false
+	// return LevelNo, nil
+	return Level16, false
 }
 
 // IsTerminal returns true if the given file descriptor is a terminal.
