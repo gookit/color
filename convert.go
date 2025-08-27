@@ -417,6 +417,7 @@ func Colors2code(colors ...Color) string {
 }
 
 /*************************************************************
+ * region HEX <=> RGB
  * HEX code <=> RGB/True color code
  *************************************************************/
 
@@ -488,6 +489,7 @@ func RgbToHex(rgb []int) string {
 }
 
 /*************************************************************
+ * region 4bit(16) <=> RGB
  * 4bit(16) color <=> RGB/True color
  *************************************************************/
 
@@ -647,9 +649,9 @@ func C256ToRgbV1(val uint8) (rgb []uint8) {
 }
 
 /**************************************************************
- * HSL color <=> RGB/True color
+ * region HSL <=> RGB color
  ************************************************************
- * h,s,l = Hue, Saturation, Lightness
+ * h,s,l = Hue, Saturation, Lightness 色相、饱和度、亮度
  *
  * refers
  *  http://en.wikipedia.org/wiki/HSL_color_space
@@ -667,7 +669,7 @@ func C256ToRgbV1(val uint8) (rgb []uint8) {
  */
 
 // HslIntToRgb Converts an HSL color value to RGB
-// Assumes h: 0-360, s: 0-100, l: 0-100
+// Assumes h: 0-360, s: 0-100%, l: 0-100%
 // returns r, g, and b in the set [0, 255].
 //
 // Usage:
@@ -694,28 +696,6 @@ func HslToRgb(h, s, l float64) (rgb []uint8) {
 	if s == 0 { // achromatic
 		r, g, b = l, l, l
 	} else {
-		var hue2rgb = func(p, q, t float64) float64 {
-			if t < 0.0 {
-				t += 1
-			}
-			if t > 1.0 {
-				t -= 1
-			}
-
-			if t < 1.0/6.0 {
-				return p + (q-p)*6.0*t
-			}
-
-			if t < 1.0/2.0 {
-				return q
-			}
-
-			if t < 2.0/3.0 {
-				return p + (q-p)*(2.0/3.0-t)*6.0
-			}
-			return p
-		}
-
 		// q = l < 0.5 ? l * (1 + s) : l + s - l*s
 		var q float64
 		if l < 0.5 {
@@ -739,17 +719,85 @@ func HslToRgb(h, s, l float64) (rgb []uint8) {
 	}
 }
 
+var hue2rgb = func(p, q, t float64) float64 {
+	if t < 0.0 {
+		t += 1
+	}
+	if t > 1.0 {
+		t -= 1
+	}
+
+	if t < 1.0/6.0 {
+		return p + (q-p)*6.0*t
+	}
+
+	if t < 1.0/2.0 {
+		return q
+	}
+
+	if t < 2.0/3.0 {
+		return p + (q-p)*(2.0/3.0-t)*6.0
+	}
+	return p
+}
+
+// RgbStrToHslInts convert rgb(r,g,b) string to HSL int values.
+func RgbStrToHslInts(rgbStr string) []int {
+	f64s := RgbStrToHsl(rgbStr)
+	if f64s == nil {
+		return nil
+	}
+
+	return []int{
+		int(math.Round(f64s[0] * 360)),
+		int(math.Round(f64s[1] * 100)),
+		int(math.Round(f64s[2] * 100)),
+	}
+}
+
+// RgbStrToHsl convert rgb(r,g,b) string to HSL
+func RgbStrToHsl(rgbStr string) []float64 {
+	if pos := strings.IndexByte(rgbStr, '('); pos > 0 {
+		rgbStr = strings.TrimRight(rgbStr[pos+1:], "()")
+	}
+
+	rgbVals := strings.Split(rgbStr, ",")
+	if len(rgbVals) != 3 {
+		return nil
+	}
+
+	r, e1 := strconv.ParseInt(strings.TrimSpace(rgbVals[0]), 10, 0)
+	if e1 != nil {
+		return nil
+	}
+	g, e2 := strconv.ParseInt(strings.TrimSpace(rgbVals[1]), 10, 0)
+	if e2 != nil {
+		return nil
+	}
+	b, e3 := strconv.ParseInt(strings.TrimSpace(rgbVals[2]), 10, 0)
+	if e3 != nil {
+		return nil
+	}
+	return RgbToHsl(uint8(r), uint8(g), uint8(b))
+}
+
 // RgbToHslInt Converts an RGB color value to HSL. Conversion formula
 // Assumes r, g, and b are contained in the set [0, 255] and
-// returns [h,s,l] h: 0-360, s: 0-100, l: 0-100.
+// returns [h,s,l] h: 0-360, s: 0-100%, l: 0-100%.
 func RgbToHslInt(r, g, b uint8) []int {
 	f64s := RgbToHsl(r, g, b)
-	return []int{int(f64s[0] * 360), int(f64s[1] * 100), int(f64s[2] * 100)}
+	return []int{
+		int(math.Round(f64s[0] * 360)),
+		int(math.Round(f64s[1] * 100)),
+		int(math.Round(f64s[2] * 100)),
+	}
 }
 
 // RgbToHsl Converts an RGB color value to HSL. Conversion formula
 //
 // adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+//
+// e.g: rgb(59, 130, 246) = hsl(217, 91%, 60%)
 //
 // Assumes r, g, and b are contained in the set [0, 255] and
 // returns h, s, and l in the set [0, 1].
@@ -757,7 +805,7 @@ func RgbToHsl(r, g, b uint8) []float64 {
 	// to float64
 	fr, fg, fb := float64(r), float64(g), float64(b)
 	// percentage
-	pr, pg, pb := float64(r)/255.0, float64(g)/255.0, float64(b)/255.0
+	pr, pg, pb := fr/255.0, fg/255.0, fb/255.0
 
 	ps := []float64{pr, pg, pb}
 	sort.Float64s(ps)
@@ -765,25 +813,27 @@ func RgbToHsl(r, g, b uint8) []float64 {
 	min1, max1 := ps[0], ps[2]
 	// max := math.Max(math.Max(pr, pg), pb)
 	// min := math.Min(math.Min(pr, pg), pb)
-	mid := (max1 + min1) / 2
+	mid := (max1 + min1) / 2.0 // call Lightness
 
 	h, s, l := mid, mid, mid
+	// calc Saturation
 	if max1 == min1 {
 		h, s = 0, 0 // achromatic
 	} else {
-		var d = max1 - min1
+		var d = max1 - min1 // 计算色差
 		// s = l > 0.5 ? d / (2 - max1 - min1) : d / (max1 + min1)
-		s = compareF64(l > 0.5, d/(2-max1-min1), d/(max1+min1))
+		s = compareF64(l > 0.5, d/(2.0-max1-min1), d/(max1+min1))
 
+		// calc Hue
 		switch max1 {
-		case fr:
+		case pr:
 			// h = (g - b) / d + (g < b ? 6 : 0)
-			h = (fg - fb) / d
+			h = (pg - pb) / d
 			h += compareF64(g < b, 6, 0)
-		case fg:
-			h = (fb-fr)/d + 2
-		case fb:
-			h = (fr-fg)/d + 4
+		case pg:
+			h = (pb-pr)/d + 2
+		case pb:
+			h = (pr-pg)/d + 4
 		}
 
 		h /= 6
@@ -793,9 +843,9 @@ func RgbToHsl(r, g, b uint8) []float64 {
 }
 
 /**************************************************************
- * HSV color <=> RGB/True color
+ * region HSV/HSB <=> RGB color
  ************************************************************
- * h,s,l = Hue, Saturation, Value(Brightness)
+ * h,s,v/b = Hue, Saturation, Value(Brightness) 色相、饱和度、值（亮度）
  *
  * refers
  *  https://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
@@ -803,14 +853,153 @@ func RgbToHsl(r, g, b uint8) []float64 {
  *  https://github.com/d3/d3-color/blob/v3.0.1/README.md#hsl
  */
 
-// HsvToRgb Converts an HSL color value to RGB. Conversion formula
+// function aliases
+var (
+	HsvToRgb = HSVToRGB
+	// HsvIntToRgbInts alias for HSVIntToRGBInts
+	HsvIntToRgbInts = HSVIntToRGBInts
+)
+
+// HSVIntToRGBInts Converts an HSL color value to RGB slice. Conversion formula
 // adapted from https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
-// Assumes h: 0-360, s: 0-100, l: 0-100
-// returns r, g, and b in the set [0, 255].
-func HsvToRgb(h, s, v int) (rgb []uint8) {
-	// TODO ...
-	return
+//
+//  Assumes h: 0-360, s: 0-100, l: 0-100
+//  returns r, g, and b in the set [0, 255].
+func HSVIntToRGBInts(h, s, v int) []uint8 {
+	r, g, b := HSVToRGB(float64(h), float64(s)/100, float64(v)/100)
+	return []uint8{r, g, b}
 }
+
+// HSVToRGB Convert HSV values to RGB values
+//   - inputs: h (0-360), s (0-1.0), v (0-1.0)
+//   - returns: r, g, b (0-255)
+func HSVToRGB(h, s, v float64) (r, g, b uint8) {
+	// 1. 处理特殊情况：饱和度为0（灰色）
+	if s == 0 {
+		gray := uint8(v * 255)
+		return gray, gray, gray
+	}
+
+	// 2. 确保h在0-360范围内
+	h = math.Mod(h, 360)
+	if h < 0 {
+		h += 360
+	}
+
+	// 3. 将h转换为0-6范围
+	hSector := float64(h) / 60.0
+	fraction := hSector - math.Floor(hSector)
+	sector := int(math.Floor(hSector))
+
+	// 4. 计算中间值
+	p := v * (1 - s)
+	q := v * (1 - fraction*s)
+	t := v * (1 - (1-fraction)*s)
+
+	// 5. 根据色相扇区计算RGB
+	switch sector {
+	case 0:
+		r = uint8(v * 255)
+		g = uint8(t * 255)
+		b = uint8(p * 255)
+	case 1:
+		r = uint8(q * 255)
+		g = uint8(v * 255)
+		b = uint8(p * 255)
+	case 2:
+		r = uint8(p * 255)
+		g = uint8(v * 255)
+		b = uint8(t * 255)
+	case 3:
+		r = uint8(p * 255)
+		g = uint8(q * 255)
+		b = uint8(v * 255)
+	case 4:
+		r = uint8(t * 255)
+		g = uint8(p * 255)
+		b = uint8(v * 255)
+	case 5:
+		r = uint8(v * 255)
+		g = uint8(p * 255)
+		b = uint8(q * 255)
+	}
+
+	return r, g, b
+}
+
+// function aliases
+var (
+	RgbToHsv      = RGBToHSV
+	RgbToHsvInts  = RGBToHSVInts
+	RgbToHsvSlice = RGBToHSVSlice
+)
+
+// RGBToHSVInts convert RGB to HSV int values.
+//
+//	r, g, b: [0, 255]  => h (0-360), s (0-100), v (0-100)
+func RGBToHSVInts(r, g, b uint8) []int {
+	h, s, v := RGBToHSV(r, g, b)
+	return []int{int(h), int(math.Round(s * 100)), int(math.Round(v * 100))}
+}
+
+// RGBToHSVSlice Convert RGB values to HSV values slice.
+//
+//	r, g, b (0-255)  => h (0-360), s (0-1.0), v (0-1.0)
+func RGBToHSVSlice(r, g, b uint8) []float64 {
+	h, s, v := RGBToHSV(r, g, b)
+	return []float64{h, s, v}
+}
+
+// RGBToHSV Convert RGB values to HSV values
+//   - inputs: r, g, b (0-255)
+//   - returns: h (0-360), s (0-1.0), v (0-1.0)
+func RGBToHSV(r, g, b uint8) (h, s, v float64) {
+	// 1. 将RGB值归一化到 [0, 1] 范围
+	rNorm := float64(r) / 255.0
+	gNorm := float64(g) / 255.0
+	bNorm := float64(b) / 255.0
+
+	// 2. 找出最大值和最小值
+	max1 := math.Max(math.Max(rNorm, gNorm), bNorm)
+	min1 := math.Min(math.Min(rNorm, gNorm), bNorm)
+	delta := max1 - min1
+
+	// 3. 计算明度 (Value)
+	v = max1
+
+	// 4. 计算饱和度 (Saturation)
+	if max1 == 0 {
+		// 黑色情况，饱和度为0
+		s = 0
+	} else {
+		s = delta / max1
+	}
+
+	// 5. 计算色相 (Hue)
+	if delta == 0 {
+		// 灰色情况，色相为0
+		h = 0
+	} else {
+		switch max1 {
+		case rNorm:
+			h = (gNorm - bNorm) / delta
+			if gNorm < bNorm {
+				h += 6
+			}
+		case gNorm:
+			h = (bNorm-rNorm)/delta + 2
+		case bNorm:
+			h = (rNorm-gNorm)/delta + 4
+		}
+		h *= 60 // 转换为角度 (0-360度)
+	}
+
+	return h, s, v
+}
+
+//
+// region Named RGB color
+//
 
 // Named rgb colors
 // https://www.w3.org/TR/css-color-3/#svg-color
