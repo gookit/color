@@ -2,6 +2,7 @@ package color
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"testing"
@@ -9,7 +10,7 @@ import (
 	"github.com/gookit/assert"
 )
 
-func TestUtilFuncs(t *testing.T) {
+func TestUtil_func(t *testing.T) {
 	is := assert.New(t)
 
 	// IsConsole
@@ -22,22 +23,22 @@ func TestUtilFuncs(t *testing.T) {
 	is.False(IsConsole(ff))
 
 	// IsMSys
-	oldVal := os.Getenv("MSYSTEM")
+	oldVal1 := os.Getenv("MSYSTEM")
 	is.NoError(os.Setenv("MSYSTEM", "MINGW64"))
 	is.True(IsMSys())
 	is.NoError(os.Unsetenv("MSYSTEM"))
 	is.False(IsMSys())
-	_ = os.Setenv("MSYSTEM", oldVal)
+	_ = os.Setenv("MSYSTEM", oldVal1)
 
 	is.NotEmpty(TermColorLevel())
 	// is.NotEmpty(SupColorMark())
 }
 
 func TestDebugMode(t *testing.T) {
-	debugMode = true
+	EnableDebug()
 	saveInternalError(errors.New("enable debug mode"))
 	assert.NotEmpty(t, InnerErrs())
-	debugMode = false
+	ResetDebug()
 }
 
 func TestRgbTo256Table(t *testing.T) {

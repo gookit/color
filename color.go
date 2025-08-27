@@ -47,6 +47,9 @@ var (
 	Enable = os.Getenv("NO_COLOR") == ""
 	// RenderTag render HTML tag on call color.Xprint, color.PrintX
 	RenderTag = true
+)
+
+var (
 	// debug mode for development.
 	//
 	// set env:
@@ -58,17 +61,11 @@ var (
 	innerErrs []error
 	// output the default io.Writer message print
 	output io.Writer = os.Stdout
-	// mark current env, It's like in `cmd.exe`
-	// if not in windows, it's always False.
-	isLikeInCmd bool
 	// the color support level for current terminal
 	// needVTP - need enable VTP, only for Windows OS
 	colorLevel, needVTP = detectTermColorLevel()
 	// match color codes
 	codeRegex = regexp.MustCompile(CodeExpr)
-	// mark current env is support color.
-	// Always: isLikeInCmd != supportColor
-	// supportColor = IsSupportColor()
 )
 
 // TermColorLevel Get the currently supported color level
@@ -139,12 +136,11 @@ func ForceOpenColor() Level {
 	return ForceSetColorLevel(LevelRgb)
 }
 
-// IsLikeInCmd check result
-//
-// Deprecated: please don't use
-func IsLikeInCmd() bool {
-	return isLikeInCmd
-}
+// EnableDebug enable debug mode
+func EnableDebug() { debugMode = true }
+
+// ResetDebug reset debug mode
+func ResetDebug() { debugMode = false }
 
 // InnerErrs info
 func InnerErrs() []error { return innerErrs }

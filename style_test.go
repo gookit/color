@@ -75,13 +75,13 @@ func TestStyle(t *testing.T) {
 	s = GetStyle("err")
 	is.False(s.IsEmpty())
 
-	if isLikeInCmd {
-		s.Print("msg")
-		s.Printf("M%s", "sg")
-		s.Println("Msg")
-		is.Equal("\x1b[97;41mmsg\x1b[0m\x1b[97;41mMsg\x1b[0m\x1b[97;41mMsg\x1b[0m\n", buf.String())
-		buf.Reset()
-	}
+	// if isLikeInCmd {
+	// 	s.Print("msg")
+	// 	s.Printf("M%s", "sg")
+	// 	s.Println("Msg")
+	// 	is.Equal("\x1b[97;41mmsg\x1b[0m\x1b[97;41mMsg\x1b[0m\x1b[97;41mMsg\x1b[0m\n", buf.String())
+	// 	buf.Reset()
+	// }
 
 	// add new
 	s = GetStyle("new0")
@@ -208,11 +208,13 @@ func TestSimplePrinter_Print(t *testing.T) {
 	sp.Infof("simple %s\n", "printer")
 	sp.Warnf("simple %s\n", "printer")
 	sp.Errorf("simple %s\n", "printer")
+	sp.Successf("simple %s\n", "printer")
 	sp.Print("simple printer\n")
 	sp.Println("simple printer")
 	sp.Infoln("simple printer")
 	sp.Warnln("simple printer")
 	sp.Errorln("simple printer")
+	sp.Successln("simple printer")
 }
 
 func TestNewScheme(t *testing.T) {

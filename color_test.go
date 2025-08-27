@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/gookit/assert"
-	"github.com/xo/terminfo"
 )
 
 func Example() {
@@ -106,7 +105,7 @@ func TestSet(t *testing.T) {
 		}
 	} else {
 		is.True(IsTerminal(os.Stdout.Fd()))
-		is.False(IsLikeInCmd())
+		// is.False(IsLikeInCmd())
 		is.Empty(InnerErrs())
 	}
 
@@ -156,21 +155,45 @@ func TestRenderCode(t *testing.T) {
 	is := assert.New(t)
 	is.True(SupportColor())
 
-	str := RenderCode("36;1", "Hi,", "babe")
-	is.Equal("\x1b[36;1mHi,babe\x1b[0m", str)
-
-	str = RenderWithSpaces("", "Hi,", "babe")
+	// RenderWithSpaces
+	str := RenderWithSpaces("", "Hi,", "babe")
 	is.Equal("Hi, babe", str)
 
 	str = RenderWithSpaces("36;1", "Hi,", "babe")
 	is.Equal("\x1b[36;1mHi, babe\x1b[0m", str)
 
+	str = RenderWithSpaces("36;1", "Hi")
+	is.Equal("\x1b[36;1mHi\x1b[0m", str)
+
+	str = RenderWithSpaces("36;1", 123)
+	is.Equal("\x1b[36;1m123\x1b[0m", str)
+
+	// RenderCode
+	str = RenderCode("36;1", "Hi,", "babe")
+	is.Equal("\x1b[36;1mHi,babe\x1b[0m", str)
+
+	str = RenderCode("36;1", 123)
+	is.Equal("\x1b[36;1m123\x1b[0m", str)
+
 	str = RenderCode("36;1", "Ab")
 	is.Equal("\x1b[36;1mAb\x1b[0m", str)
+
+	str = RenderCode("36;1", "Ab", "CD")
+	is.Equal("\x1b[36;1mAbCD\x1b[0m", str)
+
+	str = RenderCode("36;1", "Ab", "CD", 23)
+	is.Equal("\x1b[36;1mAbCD23\x1b[0m", str)
+
+	str = RenderCode("36;1", "Ab", 12)
+	is.Equal("\x1b[36;1mAb12\x1b[0m", str)
+
+	str = RenderCode("36;1", 12, "Ab")
+	is.Equal("\x1b[36;1m12Ab\x1b[0m", str)
 
 	str = RenderCode("36;1")
 	is.Equal("", str)
 
+	// disable color
 	Disable()
 	str = RenderCode("36;1", "Te", "xt")
 	is.Equal("Text", str)
@@ -187,11 +210,13 @@ func TestRenderCode(t *testing.T) {
 	str = RenderString("36;1", "")
 	is.Equal("", str)
 
+	// disable color
 	Disable()
 	str = RenderString("36;1", "Text")
 	is.Equal("Text", str)
 	Enable = true
 
+	// disable color
 	Disable()
 	str = RenderString("36;1", "Text")
 	is.Equal("Text", str)
@@ -713,7 +738,7 @@ func TestOpts_Add(t *testing.T) {
  * test helpers
  *************************************************************/
 
-var oldVal terminfo.ColorLevel
+var oldVal Level
 
 // force open color render for testing
 func forceOpenColorRender() *bytes.Buffer {
