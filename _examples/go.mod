@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/Delta456/box-cli-maker/v2 v2.3.0
-	github.com/gookit/color v1.5.2
+	github.com/gookit/color v1.5.4
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e
 )
 

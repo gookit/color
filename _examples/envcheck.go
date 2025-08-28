@@ -4,14 +4,18 @@ import (
 	"fmt"
 	"os"
 	"runtime"
-	"strconv"
 
 	"github.com/gookit/color"
 	// "github.com/gookit/goutil/dump"
 )
 
 // go run ./_examples/envcheck.go
-// COLOR_DEBUG_MODE=on go run ./_examples/envcheck.go
+//
+// bash:
+// 	COLOR_DEBUG_MODE=on go run ./_examples/envcheck.go
+// cmd.exe:
+//   set COLOR_DEBUG_MODE=on
+//   go run ./_examples/envcheck.go
 func main() {
 	fmt.Println("current OS:", runtime.GOOS)
 
@@ -25,12 +29,14 @@ func main() {
 	}
 
 	termVal := os.Getenv("TERM")
-	fmt.Println("----------------TERM value is:", termVal, "---------------")
-	fmt.Println(
-		termVal[0:1],
-		strconv.FormatUint(uint64(termVal[0]), 16),
-	)
+	fmt.Println("ENV TERM:", termVal)
+	// fmt.Println(
+	// 	termVal[0:1],
+	// 	strconv.FormatUint(uint64(termVal[0]), 16),
+	// )
 
-	// dump.P(os.Environ())
-	// fmt.Println(os.Environ())
+	// fmt.Println("os.Environ:")
+	// for _, env := range os.Environ() {
+	// 	fmt.Println(env)
+	// }
 }
