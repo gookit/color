@@ -24,6 +24,10 @@ func main() {
 	fmt.Println("Support 256 Color:", color.Support256Color())
 	fmt.Println("Support True Color:", color.SupportTrueColor())
 
+	fmt.Println("------- Re-Detect by Enable Debug Mode -------")
+	color.EnableDebug()
+	fmt.Println("Detected Color Level:", color.DetectColorLevel())
+
 	if es := color.InnerErrs(); len(es) > 0 {
 		fmt.Println("inner errors:", es)
 	}
@@ -35,6 +39,9 @@ func main() {
 	// 	strconv.FormatUint(uint64(termVal[0]), 16),
 	// )
 
+	fmt.Println("------- Test Color Output -------")
+	fmt.Println("\x1b[34mHello \x1b[35mWorld\x1b[0m!")
+	_, _ = fmt.Fprintf(os.Stdout, "\x1b[34mHello \x1b[35mWorld\x1b[0m!\n")
 	// fmt.Println("os.Environ:")
 	// for _, env := range os.Environ() {
 	// 	fmt.Println(env)
