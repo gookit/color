@@ -149,7 +149,7 @@ func TestSupportColor(t *testing.T) {
 
 func TestRenderCode(t *testing.T) {
 	// force open color render for testing
-	oldVal = ForceColor()
+	ForceColor()
 	defer resetColorRender()
 
 	is := assert.New(t)
@@ -738,11 +738,8 @@ func TestOpts_Add(t *testing.T) {
  * test helpers
  *************************************************************/
 
-var oldVal Level
-
 // force open color render for testing
 func forceOpenColorRender() *bytes.Buffer {
-	oldVal = colorLevel
 	ForceOpenColor()
 
 	// set output for test
@@ -752,7 +749,7 @@ func forceOpenColorRender() *bytes.Buffer {
 }
 
 func resetColorRender() {
-	colorLevel = oldVal
+	RevertColorLevel()
 	// reset
 	ResetOutput()
 }

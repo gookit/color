@@ -1,8 +1,8 @@
-title: '## Change Log'
+title: "## Change Log"
 # style allow: simple, markdown(mkdown), ghr(gh-release)
 style: gh-release
 # group names
-names: [Refactor, Fixed, Feature, Update, Other]
+names: [Refactor, Feature, Update, Fixed, Other]
 #repo_url: https://github.com/gookit/color
 
 filters:
@@ -24,13 +24,13 @@ filters:
 rules:
   - name: Refactor
     start_withs: [refactor, break]
-    contains: ['refactor:']
+    contains: ["refactor:"]
   - name: Fixed
     start_withs: [fix]
-    contains: ['fix:']
+    contains: ["fix:"]
   - name: Feature
     start_withs: [feat, new]
-    contains: ['feat:']
+    contains: ["feat:"]
   - name: Update
-    start_withs: [update, 'up:']
-    contains: ['update:']
+    start_withs: [update, "up:"]
+    contains: ["update:"]
