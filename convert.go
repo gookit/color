@@ -483,7 +483,9 @@ func RgbToHex(rgb []int) string {
 	hexNodes := make([]string, 0, len(rgb))
 
 	for _, v := range rgb {
-		hexNodes = append(hexNodes, strconv.FormatInt(int64(v), 16))
+		// Channels below 0x10 must keep two digits, or the fixed-width format and
+		// the round-trip with HexToRgb both break.
+		hexNodes = append(hexNodes, fmt.Sprintf("%02x", v))
 	}
 	return strings.Join(hexNodes, "")
 }
