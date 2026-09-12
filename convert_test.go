@@ -156,3 +156,19 @@ func TestRgbHsvConv(t *testing.T) {
 	r, g, b = HSVToRGB(h, s, v)
 	assert.StrEq(t, "(255, 255, 255)", "(%d, %d, %d)", r, g, b)
 }
+
+func TestC256ToRgbPalette(t *testing.T) {
+	levels := []uint8{0, 95, 135, 175, 215, 255}
+	for r, red := range levels {
+		for g, green := range levels {
+			for b, blue := range levels {
+				index := uint8(16 + 36*r + 6*g + b)
+				assert.Equal(t, []uint8{red, green, blue}, C256ToRgb(index), index)
+			}
+		}
+	}
+	for i := 0; i < 24; i++ {
+		level := uint8(8 + 10*i)
+		assert.Equal(t, []uint8{level, level, level}, C256ToRgb(uint8(232+i)))
+	}
+}
