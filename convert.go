@@ -638,9 +638,9 @@ func C256ToRgbV1(val uint8) (rgb []uint8) {
 		g = compareVal(val&2 == 2, 0xff, 0x55)
 		b = compareVal(val&4 == 4, 0xff, 0x55)
 	} else if val < 232 { /* 6x6x6 colour cube. */
-		r = (val - 16) / 36 * 85 / 2
-		g = (val - 16) / 6 % 6 * 85 / 2
-		b = (val - 16) % 6 * 85 / 2
+		r = uint8((int(val) - 16) / 36 * 85 / 2)
+		g = uint8((int(val) - 16) / 6 % 6 * 85 / 2)
+		b = uint8((int(val) - 16) % 6 * 85 / 2)
 	} else { /* Grayscale ramp. */
 		nv := uint8(int(val)*10 - 2312)
 		// set value
