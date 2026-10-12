@@ -172,3 +172,26 @@ func TestC256ToRgbPalette(t *testing.T) {
 		assert.Equal(t, []uint8{level, level, level}, C256ToRgb(uint8(232+i)))
 	}
 }
+
+func TestHexToRgbRejectsSignedValues(t *testing.T) {
+	for _, input := range []string{"+12345", "-12345", "#+12345", "#-12345", "+00000", "-00001"} {
+		t.Run(input, func(t *testing.T) {
+			assert.Nil(t, HexToRgb(input))
+			assert.Equal(t, "", HEX(input).String())
+		})
+	}
+	for _, tc := range []struct {
+		input string
+		want  []int
+	}{
+		{"ffffff", []int{255, 255, 255}},
+		{"#ABCDEF", []int{171, 205, 239}},
+		{"0xabcdef", []int{171, 205, 239}},
+		{"abc", []int{170, 187, 204}},
+		{"#000000", []int{0, 0, 0}},
+	} {
+		t.Run(tc.input, func(t *testing.T) {
+			assert.Equal(t, tc.want, HexToRgb(tc.input))
+		})
+	}
+}
