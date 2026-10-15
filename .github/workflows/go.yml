@@ -2,13 +2,15 @@ name: action-tests
 on:
   pull_request:
     paths:
-      - 'go.mod'
+      - '**.mod' # any go.mod: root and nested module (_examples)
+      - '**.sum'
       - '**.go'
       - '**.yml'
   push:
     paths:
       - '**.go'
-      - 'go.mod'
+      - '**.mod' # any go.mod: root and nested module (_examples)
+      - '**.sum'
       - '**.yml'
 
 # https://github.com/actions
