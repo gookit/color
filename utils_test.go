@@ -119,11 +119,20 @@ func TestRgbToHex(t *testing.T) {
 		{"cccccc", []int{204, 204, 204}},
 		{"aabbcc", []int{170, 187, 204}},
 		{"aa99cd", []int{170, 153, 205}},
+		// channels below 0x10 must be zero-padded to two hex digits
+		{"000000", []int{0, 0, 0}},
+		{"010203", []int{1, 2, 3}},
+		{"0a0b0c", []int{10, 11, 12}},
 	}
 
 	for _, item := range tests {
 		assert.Equal(t, RgbToHex(item.given), item.want)
 		assert.Equal(t, Rgb2hex(item.given), item.want)
+	}
+
+	// RgbToHex must be the inverse of HexToRgb, including for small channels.
+	for _, hex := range []string{"010203", "000000", "0a0b0c", "aabbcc"} {
+		assert.Equal(t, RgbToHex(HexToRgb(hex)), hex)
 	}
 }
 
