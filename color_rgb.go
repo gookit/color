@@ -83,7 +83,9 @@ func Rgb(r, g, b uint8, isBg ...bool) RGBColor { return RGB(r, g, b, isBg...) }
 func Bit24(r, g, b uint8, isBg ...bool) RGBColor { return RGB(r, g, b, isBg...) }
 
 // RgbFromInt create instance from int r,g,b value
-func RgbFromInt(r, g, b int, isBg ...bool) RGBColor { return RGB(uint8(r), uint8(g), uint8(b), isBg...) }
+func RgbFromInt(r, g, b int, isBg ...bool) RGBColor {
+	return RGB(uint8(r), uint8(g), uint8(b), isBg...)
+}
 
 // RgbFromInts create instance from []int r,g,b value
 func RgbFromInts(rgb []int, isBg ...bool) RGBColor {

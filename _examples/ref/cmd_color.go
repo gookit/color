@@ -1,4 +1,5 @@
-//+build windows
+//go:build windows
+// +build windows
 
 package main
 
@@ -33,7 +34,8 @@ var (
 // https://docs.microsoft.com/zh-cn/windows/console/console-virtual-terminal-sequences#samples
 // from github.com/konsorten/go-windows-terminal-sequences
 // Usage:
-// 	EnableVirtualTerminalProcessing()
+//
+//	EnableVirtualTerminalProcessing()
 func EnableVirtualTerminalProcessing(stream syscall.Handle, enable bool) error {
 	const EnableVirtualTerminalProcessing uint32 = 0x4
 

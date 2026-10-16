@@ -84,7 +84,7 @@ func TestIssues_95(t *testing.T) {
 	// Clean the output of ANSI codes to check logical structure
 	cleanOutput := color.ClearCode(output)
 	lines := strings.Split(strings.TrimSpace(cleanOutput), "\n")
-	
+
 	// Verify that each line is properly formatted (without ANSI codes)
 	for i, line := range lines {
 		if line == "" {

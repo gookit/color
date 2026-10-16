@@ -221,8 +221,8 @@ func (c Color) Sprint(a ...any) string { return RenderCode(c.String(), a...) }
 //
 // Usage:
 //
-// 	green := color.Green.Sprintf
-// 	colored := green("message")
+//	green := color.Green.Sprintf
+//	colored := green("message")
 func (c Color) Sprintf(format string, args ...any) string {
 	return RenderString(c.String(), fmt.Sprintf(format, args...))
 }

@@ -12,10 +12,13 @@ import (
 // go run ./_examples/envcheck.go
 //
 // bash:
-// 	COLOR_DEBUG_MODE=on go run ./_examples/envcheck.go
+//
+//	COLOR_DEBUG_MODE=on go run ./_examples/envcheck.go
+//
 // cmd.exe:
-//   set COLOR_DEBUG_MODE=on
-//   go run ./_examples/envcheck.go
+//
+//	set COLOR_DEBUG_MODE=on
+//	go run ./_examples/envcheck.go
 func main() {
 	fmt.Println("current OS:", runtime.GOOS)
 
