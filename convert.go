@@ -459,9 +459,9 @@ func HexToRgb(hex string) (rgb []int) {
 		return
 	}
 
-	// convert string to int64
-	if i64, err := strconv.ParseInt(hex, 16, 32); err == nil {
-		color := int(i64)
+	// convert the unsigned 24-bit color value
+	if u64, err := strconv.ParseUint(hex, 16, 24); err == nil {
+		color := int(u64)
 		// parse int
 		rgb = make([]int, 3)
 		rgb[0] = color >> 16
@@ -873,8 +873,8 @@ var (
 // HSVIntToRGBInts Converts an HSL color value to RGB slice. Conversion formula
 // adapted from https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
 //
-//  Assumes h: 0-360, s: 0-100, l: 0-100
-//  returns r, g, and b in the set [0, 255].
+//	Assumes h: 0-360, s: 0-100, l: 0-100
+//	returns r, g, and b in the set [0, 255].
 func HSVIntToRGBInts(h, s, v int) []uint8 {
 	r, g, b := HSVToRGB(float64(h), float64(s)/100, float64(v)/100)
 	return []uint8{r, g, b}
