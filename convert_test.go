@@ -173,25 +173,33 @@ func TestC256ToRgbPalette(t *testing.T) {
 	}
 }
 
+// TestHexToRgbRejectsSignedValues: a leading +/- makes the value a signed number rather
+// than a colour. strconv.ParseInt used to accept those -- "-00001" became rgb
+// [-1 255 255], which HEX() rendered as white -- so the parse is now an unsigned
+// 24-bit one.
+//
+// The colours this normalisation must still accept are asserted by TestHexToRgb
+// (utils_test.go); HEX()'s view of both directions is asserted by TestHexToRGB
+// (color_rgb_test.go).
 func TestHexToRgbRejectsSignedValues(t *testing.T) {
-	for _, input := range []string{"+12345", "-12345", "#+12345", "#-12345", "+00000", "-00001"} {
+	// 6 chars after normalisation: the sign reaches the parser.
+	for _, input := range []string{"+12345", "-12345", "#+12345", "#-12345", "+00000", "-00001", "+abcdef", "-ABCDEF"} {
 		t.Run(input, func(t *testing.T) {
 			assert.Nil(t, HexToRgb(input))
-			assert.Equal(t, "", HEX(input).String())
+			assert.Nil(t, HexToRGB(input))
+			assert.Nil(t, Hex2rgb(input))
 		})
 	}
-	for _, tc := range []struct {
-		input string
-		want  []int
-	}{
-		{"ffffff", []int{255, 255, 255}},
-		{"#ABCDEF", []int{171, 205, 239}},
-		{"0xabcdef", []int{171, 205, 239}},
-		{"abc", []int{170, 187, 204}},
-		{"#000000", []int{0, 0, 0}},
-	} {
-		t.Run(tc.input, func(t *testing.T) {
-			assert.Equal(t, tc.want, HexToRgb(tc.input))
+	// 8 chars: the "0x" branch normalises first, then the sign is still rejected.
+	for _, input := range []string{"0x+12345", "0x-12345"} {
+		t.Run(input, func(t *testing.T) {
+			assert.Nil(t, HexToRgb(input))
+		})
+	}
+	// too short to be a colour once the sign is stripped
+	for _, input := range []string{"+abc", "-#abc"} {
+		t.Run(input, func(t *testing.T) {
+			assert.Nil(t, HexToRgb(input))
 		})
 	}
 }

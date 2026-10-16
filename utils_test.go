@@ -98,6 +98,12 @@ func TestHexToRgb(t *testing.T) {
 		{"ccc", []int{204, 204, 204}},
 		{"#abc", []int{170, 187, 204}},
 		{"#aa99cd", []int{170, 153, 205}},
+		// the shapes the signed-value fix must keep accepting
+		{"ABCDEF", []int{171, 205, 239}},   // uppercase digits, no prefix
+		{"0xabcdef", []int{171, 205, 239}}, // 0x prefix
+		{"0xABCDEF", []int{171, 205, 239}}, // uppercase with 0x prefix
+		{"ffffff", []int{255, 255, 255}},   // upper boundary
+		{"000000", []int{0, 0, 0}},         // lower boundary
 	}
 
 	for _, item := range tests {

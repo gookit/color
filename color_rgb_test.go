@@ -122,6 +122,23 @@ func TestHexToRGB(t *testing.T) {
 	c = HEX("0xad99c0") // rgb: [170 187 204]
 	is.Equal("38;2;173;153;192", c.String())
 
+	// the shapes the signed-value fix must keep accepting
+	c = HEX("ABCDEF")
+	is.Equal("38;2;171;205;239", c.String())
+	is.Equal("abcdef", c.Hex())
+
+	c = HEX("0xABCDEF")
+	is.Equal("38;2;171;205;239", c.String())
+
+	// a leading sign is a signed number, not a colour (TestHexToRgbRejectsSignedValues)
+	c = HEX("+abcdef")
+	is.True(c.IsEmpty())
+	is.Equal("", c.String())
+
+	c = HEX("-00001")
+	is.True(c.IsEmpty())
+	is.Equal("", c.String())
+
 	c = HEX(" ")
 	is.True(c.IsEmpty())
 	is.Equal("", c.String())
