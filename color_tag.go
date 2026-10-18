@@ -227,7 +227,7 @@ var (
 		"cyan":    "46",
 		"magenta": "45",
 		"mga":     "45",
-		"white":   FgWhite.Code(),
+		"white":   BgWhite.Code(),
 		"default": "49", // no color
 		"normal":  "49", // no color
 

@@ -118,6 +118,24 @@ func TestParseCodeFromAttr_basic(t *testing.T) {
 	is.Equal("91;101;1;5", s)
 }
 
+func TestTagParserWhiteBackground(t *testing.T) {
+	p := NewTagParser()
+	for _, tt := range []struct {
+		attr string
+		code string
+	}{
+		{"bg=white", "47"},
+		{"fg=red;bg=white", "31;47"},
+		{"fg=white", "37"},
+		{"bg=lightWhite", "107"},
+	} {
+		t.Run(tt.attr, func(t *testing.T) {
+			assert.Equal(t, tt.code, ParseCodeFromAttr(tt.attr))
+			assert.Equal(t, "\x1b["+tt.code+"mtext\x1b[0m", p.Parse("<"+tt.attr+">text</>"))
+		})
+	}
+}
+
 func TestParseCodeFromAttr_c256(t *testing.T) {
 	is := assert.New(t)
 
