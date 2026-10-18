@@ -11,6 +11,12 @@ import (
  * test rgb color
  *************************************************************/
 
+func TestRGBStyleOptionsNotEmpty(t *testing.T) {
+	s := (&RGBStyle{}).AddOpts(Bold)
+	assert.Equal(t, "1", s.String())
+	assert.False(t, s.IsEmpty())
+}
+
 func TestRGBColor(t *testing.T) {
 	buf := forceOpenColorRender()
 	defer resetColorRender()
