@@ -416,4 +416,4 @@ func (s *RGBStyle) String() string {
 }
 
 // IsEmpty style
-func (s *RGBStyle) IsEmpty() bool { return s.fg[3] != 1 && s.bg[3] != 1 }
+func (s *RGBStyle) IsEmpty() bool { return s.fg[3] != 1 && s.bg[3] != 1 && !s.opts.IsValid() }
