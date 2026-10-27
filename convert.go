@@ -555,7 +555,7 @@ func RgbToAnsi(r, g, b uint8, isBg bool) uint8 {
 		g = compareVal(g > 0x7f, 1, 0)
 		b = compareVal(b > 0x7f, 1, 0)
 	} else {
-		k = (r + g + b) / 3
+		k = uint8((uint16(r) + uint16(g) + uint16(b)) / 3)
 
 		// r = (r >= k) ? 1 : 0;
 		r = compareVal(r >= k, 1, 0)

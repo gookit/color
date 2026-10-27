@@ -13,6 +13,27 @@ func TestRgb2basic(t *testing.T) {
 	assert.Equal(t, uint8(46), Rgb2basic(57, 187, 226, true))
 }
 
+func TestRgbToAnsiAverageOverflow(t *testing.T) {
+	for _, tt := range []struct {
+		r, g, b uint8
+		want    uint8
+	}{
+		{200, 100, 100, 31},
+		{100, 200, 100, 32},
+		{100, 100, 200, 34},
+		{200, 200, 100, 33},
+		{200, 100, 200, 35},
+		{100, 200, 200, 36},
+	} {
+		t.Run(fmt.Sprintf("%d,%d,%d", tt.r, tt.g, tt.b), func(t *testing.T) {
+			assert.Equal(t, tt.want, RgbToAnsi(tt.r, tt.g, tt.b, false))
+			assert.Equal(t, tt.want+10, RgbToAnsi(tt.r, tt.g, tt.b, true))
+			assert.Equal(t, tt.want, Rgb2ansi(tt.r, tt.g, tt.b, false))
+			assert.Equal(t, tt.want, Rgb2basic(tt.r, tt.g, tt.b, false))
+		})
+	}
+}
+
 func TestHex2basic(t *testing.T) {
 	assert.Equal(t, uint8(95), Hex2basic("fd7cfc"))
 	assert.Equal(t, uint8(105), Hex2basic("fd7cfc", true))
