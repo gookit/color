@@ -24,6 +24,10 @@ func TestRgbToAnsiAverageOverflow(t *testing.T) {
 		{200, 200, 100, 33},
 		{200, 100, 200, 35},
 		{100, 200, 200, 36},
+		// a 0xff channel adds the bright flag, and 0x80 alone is not the gray
+		// special case; neither may disturb the averaged k.
+		{255, 200, 100, 93},
+		{128, 200, 100, 32},
 	} {
 		t.Run(fmt.Sprintf("%d,%d,%d", tt.r, tt.g, tt.b), func(t *testing.T) {
 			assert.Equal(t, tt.want, RgbToAnsi(tt.r, tt.g, tt.b, false))
