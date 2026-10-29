@@ -257,7 +257,7 @@ func RenderString(code string, str string) string {
 //
 //	"\033[36;1mText\x1b[0m" -> "Text"
 func ClearCode(str string) string {
-	if !strings.Contains(str, CodeSuffix) {
+	if !strings.Contains(str, StartSet) {
 		return str
 	}
 	return codeRegex.ReplaceAllString(str, "")
