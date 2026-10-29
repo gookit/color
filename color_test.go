@@ -237,6 +237,45 @@ func TestClearCode(t *testing.T) {
 	is.Equal("Text other", ClearCode("\033[36;1mText\x1b[0m other"))
 }
 
+func TestClearCode_withoutFullReset(t *testing.T) {
+	for _, tc := range []struct{ name, input, want string }{
+		{"foreground", "\x1b[31mred", "red"},
+		{"indexed", "\x1b[38;5;242mgray", "gray"},
+		{"rgb", "\x1b[38;2;30;144;255mblue", "blue"},
+		{"selective reset", "\x1b[31mred\x1b[39m", "red"},
+		{"bold reset", "bold\x1b[1mtext\x1b[22m", "boldtext"},
+		{"plain", "text", "text"},
+		{"literal suffix", "[0m is text", "[0m is text"},
+		{"other escape", "\x1b[2Ktext", "\x1b[2Ktext"},
+		{"incomplete code", "\x1b[31", "\x1b[31"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Eq(t, tc.want, ClearCode(tc.input))
+		})
+	}
+}
+
+func TestRender_withoutColorRemovesUnresetCodes(t *testing.T) {
+	oldEnable, oldLevel := Enable, colorLevel
+	defer func() { Enable, colorLevel = oldEnable, oldLevel }()
+
+	for _, tc := range []struct {
+		name   string
+		enable bool
+		level  Level
+	}{
+		{"disabled", false, LevelRgb},
+		{"unsupported", true, LevelNo},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			Enable, colorLevel = tc.enable, tc.level
+			assert.Eq(t, "red", RenderCode("34", "\x1b[31mred"))
+			assert.Eq(t, "red", RenderString("34", "\x1b[31mred"))
+			assert.Eq(t, "red text", RenderWithSpaces("34", "\x1b[31mred", "text"))
+		})
+	}
+}
+
 /*************************************************************
  * test printer
  *************************************************************/
