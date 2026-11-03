@@ -343,14 +343,18 @@ func (s *RGBStyle) Set(fg, bg RGBColor, opts ...Color) *RGBStyle {
 
 // SetFg set fg color
 func (s *RGBStyle) SetFg(fg RGBColor) *RGBStyle {
-	fg[3] = 1 // add fixed value, mark is valid
+	if !fg.IsEmpty() {
+		fg[3] = 1 // add fixed value, mark is valid
+	}
 	s.fg = fg
 	return s
 }
 
 // SetBg set bg color
 func (s *RGBStyle) SetBg(bg RGBColor) *RGBStyle {
-	bg[3] = 1 // add fixed value, mark is valid
+	if !bg.IsEmpty() {
+		bg[3] = 1 // add fixed value, mark is valid
+	}
 	s.bg = bg
 	return s
 }
