@@ -112,7 +112,7 @@ func (c Color256) Sprintf(format string, a ...any) string {
 func (c Color256) C16() Color { return c.Basic() }
 
 // Basic convert color-256 to basic 16 color.
-func (c Color256) Basic() Color { return Color(c[0]) /* TODO */ }
+func (c Color256) Basic() Color { return c.RGB().Basic() }
 
 // RGB convert color-256 to RGB color.
 func (c Color256) RGB() RGBColor {
