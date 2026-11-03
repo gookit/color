@@ -17,6 +17,41 @@ func TestRGBStyleOptionsNotEmpty(t *testing.T) {
 	assert.False(t, s.IsEmpty())
 }
 
+func TestRGBStyleEmptyColors(t *testing.T) {
+	oldEnable, oldLevel := Enable, colorLevel
+	defer func() { Enable, colorLevel = oldEnable, oldLevel }()
+	Enable = true
+	ForceOpenColor()
+
+	for _, tt := range []struct {
+		name  string
+		style *RGBStyle
+		code  string
+	}{
+		{"invalid hex", HEXStyle("invalid"), ""},
+		{"empty rgb", RGBStyleFromString(""), ""},
+		{"invalid rgb", RGBStyleFromString("170,187,error"), ""},
+		{"empty color", NewRGBStyle(HEX("invalid")), ""},
+		{"background only", RGBStyleFromString("", "255,0,0"), "48;2;255;0;0"},
+		{"invalid background", HEXStyle("fff", "invalid"), "38;2;255;255;255"},
+		{"empty background", HEXStyle("fff", ""), "38;2;255;255;255"},
+		{"options only", HEXStyle("invalid", "invalid").AddOpts(Bold), "1"},
+		{"black", HEXStyle("000", "000"), "38;2;0;0;0;48;2;0;0;0"},
+		{"clear foreground", HEXStyle("fff").SetFg(HEX("")), ""},
+		{"clear background", HEXStyle("", "fff").SetBg(HEX("")), ""},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.code, tt.style.String())
+			assert.Equal(t, tt.code == "", tt.style.IsEmpty())
+			want := "msg"
+			if tt.code != "" {
+				want = "\x1b[" + tt.code + "mmsg\x1b[0m"
+			}
+			assert.Equal(t, want, tt.style.Sprint("msg"))
+		})
+	}
+}
+
 func TestRGBColor(t *testing.T) {
 	buf := forceOpenColorRender()
 	defer resetColorRender()
