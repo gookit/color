@@ -629,10 +629,51 @@ func TestColor256_Print(t *testing.T) {
 }
 
 func TestColor256_conv(t *testing.T) {
-	is := assert.New(t)
-	c := C256(132)
+	oldEnable, oldLevel := Enable, colorLevel
+	defer func() { Enable, colorLevel = oldEnable, oldLevel }()
+	Enable, colorLevel = true, LevelRgb
 
-	is.Equal("132", c.C16().Code())
+	for _, tt := range []struct {
+		name   string
+		index  uint8
+		fg, bg Color
+	}{
+		{"black", 0, FgBlack, BgBlack},
+		{"white", 15, FgLightWhite, BgLightWhite},
+		{"cube black", 16, FgBlack, BgBlack},
+		{"cube blue", 21, FgLightBlue, BgLightBlue},
+		{"muted magenta", 132, FgMagenta, BgMagenta},
+		{"cube red", 196, FgLightRed, BgLightRed},
+		{"cube white", 231, FgLightWhite, BgLightWhite},
+		{"gray", 244, FgDarkGray, BgDarkGray},
+	} {
+		for _, isBg := range []bool{false, true} {
+			c := C256(tt.index, isBg)
+			original := c
+			want := tt.fg
+			if isBg {
+				want = tt.bg
+			}
+			for name, got := range map[string]Color{"Basic": c.Basic(), "C16": c.C16()} {
+				t.Run(fmt.Sprintf("%s/bg=%t/%s", tt.name, isBg, name), func(t *testing.T) {
+					assert.Equal(t, want, got)
+					assert.Equal(t, isBg, got.IsBg())
+					assert.Equal(t, !isBg, got.IsFg())
+					assert.Equal(t, fmt.Sprintf("\x1b[%dmconverted\x1b[0m", want), got.Sprint("converted"))
+					assert.Equal(t, original, c)
+				})
+			}
+		}
+	}
+}
+
+func TestColor256_conv_controls(t *testing.T) {
+	assert.Equal(t, "38;5;196", C256(196).String())
+	assert.Equal(t, "48;5;196", C256(196, true).String())
+	assert.Equal(t, RGB(255, 0, 0), C256(196).RGB())
+	assert.Equal(t, RGB(255, 0, 0, true), C256(196, true).RGB())
+	assert.Equal(t, FgLightRed, RGB(255, 0, 0).Basic())
+	assert.Equal(t, BgLightRed, RGB(255, 0, 0, true).Basic())
 }
 
 func TestColor256_set_reset(t *testing.T) {
