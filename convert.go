@@ -888,7 +888,7 @@ func HSVIntToRGBInts(h, s, v int) []uint8 {
 func HSVToRGB(h, s, v float64) (r, g, b uint8) {
 	// 1. 处理特殊情况：饱和度为0（灰色）
 	if s == 0 {
-		gray := uint8(v * 255)
+		gray := to255(v)
 		return gray, gray, gray
 	}
 
@@ -911,32 +911,38 @@ func HSVToRGB(h, s, v float64) (r, g, b uint8) {
 	// 5. 根据色相扇区计算RGB
 	switch sector {
 	case 0:
-		r = uint8(v * 255)
-		g = uint8(t * 255)
-		b = uint8(p * 255)
+		r = to255(v)
+		g = to255(t)
+		b = to255(p)
 	case 1:
-		r = uint8(q * 255)
-		g = uint8(v * 255)
-		b = uint8(p * 255)
+		r = to255(q)
+		g = to255(v)
+		b = to255(p)
 	case 2:
-		r = uint8(p * 255)
-		g = uint8(v * 255)
-		b = uint8(t * 255)
+		r = to255(p)
+		g = to255(v)
+		b = to255(t)
 	case 3:
-		r = uint8(p * 255)
-		g = uint8(q * 255)
-		b = uint8(v * 255)
+		r = to255(p)
+		g = to255(q)
+		b = to255(v)
 	case 4:
-		r = uint8(t * 255)
-		g = uint8(p * 255)
-		b = uint8(v * 255)
+		r = to255(t)
+		g = to255(p)
+		b = to255(v)
 	case 5:
-		r = uint8(v * 255)
-		g = uint8(p * 255)
-		b = uint8(q * 255)
+		r = to255(v)
+		g = to255(p)
+		b = to255(q)
 	}
 
 	return r, g, b
+}
+
+// to255 scales a [0, 1] channel to [0, 255], rounding to the nearest value
+// like HslToRgb does, so that RGB -> HSV -> RGB gives back the same color.
+func to255(c float64) uint8 {
+	return uint8(math.Round(c * 255))
 }
 
 // function aliases

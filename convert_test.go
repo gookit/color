@@ -182,6 +182,26 @@ func TestRgbHsvConv(t *testing.T) {
 	assert.StrEq(t, "(255, 255, 255)", "(%d, %d, %d)", r, g, b)
 }
 
+func TestHsvToRgbRoundTrip(t *testing.T) {
+	// channels are rounded, not truncated
+	r, g, b := HSVToRGB(240, 1, 18.0/255)
+	assert.StrEq(t, "(0, 0, 18)", "(%d, %d, %d)", r, g, b)
+	r, g, b = HSVToRGB(0, 0, 0.5)
+	assert.StrEq(t, "(128, 128, 128)", "(%d, %d, %d)", r, g, b)
+
+	for r := 0; r < 256; r += 5 {
+		for g := 0; g < 256; g += 3 {
+			for b := 0; b < 256; b++ {
+				h, s, v := RGBToHSV(uint8(r), uint8(g), uint8(b))
+				r2, g2, b2 := HSVToRGB(h, s, v)
+				if int(r2) != r || int(g2) != g || int(b2) != b {
+					t.Fatalf("RGB(%d, %d, %d) -> HSV(%v, %v, %v) -> RGB(%d, %d, %d)", r, g, b, h, s, v, r2, g2, b2)
+				}
+			}
+		}
+	}
+}
+
 func TestC256ToRgbPalette(t *testing.T) {
 	levels := []uint8{0, 95, 135, 175, 215, 255}
 	for r, red := range levels {
