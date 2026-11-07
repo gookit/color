@@ -607,9 +607,34 @@ func RgbTo256(r, g, b uint8) uint8 {
 			i++
 		}
 	}
+	// The grayscale ramp (232-255) has 24 levels between the color cube's grays,
+	// so use it when it is closer to the color than the color cube is.
+	if gray, idx := closestGray256(r, g, b); distSq(r, g, b, gray, gray, gray) < distSq(r, g, b, res[0], res[1], res[2]) {
+		return 232 + idx
+	}
+
 	hex := fmt.Sprintf("%02x%02x%02x", res[0], res[1], res[2])
 	equiv := hexTo256Table[hex]
 	return equiv
+}
+
+// closestGray256 returns the level (8, 18, ..., 238) of the grayscale ramp
+// closest to the average of r, g and b, and its index in the ramp.
+func closestGray256(r, g, b uint8) (level, idx uint8) {
+	avg := (int(r) + int(g) + int(b)) / 3
+	i := (avg - 3) / 10 // round (avg - 8) / 10 to the nearest integer
+	if avg < 8 {
+		i = 0
+	} else if i > 23 {
+		i = 23
+	}
+	return uint8(8 + 10*i), uint8(i)
+}
+
+// distSq returns the squared euclidean distance between two RGB colors.
+func distSq(r1, g1, b1, r2, g2, b2 uint8) int {
+	dr, dg, db := int(r1)-int(r2), int(g1)-int(g2), int(b1)-int(b2)
+	return dr*dr + dg*dg + db*db
 }
 
 // C256ToRgb convert an 256 color code to RGB numbers

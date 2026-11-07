@@ -59,6 +59,33 @@ func TestRgbTo256Table(t *testing.T) {
 	assert.Equal(t, uint8(0x92), Rgb2short(170, 187, 204))
 }
 
+func TestRgbTo256GrayRamp(t *testing.T) {
+	// grays between the color cube's levels use the grayscale ramp
+	assert.Equal(t, uint8(232), RgbTo256(8, 8, 8))
+	assert.Equal(t, uint8(244), RgbTo256(128, 128, 128))
+	assert.Equal(t, uint8(242), RgbTo256(100, 100, 110))
+	// exact color cube grays and colors are kept
+	assert.Equal(t, uint8(102), RgbTo256(0x87, 0x87, 0x87))
+	assert.Equal(t, uint8(0), RgbTo256(0, 0, 0))
+	assert.Equal(t, uint8(15), RgbTo256(255, 255, 255))
+
+	// the result is the closest of the 240 cube and ramp colors
+	for r := 0; r < 256; r += 5 {
+		for g := 0; g < 256; g += 5 {
+			for b := 0; b < 256; b += 5 {
+				got := C256ToRgb(RgbTo256(uint8(r), uint8(g), uint8(b)))
+				dist := distSq(uint8(r), uint8(g), uint8(b), got[0], got[1], got[2])
+				for i := 16; i < 256; i++ {
+					c := C256ToRgb(uint8(i))
+					if d := distSq(uint8(r), uint8(g), uint8(b), c[0], c[1], c[2]); d < dist {
+						t.Fatalf("RgbTo256(%d, %d, %d) = %v, but %d (%v) is closer", r, g, b, got, i, c)
+					}
+				}
+			}
+		}
+	}
+}
+
 func TestC256ToRgbV1(t *testing.T) {
 	for i := 0; i < 256; i++ {
 		c256 := uint8(i)
