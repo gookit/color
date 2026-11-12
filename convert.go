@@ -507,13 +507,14 @@ func Basic2hex(val uint8) string {
 }
 
 // Hex2basic convert hex string to basic color code.
+//
+// Returns 0 if the hex string is invalid.
 func Hex2basic(hex string, asBg ...bool) uint8 {
-	val := hex2basicMap[hex]
-
-	if len(asBg) > 0 && asBg[0] {
-		return Fg2Bg(val)
+	rgb := HexToRgb(hex)
+	if len(rgb) != 3 {
+		return 0
 	}
-	return val
+	return Rgb2basic(uint8(rgb[0]), uint8(rgb[1]), uint8(rgb[2]), len(asBg) > 0 && asBg[0])
 }
 
 // Rgb2basic alias of the RgbToAnsi()
