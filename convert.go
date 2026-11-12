@@ -982,7 +982,8 @@ var (
 //	r, g, b: [0, 255]  => h (0-360), s (0-100), v (0-100)
 func RGBToHSVInts(r, g, b uint8) []int {
 	h, s, v := RGBToHSV(r, g, b)
-	return []int{int(h), int(math.Round(s * 100)), int(math.Round(v * 100))}
+	// round the hue like s and v, and wrap 359.5+ back to 0
+	return []int{int(math.Round(h)) % 360, int(math.Round(s * 100)), int(math.Round(v * 100))}
 }
 
 // RGBToHSVSlice Convert RGB values to HSV values slice.

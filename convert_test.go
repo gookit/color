@@ -143,6 +143,11 @@ func TestRgbHsvConv(t *testing.T) {
 	hsvF64s := RgbToHsvSlice(255, 0, 0)
 	assert.StrEq(t, "[0 1 1]", hsvF64s)
 
+	// hue is rounded, not truncated: 329.88 -> 330, 359.76 -> 0
+	assert.StrEq(t, "[330 100 100]", RGBToHSVInts(255, 0, 128))
+	assert.StrEq(t, "[0 100 100]", RGBToHSVInts(255, 0, 1))
+	assert.StrEq(t, "[217 76 96]", RGBToHSVInts(59, 130, 246))
+
 	// 示例2：纯绿色 (0, 255, 0) -> HSV(120.00, 1.00, 1.00)
 	h, s, v = RGBToHSV(0, 255, 0)
 	assert.StrEq(t, "(120.00, 1.00, 1.00)", "(%.2f, %.2f, %.2f)", h, s, v)
