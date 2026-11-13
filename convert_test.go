@@ -41,6 +41,13 @@ func TestRgbToAnsiAverageOverflow(t *testing.T) {
 func TestHex2basic(t *testing.T) {
 	assert.Equal(t, uint8(95), Hex2basic("fd7cfc"))
 	assert.Equal(t, uint8(105), Hex2basic("fd7cfc", true))
+
+	// "#" prefix, upper case and colors outside the 16-color palette
+	assert.Equal(t, uint8(95), Hex2basic("#fd7cfc"))
+	assert.Equal(t, uint8(95), Hex2basic("FD7CFC"))
+	assert.Equal(t, Rgb2basic(255, 0, 0, false), Hex2basic("ff0000"))
+	assert.Equal(t, Rgb2basic(255, 0, 0, true), Hex2basic("#ff0000", true))
+	assert.Equal(t, uint8(0), Hex2basic("invalid"))
 }
 
 func TestHslToRgb(t *testing.T) {
