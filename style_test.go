@@ -148,6 +148,47 @@ func TestThemes(t *testing.T) {
 	is.Nil(theme)
 }
 
+func TestTheme_TipsLiteralName(t *testing.T) {
+	buf := forceOpenColorRender()
+	defer resetColorRender()
+	oldEnable := Enable
+	defer func() { Enable = oldEnable }()
+
+	tests := []struct {
+		name, format string
+		args         []any
+		prefix, text string
+	}{
+		{"cpu 90%", "load %d", []any{42}, "CPU 90%: ", "load 42"},
+		{"hex %X", "load %d", []any{42}, "HEX %X: ", "load 42"},
+		{"%% progress", "done", nil, "%% PROGRESS: ", "done"},
+		{"status", "%[2]d%% %[1]s", []any{"done", 75}, "STATUS: ", "75% done"},
+	}
+	for _, mode := range []struct {
+		name    string
+		enabled bool
+	}{
+		{"color", true},
+		{"no-color", false},
+	} {
+		t.Run(mode.name, func(t *testing.T) {
+			Enable = mode.enabled
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					buf.Reset()
+					NewTheme(tt.name, Style{FgGreen}).Tips(tt.format, tt.args...)
+
+					prefix := tt.prefix
+					if mode.enabled {
+						prefix = "\x1b[32m" + prefix + "\x1b[0m"
+					}
+					assert.Equal(t, prefix+tt.text+"\n", buf.String())
+				})
+			}
+		})
+	}
+}
+
 func TestStyleFunc(t *testing.T) {
 	// force open color render for testing
 	buf := forceOpenColorRender()

@@ -106,7 +106,7 @@ func (t *Theme) Save() { AddTheme(t.Name, t.Style) }
 func (t *Theme) Tips(format string, a ...any) {
 	// only apply style for name
 	prefix := RenderString(t.Code(), strings.ToUpper(t.Name)+": ")
-	Printf(prefix+format+"\n", a...)
+	Printf("%s%s\n", prefix, fmt.Sprintf(format, a...))
 }
 
 // Prompt use name as title, and apply style for message
