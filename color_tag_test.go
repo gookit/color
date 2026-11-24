@@ -136,6 +136,41 @@ func TestTagParserWhiteBackground(t *testing.T) {
 	}
 }
 
+func TestTagParserUnderscoreColorNames(t *testing.T) {
+	previousEnable, previousLevel, previousSavedLevel := Enable, colorLevel, oldLevelVal
+	Enable = true
+	ForceOpenColor()
+	t.Cleanup(func() {
+		Enable, colorLevel, oldLevelVal = previousEnable, previousLevel, previousSavedLevel
+	})
+
+	p := NewTagParser()
+	for _, tt := range []struct {
+		attr string
+		code string
+	}{
+		{"fg=light_blue", "94"},
+		{"bg=dark_gray", "100"},
+		{"fg=hi_mga;bg=light_cyan", "95;106"},
+		{"fg=light_blue;bg=dark_gray;op=bold,underscore", "94;100;1;4"},
+		{"fg=lightBlue;bg=darkGray", "94;100"},
+		{"fg=red;bg=blue;op=bold,underscore", "31;44;1;4"},
+		{"fg=167;bg=23", "38;5;167;48;5;23"},
+		{"fg=11aa23;bg=23,45,214", "38;2;17;170;35;48;2;23;45;214"},
+		{"fg=not_a_color", ""},
+	} {
+		t.Run(tt.attr, func(t *testing.T) {
+			assert.Equal(t, tt.code, ParseCodeFromAttr(tt.attr))
+			input := "<" + tt.attr + ">text</>"
+			want := input
+			if tt.code != "" {
+				want = "\x1b[" + tt.code + "mtext\x1b[0m"
+			}
+			assert.Equal(t, want, p.Parse(input))
+		})
+	}
+}
+
 func TestParseCodeFromAttr_c256(t *testing.T) {
 	is := assert.New(t)
 
