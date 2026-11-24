@@ -322,3 +322,29 @@ func TestTag_Print(t *testing.T) {
 	is.Equal("\x1b[0;35mmsg\x1b[0m", buf.String())
 	buf.Reset()
 }
+
+func TestTagSprintRegisteredStyle(t *testing.T) {
+	oldEnable := Enable
+	Enable = true
+	defer func() { Enable = oldEnable }()
+	buf := forceOpenColorRender()
+	defer resetColorRender()
+
+	const name = "customTagSprint"
+	AddStyle(name, New(FgRed, OpBold))
+	defer delete(Styles, name)
+
+	tag := Tag(name)
+	tag.Print("status")
+	assert.Eq(t, "\x1b[31;1mstatus\x1b[0m", buf.String())
+	assert.Eq(t, buf.String(), tag.Sprint("status"))
+
+	buf.Reset()
+	tag.Printf("status %d", 3)
+	assert.Eq(t, "\x1b[31;1mstatus 3\x1b[0m", buf.String())
+	assert.Eq(t, buf.String(), tag.Sprintf("status %d", 3))
+
+	// A tag without a registered style falls back to its built-in code.
+	assert.Eq(t, "\x1b[0;35mstatus\x1b[0m", Tag("mga").Sprint("status"))
+	assert.Eq(t, "status", Tag("unknownTag").Sprint("status"))
+}

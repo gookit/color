@@ -532,49 +532,38 @@ func IsDefinedTag(name string) bool {
 //	Tag("info").Println("message")
 type Tag string
 
+func (tg Tag) code() string {
+	name := string(tg)
+	if style := GetStyle(name); !style.IsEmpty() {
+		return style.Code()
+	}
+	return GetTagCode(name)
+}
+
 // Print messages
 func (tg Tag) Print(a ...any) {
-	name := string(tg)
 	str := fmt.Sprint(a...)
-
-	if stl := GetStyle(name); !stl.IsEmpty() {
-		stl.Print(str)
-	} else {
-		doPrintV2(GetTagCode(name), str)
-	}
+	doPrintV2(tg.code(), str)
 }
 
 // Printf format and print messages
 func (tg Tag) Printf(format string, a ...any) {
-	name := string(tg)
 	str := fmt.Sprintf(format, a...)
-
-	if stl := GetStyle(name); !stl.IsEmpty() {
-		stl.Print(str)
-	} else {
-		doPrintV2(GetTagCode(name), str)
-	}
+	doPrintV2(tg.code(), str)
 }
 
 // Println messages line
 func (tg Tag) Println(a ...any) {
-	name := string(tg)
-	if stl := GetStyle(name); !stl.IsEmpty() {
-		stl.Println(a...)
-	} else {
-		doPrintlnV2(GetTagCode(name), a)
-	}
+	doPrintlnV2(tg.code(), a)
 }
 
 // Sprint render messages
 func (tg Tag) Sprint(a ...any) string {
-	return RenderCode(GetTagCode(string(tg)), a...)
+	return RenderCode(tg.code(), a...)
 }
 
 // Sprintf format and render messages
 func (tg Tag) Sprintf(format string, a ...any) string {
-	tag := string(tg)
 	str := fmt.Sprintf(format, a...)
-
-	return RenderString(GetTagCode(tag), str)
+	return RenderString(tg.code(), str)
 }
