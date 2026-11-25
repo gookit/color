@@ -20,7 +20,7 @@ const (
 
 	// AttrExpr regex to match custom color attributes
 	// eg: "<fg=white;bg=blue;op=bold>content</>"
-	AttrExpr = `(fg|bg|op)[\s]*=[\s]*([0-9a-zA-Z,]+);?`
+	AttrExpr = `(fg|bg|op)[\s]*=[\s]*([0-9a-zA-Z_,]+);?`
 
 	// StripExpr regex used for removing color tags
 	// StripExpr = `<[\/]?[a-zA-Z=;]+>`
